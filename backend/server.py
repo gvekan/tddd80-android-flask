@@ -1,26 +1,9 @@
 from backend import application
 from backend import data
-from flask import request, about
-@application.route('/login/<user>', methods=['POST'])
-def login():
-    user = request.get_json()
-    name = user['username']
-    password = user['password']
-    try_user = data.User.query.filter(data.User.username == name).first()
-    if not try_user:
-        return 'Wrong username or password'
-    if try_user.check_password(password):
-        return try_user.generate_auth_token()
-    else:
-        return "Oooops"
-
-@application.route('/logout', methods=['POST'])
-def logout():
 
 
 @application.route('/create/<user>', methods=['POST'])
 def create_user():
-    user = request.get_json()
     try:
         name = user['username']
         password = user['password']
