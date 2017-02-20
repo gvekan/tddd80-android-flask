@@ -52,7 +52,7 @@ class User(db.Model):
                                backref=db.backref('friend_requests', lazy='dynamic'),
                                lazy='dynamic')
 
-    friends_today = db.relationship('Friends today',
+    temp_today = db.relationship('Friends today',
                                     secondary=day_friends,
                                     primaryjoin=(day_friends.c.user_id == id),
                                     secondaryjoin=(day_friends.c.user_id_other == id),
@@ -97,13 +97,32 @@ class User(db.Model):
 
 
     def send_friend_request(self, requested):
-        return None
+        try:
+            request_to = User.query.filter_by(id=requested).one()
+        except orm.exc.NoResultFound:
+            return abort(400)
+        self.requests.append(request_to)
+        db.session.add(request_to)
+        db.session.commit()
+        return ''
 
     def get_friend_requests(self):
-        return None
+        try:
+            all_requests = friend_requests.query.filter_by(id=friend_requests.receiver).all()
+        except orm.exc.NoResultFound:
+            return 'You have no friend requests'
+        return all_requests
 
-    def accept_friend_request(self, requester):
-        return None
+    def accept_friend_request(self, requester): #Hur tar man nu bort från request db..?
+        try:
+            request_by = User.query.filter_by(id=requester).one()
+        except orm.exc.NoResultFound:
+            return abort(400)
+        self.friends.append(request_by)
+        db.session.add(request_by)
+        db.session.commit()
+        return ''
+
 
     def deny_friend_request(self, requester):
         return None
@@ -136,8 +155,19 @@ class Message(db.Model):
         self.text = text
 
 def match_users(user_id, user_id_other):
-    user1 = User.query.filter()
-    return
+    try:
+        user1 = User.query.filter_by(id=user_id).one()
+    except orm.exc.NoResultFound:
+        return abort(400)
+    try:
+        user2 = User.query.filter_by(id=user_id_other).one()
+    except orm.exc.NoResultFound:
+        return abort(400)
+    user1.temp_friends.append(user2)
+    db.session.add(user2)
+    db.session.commit()
+    return ''
+
 
 def add_user(name, password):
     user = User(name, password)
