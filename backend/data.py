@@ -1,16 +1,17 @@
 from backend import application
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, orm, abort
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy(application)
+
 
 def initialize_db():
     db.drop_all()
     db.create_all()
 
-#Tables
+# Tables
 friendships = db.Table('friendships', db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-                   db.Column('user_id_other', db.Integer, db.ForeignKey('user.id')))
+                db.Column('user_id_other', db.Integer, db.ForeignKey('user.id')))
 
 friend_requests = db.Table('friend_requests', db.Column('sender', db.Integer, db.ForeignKey('user.id')),
                     db.Column('receiver', db.Integer, db.ForeignKey('user.id')))
@@ -18,12 +19,11 @@ friend_requests = db.Table('friend_requests', db.Column('sender', db.Integer, db
 day_friends = db.Table('day_friends', db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                     db.Column('user_id_other', db.Integer, db.ForeignKey('user.id')))
 
-blocked_friends = db.Table('blocked', db.Column('User', db.Integer, db.ForeignKey('user.id'))
+blocked_friends = db.Table('blocked', db.Column('User', db.Integer, db.ForeignKey('user.id')),
                    db.Column('Blocked', db.Integer, db.ForeignKey('user.id')))
 
 sent_messages = db.Table('sent_messages', db.Column('message', db.Integer, db.ForeignKey('message.id')),
                     db.Column('receiver', db.Integer, db.ForeignKey('user.id')))
-
 
 
 class User(db.Model):
@@ -73,7 +73,7 @@ class User(db.Model):
 
 
 
-    def __init__(self, first_name, surname, date_of_birth, domicile, description, email):
+    def __init__(self, firstname, surname, date_of_birth, domicile, description, email):
         self.anonymous_id = uuid.uuid4().int
         self.firstname = firstname
         self.surname = surname
@@ -89,10 +89,9 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.pw_hash, password)
 
-
-    def send_friend_request(self, requested):
+    def send_friend_request(self, request_to):
         try:
-            request_to = User.query.filter_by(id=requested).one()
+            request_to = User.query.filter_by(id=request_to).one()
         except orm.exc.NoResultFound:
             return abort(400)
         self.requests.append(request_to)
@@ -107,16 +106,15 @@ class User(db.Model):
             return 'You have no friend requests'
         return all_requests
 
-    def accept_friend_request(self, requester): #Hur tar man nu bort från request db..?
+    def accept_friend_request(self, requester):
         try:
             request_by = User.query.filter_by(id=requester).one()
         except orm.exc.NoResultFound:
             return abort(400)
-        self.friends.append(request_by)
+        self.friends.append(request_by)  #Hur tar man nu bort från ett table..?
         db.session.add(request_by)
         db.session.commit()
         return 'You are now friends with ' + request_by.firstname + ' ' + request_by.surname + '.'
-
 
     def deny_friend_request(self, requester):
         return None
@@ -138,7 +136,6 @@ class User(db.Model):
 
     def send_message(self, receiver, text):
         message = Message(text)
-
         return None
 
 
@@ -151,6 +148,7 @@ class Message(db.Model):
     def __init__(self, text):
         self.message_id = uuid.uuid4().int
         self.text = text
+
 
 def match_users(user_id, user_id_other):
     try:
@@ -167,8 +165,8 @@ def match_users(user_id, user_id_other):
     return ''
 
 
-def add_user(name, password):
-    user = User(name, password)
+def add_user(firstname, surname, date_of_birth, domicile, description, email):
+    user = User(firstname, surname, date_of_birth, domicile, description, email)
     db.session.add(user)
     db.session.commit()
     return 'User created'
