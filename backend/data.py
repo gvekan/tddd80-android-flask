@@ -29,7 +29,7 @@ sent_messages = db.Table('sent_messages', db.Column('message', db.Integer, db.Fo
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, unique=True, primary_key=True)
-    first_name = db.Column(db.String)
+    firstname = db.Column(db.String)
     surname = db.Column(db.String)
     date_of_birth = db.Column(db.Integer, unique=True)
     domicile = db.Column(db.String)
@@ -75,7 +75,7 @@ class User(db.Model):
 
     def __init__(self, first_name, surname, date_of_birth, domicile, description, email):
         self.anonymous_id = uuid.uuid4().int
-        self.first_name = first_name
+        self.firstname = firstname
         self.surname = surname
         self.date_of_birth = date_of_birth
         self.domicile = domicile
@@ -115,7 +115,7 @@ class User(db.Model):
         self.friends.append(request_by)
         db.session.add(request_by)
         db.session.commit()
-        return ''
+        return 'You are now friends with ' + request_by.firstname + ' ' + request_by.surname + '.'
 
 
     def deny_friend_request(self, requester):
