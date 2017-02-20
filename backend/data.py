@@ -1,7 +1,6 @@
 from backend import application
 from flask_sqlalchemy import SQLAlchemy
 import uuid
-)from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy(application)
 
@@ -91,11 +90,6 @@ class User(db.Model):
         return check_password_hash(self.pw_hash, password)
 
 
-    def generate_auth_token(self, expiration=600):
-        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': self.anonymous_id})
-
-
     def send_friend_request(self, requested):
         try:
             request_to = User.query.filter_by(id=requested).one()
@@ -143,12 +137,16 @@ class User(db.Model):
         return None
 
     def send_message(self, receiver, text):
+        message = Message(text)
+
         return None
 
 
 class Message(db.Model):
     message_id = db.Column(db.Integer, unique=True, primary_key=True)
-    text = db.Column(db.String(140))
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    text = db.Column(db.String)
 
     def __init__(self, text):
         self.message_id = uuid.uuid4().int
