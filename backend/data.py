@@ -103,26 +103,37 @@ class User(db.Model):
     def get_all_unread(self):
         return None
 
-    def get_messages(self, mailer):
-        return None
+    def get_messages(self, sender_id):
+        messages = User.query.filter_by(receiver=self.id, sender=sender_id).all()
+        return messages
 
-    def send_message(self, receiver, text):
-        message = Message(self.id, receiver, text)
+    def send_message(self, receiver_id, text):
+        message = Message(self.id, receiver_id, text)
+        db.session.add(message)
+        db.session.commit(message)
+        return ''
+
+    def mark_read(self, sender_id):
+        messages = User.query.filter_by(receiver=self.id, sender=sender_id).all()
+        for message in messages:
+            message.read = True
+        db.session.commit()
         return ''
 
 
 class Message(db.Model):
-    message_id = db.Column(db.Integer, unique=True, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     read = db.Column(db.Boolean, nullable=False)
     text = db.Column(db.String, nullable=False)
+    #Add timestamp
 
     sender = db.relationship(User, foreign_keys=[sender_id], backref='sent')
     receiver = db.relationship(User, foreign_keys=[receiver_id], backref='received')
 
     def __init__(self, sender_id, receiver_id, text):
-        self.message_id = uuid.uuid4().int
+        self.id = uuid.uuid4().int
         self.sender_id = sender_id
         self.receiver_id = receiver_id
         self.read = False
