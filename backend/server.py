@@ -130,12 +130,6 @@ def change_jwt_unrevoke_state(jti):
         return jsonify({'msg': 'Token not found'}), 404
 
 
-@application.route('/protected', methods=['GET'])
-@jwt_required
-def protected():
-    return jsonify({'hello': 'world'})
-
-
 # Messages
 @application.route('/send_message', methods=['POST'])
 @jwt_required
