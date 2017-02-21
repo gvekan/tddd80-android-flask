@@ -14,6 +14,14 @@ jwt = JWTManager(application)
 
 
 # OAuth2
+# Create user
+@application.route('/create', methods=['POST'])
+def create():
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
+
+
+
 # Standard login endpoint
 @application.route('/login', methods=['POST'])
 def login():

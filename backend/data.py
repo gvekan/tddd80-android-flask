@@ -10,10 +10,7 @@ def initialize_db():
     db.create_all()
 
 # Tables
-friendships = db.Table('friendships', db.Column('User_1', db.Integer, db.ForeignKey('user.id')),
-                db.Column('User_2', db.Integer, db.ForeignKey('user.id')))
-
-friend_requests = db.Table('friend_requests', db.Column('Requester', db.Integer, db.ForeignKey('user.id')),
+friendships = db.Table('friend_requests', db.Column('Requester', db.Integer, db.ForeignKey('user.id')),
                     db.Column('Requested', db.Integer, db.ForeignKey('user.id')))
 
 temp_friendships = db.Table('temp_friendships', db.Column('User_2', db.Integer, db.ForeignKey('user.id')),
@@ -34,18 +31,11 @@ class User(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     pw_hash = db.Column(db.String, nullable=False)
 
-    friends = db.relationship('Friends',
-                            secondary=friendships,
-                            primaryjoin=(friendships.c.username == ),
-                            secondaryjoin=(friendships.c.user_id_other == id),
-                            backref=db.backref('friendships', lazy='dynamic'),
-                            lazy='dynamic')
-
-    requests = db.relationship('Requests',
-                               secondary=friend_requests,
-                               primaryjoin=(friend_requests.c.requester == id),
-                               secondaryjoin=(friend_requests.c.recuested == id),
-                               backref=db.backref('friend_requests', lazy='dynamic'),
+    friends = db.relationship('Requests',
+                               secondary=friendships,
+                               primaryjoin=(friendships.c.Requester == id),
+                               secondaryjoin=(friendships.c.Requested == id),
+                               backref=db.backref('friendships', lazy='dynamic'),
                                lazy='dynamic')
 
     temp_friend = db.relationship('Temporary friend',
@@ -87,7 +77,7 @@ class User(db.Model):
         return ''
 
     def get_friend_requests(self):
-        requests = friend_requests.query.filter_by(id=friend_requests.recuested).all()
+        requests = friendships.query.filter_by(id=friendships.recuested).all()
         return requests
 
     def accept_friend_request(self, requester_id):
