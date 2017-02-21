@@ -6,10 +6,10 @@ from flask import Flask
 
 
 application = Flask(__name__)
-application.secret_key = 'super-secret'
+application.config['SECRET-KEY'] = 'super-secret'
 
-application.config['SQLALCHEMY_DATABASE_URI'] = config.sqldb_uri
-
+application.config['SQLALCHEMY_DATABASE_URI'] = config.db_uri
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Enable and configure the JWT blacklist / token revoke. We are using
 # an in memory store for this example. In production, you should
 # use something persistent (such as redis, memcached, sqlalchemy).

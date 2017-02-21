@@ -6,6 +6,7 @@ db = SQLAlchemy(application)
 
 
 def initialize_db():
+    db.session.remove()
     db.drop_all()
     db.create_all()
 
@@ -35,8 +36,8 @@ class Message(db.Model):
     text = db.Column(db.String, nullable=False)
     # Add timestamp
 
-    sender = db.relationship(User, foreign_keys=[sender_id], backref='sent')
-    receiver = db.relationship(User, foreign_keys=[receiver_id], backref='received')
+    #sender = db.relationship(User, foreign_keys=[sender_id], backref='sent')
+    #receiver = db.relationship(User, foreign_keys=[receiver_id], backref='received')
 
     def __init__(self, sender_id, receiver_id, text):
         self.extra_id = uuid.uuid4().int
@@ -71,18 +72,18 @@ class User(db.Model):
                                secondaryjoin=(friendships.c.Requested == id),
                                backref=db.backref('friendships', lazy='dynamic'),
                                lazy='dynamic')
-
+    """
     temp_friends = db.relationship('Temporary friend',
                                     secondary=temp_friendships,
-                                    primaryjoin=(temp_friendships.c.user_id == id),
-                                    secondaryjoin=(temp_friendships.c.user_id_other == id),
+                                    primaryjoin=(temp_friendships.c.User_1 == id),
+                                    secondaryjoin=(temp_friendships.c.User_2== id),
                                     backref=db.backref('temp_friendships', lazy='dynamic'),
                                     lazy='dynamic')
-
+    """
     blocked = db.relationship('Blocked users',
                               secondary=blocked_users,
-                              primaryjoin=(blocked_users.c.user_id == id),
-                              secondaryjoin=(blocked_users.c.user_id == id),
+                              primaryjoin=(blocked_users.c.User == id),
+                              secondaryjoin=(blocked_users.c.Blocked == id),
                               backref=db.backref('blocked_user', lazy='dynamic'),
                               lazy='dynamic')
 
