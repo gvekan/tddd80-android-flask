@@ -10,72 +10,62 @@ def initialize_db():
     db.create_all()
 
 # Tables
-friendships = db.Table('friendships', db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-                db.Column('user_id_other', db.Integer, db.ForeignKey('user.id')))
+friendships = db.Table('friendships', db.Column('User_1', db.Integer, db.ForeignKey('user.id')),
+                db.Column('User_2', db.Integer, db.ForeignKey('user.id')))
 
-friend_requests = db.Table('friend_requests', db.Column('sender', db.Integer, db.ForeignKey('user.id')),
-                    db.Column('receiver', db.Integer, db.ForeignKey('user.id')))
+friend_requests = db.Table('friend_requests', db.Column('Requester', db.Integer, db.ForeignKey('user.id')),
+                    db.Column('Requested', db.Integer, db.ForeignKey('user.id')))
 
-day_friends = db.Table('day_friends', db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-                    db.Column('user_id_other', db.Integer, db.ForeignKey('user.id')))
+temp_friendships = db.Table('temp_friendships', db.Column('User_2', db.Integer, db.ForeignKey('user.id')),
+                    db.Column('User_1', db.Integer, db.ForeignKey('user.id')))
 
-blocked_friends = db.Table('blocked', db.Column('User', db.Integer, db.ForeignKey('user.id')),
+blocked_users = db.Table('blocked', db.Column('User', db.Integer, db.ForeignKey('user.id')),
                    db.Column('Blocked', db.Integer, db.ForeignKey('user.id')))
-
-sent_messages = db.Table('sent_messages', db.Column('message', db.Integer, db.ForeignKey('message.id')),
-                    db.Column('receiver', db.Integer, db.ForeignKey('user.id')))
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, unique=True, primary_key=True)
-    firstname = db.Column(db.String)
-    surname = db.Column(db.String)
-    date_of_birth = db.Column(db.Integer, unique=True)
-    domicile = db.Column(db.String)
+    username = db.Column(db.Integer, unique=True, nullable=False)
+    first_name = db.Column(db.String, nullable=False)
+    surname = db.Column(db.String, nullable=False)
+    date_of_birth = db.Column(db.Integer, nullable=False)
+    domicile = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
-    email = db.Column(db.String, unique=True)
-    pw_hash = db.Column(db.String(160))
+    email = db.Column(db.String, unique=True, nullable=False)
+    pw_hash = db.Column(db.String, nullable=False)
 
     friends = db.relationship('Friends',
                             secondary=friendships,
-                            primaryjoin=(friendships.c.user_id == id),
+                            primaryjoin=(friendships.c.username == ),
                             secondaryjoin=(friendships.c.user_id_other == id),
                             backref=db.backref('friendships', lazy='dynamic'),
                             lazy='dynamic')
 
     requests = db.relationship('Requests',
                                secondary=friend_requests,
-                               primaryjoin=(friend_requests.c.sender == id),
-                               secondaryjoin=(friend_requests.c.receiver == id),
+                               primaryjoin=(friend_requests.c.requester == id),
+                               secondaryjoin=(friend_requests.c.recuested == id),
                                backref=db.backref('friend_requests', lazy='dynamic'),
                                lazy='dynamic')
 
-    temp_today = db.relationship('Friends today',
-                                    secondary=day_friends,
-                                    primaryjoin=(day_friends.c.user_id == id),
-                                    secondaryjoin=(day_friends.c.user_id_other == id),
-                                    backref=db.backref('day_friends', lazy='dynamic'),
+    temp_friend = db.relationship('Temporary friend',
+                                    secondary=temp_friendships,
+                                    primaryjoin=(temp_friendships.c.user_id == id),
+                                    secondaryjoin=(temp_friendships.c.user_id_other == id),
+                                    backref=db.backref('temp_friend', lazy='dynamic'),
                                     lazy='dynamic')
 
-    blocked = db.relationship('Blocked friends',
-                              secondary=blocked_friends,
-                              primaryjoin=(blocked_friends.c.user_id == id),
-                              secondaryjoin=(blocked_friends.c.user_id == id),
-                              backref=db.backref('blocked_friends', lazy='dynamic'),
+    blocked = db.relationship('Blocked users',
+                              secondary=blocked_users,
+                              primaryjoin=(blocked_users.c.user_id == id),
+                              secondaryjoin=(blocked_users.c.user_id == id),
+                              backref=db.backref('blocked_user', lazy='dynamic'),
                               lazy='dynamic')
 
-    messages = db.relationship('Message',
-                                secondary=sent_messages,
-                                backref=db.backref('users', lazy='dynamic'))
 
-
-
-
-
-    def __init__(self, firstname, surname, date_of_birth, domicile, description, email):
+    def __init__(self, first_name, surname, date_of_birth, domicile, description, email):
         self.anonymous_id = uuid.uuid4().int
-        self.firstname = firstname
+        self.first_name = first_name
         self.surname = surname
         self.date_of_birth = date_of_birth
         self.domicile = domicile
@@ -89,32 +79,23 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.pw_hash, password)
 
-    def send_friend_request(self, request_to):
-        try:
-            request_to = User.query.filter_by(id=request_to).one()
-        except orm.exc.NoResultFound:
-            return abort(400)
-        self.requests.append(request_to)
-        db.session.add(request_to)
+    def send_friend_request(self, requested):
+        requested = User.query.filter_by(id=requested).first()
+        self.requests.append(requested)
+        db.session.add(requested)
         db.session.commit()
         return ''
 
     def get_friend_requests(self):
-        try:
-            all_requests = friend_requests.query.filter_by(id=friend_requests.receiver).all()
-        except orm.exc.NoResultFound:
-            return 'You have no friend requests'
-        return all_requests
+        requests = friend_requests.query.filter_by(id=friend_requests.recuested).all()
+        return requests
 
-    def accept_friend_request(self, requester):
-        try:
-            request_by = User.query.filter_by(id=requester).one()
-        except orm.exc.NoResultFound:
-            return abort(400)
-        self.friends.append(request_by)  #Hur tar man nu bort från ett table..?
-        db.session.add(request_by)
+    def accept_friend_request(self, requester_id):
+        requester = User.query.filter_by(id=requester_id).first()
+        self.friends.append(requester)
+        db.session.add(requester)
         db.session.commit()
-        return 'You are now friends with ' + request_by.firstname + ' ' + request_by.surname + '.'
+        return ''
 
     def deny_friend_request(self, requester):
         return None
@@ -125,7 +106,7 @@ class User(db.Model):
     def block_user(self, user_to_block):
         return None
 
-    def get_unread_messages(self, mailer):
+    def get_unread_messages(self, sender):
         return None
 
     def get_all_unread(self):
@@ -135,18 +116,25 @@ class User(db.Model):
         return None
 
     def send_message(self, receiver, text):
-        message = Message(text)
-        return None
+        message = Message(self.id, receiver, text)
+        return ''
 
 
 class Message(db.Model):
     message_id = db.Column(db.Integer, unique=True, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    text = db.Column(db.String)
+    read = db.Column(db.Boolean, nullable=False)
+    text = db.Column(db.String, nullable=False)
 
-    def __init__(self, text):
+    sender = db.relationship(User, foreign_keys=[sender_id], backref='sent')
+    receiver = db.relationship(User, foreign_keys=[receiver_id], backref='received')
+
+    def __init__(self, sender_id, receiver_id, text):
         self.message_id = uuid.uuid4().int
+        self.sender_id = sender_id
+        self.receiver_id = receiver_id
+        self.read = False
         self.text = text
 
 
