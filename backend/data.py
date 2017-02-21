@@ -69,23 +69,24 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.pw_hash, password)
 
-    def send_friend_request(self, requested):
-        requested = User.query.filter_by(id=requested).first()
-        self.requests.append(requested)
-        db.session.add(requested)
-        db.session.commit()
-        return ''
+    def send_friend_request(self, user):
+        user = get_user(user) #Transform a User-id to a User object
+        if not self.friend_request_sent(user):
+            self.friends.append(user)
+            return self
 
     def get_friend_requests(self):
         requests = friendships.query.filter_by(id=friendships.recuested).all()
         return requests
 
-    def accept_friend_request(self, requester_id):
-        requester = User.query.filter_by(id=requester_id).first()
-        self.friends.append(requester)
-        db.session.add(requester)
-        db.session.commit()
-        return ''
+    def accept_friend_request(self, user):
+        user = get_user(user)
+        if self.friend_request_sent(user)
+            user.friends.append(self)
+            return ''
+
+    def friend_request_sent(self, user):
+        return self.friends.filter(friendships.c.friends.Requested == user).count() > 0
 
     def deny_friend_request(self, requester):
         return None
@@ -148,3 +149,7 @@ def add_user(firstname, surname, date_of_birth, domicile, description, email):
     db.session.add(user)
     db.session.commit()
     return 'User created'
+
+
+def get_user(user):
+    return User.query.filter_by(id=user).one()
