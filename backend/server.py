@@ -29,12 +29,14 @@ def start():
 # Create user
 @application.route('/create', methods=['POST'])
 def create():
+    email = request.json.get('email', None)
+    password = request.json.get('password', None)
     first_name = request.json.get('first_name', None)
     surname = request.json.get('surname', None)
-    password = request.json.get('password', None)
-    birthdate = request.json.get('birthdate', None)
-    email = request.json.get('email', None)
-    return data.create_user(first_name, surname, password, birthdate, email)
+    birth_date = request.json.get('birth_date', None)
+    domicile = request.json.get('domicile', None)
+    data.create_user(email, password, first_name, surname, birth_date, domicile)
+    return jsonify({"msg": "User created"}), 200
 
 
 # Standard login endpoint
