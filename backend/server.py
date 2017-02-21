@@ -1,5 +1,4 @@
-from backend import application
-from backend import data
+from backend import application, data
 
 from flask import request, jsonify
 
@@ -12,30 +11,25 @@ from flask_jwt_extended import JWTManager, jwt_required, \
 
 jwt = JWTManager(application)
 
-# -- Functions answering to HTTP requests --
 
-
-@application.route('/')
-def start():
-    """
-    Welcome page
-    """
-    return 'Welcome!'
-
-
-# -- User functions --
-
-# OAuth2
+# -- OAuth2 --
 # Create user
 @application.route('/create', methods=['POST'])
 def create():
-    email = request.json.get('email', None)
+    username = request.json.get('username', None)
+    print()
     password = request.json.get('password', None)
+    email = request.json.get('email', None)
     first_name = request.json.get('first_name', None)
     surname = request.json.get('surname', None)
     birth_date = request.json.get('birth_date', None)
     domicile = request.json.get('domicile', None)
-    data.create_user(email, password, first_name, surname, birth_date, domicile)
+    description = request.json.get('description', None)
+    if data.User.query.filter_by(username=username).count():
+        return jsonify({"msg": "Username taken"}), 401
+    if data.User.query.filter_by(username=username).count():
+        return jsonify({"msg": "Email taken"}), 401
+    data.create_user(username, password, email, first_name, surname, birth_date, domicile, description)
     return jsonify({"msg": "User created"}), 200
 
 

@@ -1,6 +1,6 @@
 from backend import application
+
 from flask_sqlalchemy import SQLAlchemy
-import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy(application)
 
@@ -26,14 +26,14 @@ blocked_users = db.Table('blocked',
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     read = db.Column(db.Boolean, nullable=False)
     text = db.Column(db.String, nullable=False)
     # Add a timestamp
 
-    sender = db.relationship(User, foreign_keys=[sender_id], backref='sent')
-    receiver = db.relationship(User, foreign_keys=[receiver_id], backref='received')
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent')
+    receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received')
 
     def __init__(self, sender_id, receiver_id, text):
         self.sender_id = sender_id
@@ -44,17 +44,19 @@ class Message(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String, unique=True, nullable=False)
+    username = db.Column(db.String, unique=True, nullable=False)
     pw_hash = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
     first_name = db.Column(db.String, nullable=False)
     surname = db.Column(db.String, nullable=False)
     birth_date = db.Column(db.Integer, nullable=False)
     domicile = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
 
-    def __init__(self, email, password, first_name, surname, birth_date, domicile):
-        self.email = email
+    def __init__(self, username, password, email, first_name, surname, birth_date, domicile, description):
+        self.username = username
         self.pw_hash = generate_password_hash(password)
+        self.email = email
         self.first_name = first_name
         self.surname = surname
         self.birth_date = birth_date
@@ -150,7 +152,7 @@ class User(db.Model):
         """
         Get all messages from a user
         """
-        messages = User.query.filter_by(received=self.id, sent=sender_id).all()
+        messages = Message.query.filter_by(receiver=self.id, sender=sender_id).all()
         return messages
 
     def send_message(self, receiver_id, text):
@@ -166,7 +168,7 @@ class User(db.Model):
         """
         Mark all messages from a user as read
         """
-        messages = User.query.filter_by(received=self.id, sent=sender_id).all()
+        messages = Message.query.filter_by(receiver=self.id, sender=sender_id).all()
         for message in messages:
             message.read = True
         db.session.commit()
@@ -176,14 +178,14 @@ class User(db.Model):
         """
         Get the number of unread messages from all users
         """
-        messages = User.query.filter_by(received=self.id, ).all()
+        return Message.query.filter_by(receiver=self.id, read=False).count()
 
 
-def create_user(email, password, first_name, surname, birth_date, domicile):
+def create_user(username, password, email, first_name, surname, birth_date, domicile, description):
     """
     Creates a user
     """
-    user = User(email, password, first_name, surname, birth_date, domicile)
+    user = User(username, password, email, first_name, surname, birth_date, domicile, description)
     db.session.add(user)
     db.session.commit()
     return 'User created'
