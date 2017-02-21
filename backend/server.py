@@ -4,7 +4,7 @@ from backend import data
 from flask import request, jsonify
 
 from flask_jwt_extended import JWTManager, jwt_required, \
-    get_jwt_identity, revoke_token, unrevoke_token, \
+    get_jwt_identity, revoke_token, \
     get_stored_tokens, get_all_stored_tokens, create_access_token, \
     create_refresh_token, jwt_refresh_token_required, \
     get_raw_jwt, get_stored_token
@@ -12,19 +12,37 @@ from flask_jwt_extended import JWTManager, jwt_required, \
 
 jwt = JWTManager(application)
 
+# -- Functions answering to HTTP requests --
+
+
+@application.route('/')
+def start():
+    """
+    Welcome page
+    """
+    return 'Welcome!'
+
+
+# -- User functions --
 
 # OAuth2
 # Create user
 @application.route('/create', methods=['POST'])
 def create():
-    username = request.json.get('username', None)
+    first_name = request.json.get('first_name', None)
+    surname = request.json.get('surname', None)
     password = request.json.get('password', None)
-
+    birthdate = request.json.get('birthdate', None)
+    email = request.json.get('email', None)
+    return data.create_user(first_name, surname, password, birthdate, email)
 
 
 # Standard login endpoint
 @application.route('/login', methods=['POST'])
 def login():
+    """
+    Log in user
+    """
     username = request.json.get('username', None)
     password = request.json.get('password', None)
     try_user = data.User.query.filter(data.User.username == username)
@@ -38,10 +56,47 @@ def login():
     return jsonify(ret), 200
 
 
+# Endpoint for revoking the current users access token
+@application.route('/logout', methods=['POST'])
+@jwt_required
+def logout():
+    """
+    Log out user by revoking access token
+    """
+    try:
+        _revoke_current_token()
+    except KeyError:
+        return jsonify({
+            'msg': 'Access token not found in the blacklist store'
+        }), 500
+    return jsonify({"msg": "Successfully logged out"}), 200
+
+
+# -- JWT-token functions --
+
+# Endpoint for revoking the current users refresh token
+@application.route('/logout2', methods=['POST'])
+@jwt_refresh_token_required
+def logout2():
+    """
+    Log out user by revoking refresh token
+    """
+    try:
+        _revoke_current_token()
+    except KeyError:
+        return jsonify({
+            'msg': 'Refresh token not found in the blacklist store'
+        }), 500
+    return jsonify({"msg": "Successfully logged out"}), 200
+
+
 # Standard refresh endpoint
 @application.route('/refresh', methods=['POST'])
 @jwt_refresh_token_required
 def refresh():
+    """
+    Refresh token
+    """
     current_user = get_jwt_identity()
     ret = {
         'access_token': create_access_token(identity=current_user)
@@ -55,32 +110,6 @@ def _revoke_current_token():
     current_token = get_raw_jwt()
     jti = current_token['jti']
     revoke_token(jti)
-
-
-# Endpoint for revoking the current users access token
-@application.route('/logout', methods=['POST'])
-@jwt_required
-def logout():
-    try:
-        _revoke_current_token()
-    except KeyError:
-        return jsonify({
-            'msg': 'Access token not found in the blacklist store'
-        }), 500
-    return jsonify({"msg": "Successfully logged out"}), 200
-
-
-# Endpoint for revoking the current users refresh token
-@application.route('/logout2', methods=['POST'])
-@jwt_refresh_token_required
-def logout2():
-    try:
-        _revoke_current_token()
-    except KeyError:
-        return jsonify({
-            'msg': 'Refresh token not found in the blacklist store'
-        }), 500
-    return jsonify({"msg": "Successfully logged out"}), 200
 
 
 # Endpoint for listing tokens that have the same identity as you
@@ -115,25 +144,14 @@ def change_jwt_revoke_state(jti):
         return jsonify({'msg': 'Token not found'}), 404
 
 
-# Endpoint for allowing users to un-revoke their own tokens.
-@application.route('/auth/tokens/unrevoke/<string:jti>', methods=['PUT'])
-@jwt_required
-def change_jwt_unrevoke_state(jti):
-    username = get_jwt_identity()
-    try:
-        token_data = get_stored_token(jti)
-        if token_data['token']['identity'] != username:
-            raise KeyError
-        unrevoke_token(jti)
-        return jsonify({"msg": "Token successfully unrevoked"}), 200
-    except KeyError:
-        return jsonify({'msg': 'Token not found'}), 404
+# -- Messages --
 
-
-# Messages
 @application.route('/send_message', methods=['POST'])
 @jwt_required
 def send_message():
+    """
+    Send a message
+    """
     receiver = request.json.get('receiver', None)
     message = request.json.get('message', None)
     username = get_jwt_identity()
@@ -144,30 +162,17 @@ def send_message():
 @application.route('/get_messages', methods=['GET'])
 @jwt_required
 def get_messages():
+    """
+    Get all messages by an user
+    """
     mailer = request.json.get('mailer', None)
     username = get_jwt_identity()
     user = data.User.query.filter(data.User.username == username)
     return user.get_messages(mailer)
 
 
-@application.route('/get_unread_from', methods=['GET'])
-@jwt_required
-def get_unread_from():
-    mailer = request.json.get('mailer', None)
-    username = get_jwt_identity()
-    user = data.User.query.filter(data.User.username == username)
-    return user.get_unread_from(mailer)
+# -- Friends --
 
-
-@application.route('/get_all_unread', methods=['GET'])
-@jwt_required
-def get_unread():
-    username = get_jwt_identity()
-    user = data.User.query.filter(data.User.username == username)
-    return user.get_all_unread()
-
-
-# Friends
 @application.route('/send_friend_request', methods=['POST'])
 @jwt_required
 def send_friend_request():
@@ -191,7 +196,7 @@ def accept_friend_request():
     requester = request.json.get('requester', None)
     username = get_jwt_identity()
     requested = data.User.query.filter(data.User.username == username)
-    return requested.accept_friend_request(requester)
+    return requested.send_friend_request(requester)
 
 
 @application.route('/deny_friend_request', methods=['POST'])
@@ -200,7 +205,7 @@ def deny_friend_request():
     requester = request.json.get('requester', None)
     username = get_jwt_identity()
     requested = data.User.query.filter(data.User.username == username)
-    return requested.deny_friend_request(requester)
+    return requested.remove_friend_request(requester)
 
 
 @application.route('/block_user', methods=['POST'])
@@ -218,11 +223,3 @@ def get_number_of_friends():
     username = get_jwt_identity()
     user = data.User.query.filter(data.User.username == username)
     return user.get_number_of_friends()
-
-
-@application.route('/get_temporary_friend', methods=['GET'])
-@jwt_required
-def get_temporary_friend():
-    username = get_jwt_identity()
-    user = data.User.query.filter(data.User.username == username)
-    return user.get_temporary_friend()
