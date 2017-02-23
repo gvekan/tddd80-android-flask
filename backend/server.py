@@ -17,7 +17,6 @@ jwt = JWTManager(application)
 @application.route('/create', methods=['POST'])
 def create():
     username = request.json.get('username', None)
-    print()
     password = request.json.get('password', None)
     email = request.json.get('email', None)
     first_name = request.json.get('first_name', None)
@@ -41,7 +40,7 @@ def login():
     """
     username = request.json.get('username', None)
     password = request.json.get('password', None)
-    try_user = data.User.query.filter(data.User.username == username)
+    try_user = data.User.query.filter(data.User.username == username).first()
     if not try_user or try_user.check_password(password):
         return jsonify({"msg": "Bad username or password"}), 401
 
