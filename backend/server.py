@@ -40,8 +40,8 @@ def login():
     """
     username = request.json.get('username', None)
     password = request.json.get('password', None)
-    try_user = data.User.query.filter(data.User.username == username).first()
-    if not try_user or try_user.check_password(password):
+    try_user = data.User.query.filter_by(username=username).first()
+    if not try_user or not try_user.check_password(password):
         return jsonify({"msg": "Bad username or password"}), 401
 
     ret = {
@@ -150,7 +150,7 @@ def send_message():
     receiver = request.json.get('receiver', None)
     message = request.json.get('message', None)
     username = get_jwt_identity()
-    mailer = data.User.query.filter(data.User.username == username)
+    mailer = data.User.query.filter_by(username=username)
     return mailer.send_message(receiver, message)
 
 
@@ -162,7 +162,7 @@ def get_messages():
     """
     mailer = request.json.get('mailer', None)
     username = get_jwt_identity()
-    user = data.User.query.filter(data.User.username == username)
+    user = data.User.query.filter_by(username=username)
     return user.get_messages(mailer)
 
 
@@ -173,7 +173,7 @@ def get_messages():
 def send_friend_request():
     requested = request.json.get('requested', None)
     username = get_jwt_identity()
-    requester = data.User.query.filter(data.User.username == username)
+    requester = data.User.query.filter_by(username=username)
     return requester.send_friend_request(requested)
 
 
@@ -181,7 +181,7 @@ def send_friend_request():
 @jwt_required
 def get_friend_requests():
     username = get_jwt_identity()
-    requested = data.User.query.filter(data.User.username == username)
+    requested = data.User.query.filter_by(username=username)
     return requested.get_friend_requests()
 
 
@@ -190,7 +190,7 @@ def get_friend_requests():
 def accept_friend_request():
     requester = request.json.get('requester', None)
     username = get_jwt_identity()
-    requested = data.User.query.filter(data.User.username == username)
+    requested = data.User.query.filter_by(username=username)
     return requested.send_friend_request(requester)
 
 
@@ -199,7 +199,7 @@ def accept_friend_request():
 def deny_friend_request():
     requester = request.json.get('requester', None)
     username = get_jwt_identity()
-    requested = data.User.query.filter(data.User.username == username)
+    requested = data.User.query.filter_by(username=username)
     return requested.remove_friend_request(requester)
 
 
@@ -208,7 +208,7 @@ def deny_friend_request():
 def block_user():
     user_to_block = request.json.get('user_to_block', None)
     username = get_jwt_identity()
-    user = data.User.query.filter(data.User.username == username)
+    user = data.User.query.filter_by(username=username)
     return user.block_user(user_to_block)
 
 
@@ -216,5 +216,5 @@ def block_user():
 @jwt_required
 def get_number_of_friends():
     username = get_jwt_identity()
-    user = data.User.query.filter(data.User.username == username)
+    user = data.User.query.filter_by(username=username)
     return user.get_number_of_friends()
