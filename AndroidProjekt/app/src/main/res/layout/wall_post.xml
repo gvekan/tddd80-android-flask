@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/nameView" />
+
+    <TextView
+        android:text="Post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/postView"
+        android:layout_below="@+id/nameView"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/likeBox" />
+
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentButton"
+        android:layout_alignBaseline="@+id/postView"
+        android:layout_alignBottom="@+id/postView"
+        android:layout_alignParentEnd="true" />
+
+    <CheckBox
+        android:text="Dislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dislikeBox"
+        android:layout_below="@+id/likeBox"
+        android:layout_toStartOf="@+id/commentButton" />
+
+    <CheckBox
+        android:text="Like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/likeBox"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/dislikeBox" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dislikeBox"
+        android:id="@+id/commentContainer"></FrameLayout>
+
+</RelativeLayout>
