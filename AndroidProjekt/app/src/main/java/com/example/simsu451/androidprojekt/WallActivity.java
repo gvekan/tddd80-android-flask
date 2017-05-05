@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,30 +23,42 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WallActivity extends AppCompatActivity {
+
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wall);
+
+        final Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            token = bundle.getString("token");
+        }
         ListView listView = (ListView) findViewById(R.id.listWall);
         //listView.setAdapter(new WallAdapter());
 
         Button profileButton = (Button) findViewById(R.id.profileButton);
+        if (profileButton == null) throw new AssertionError("profileButton is null");
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WallActivity.this, ProfileActivity.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
 
         Button postButton = (Button) findViewById(R.id.postButton);
+        if (postButton == null) throw new AssertionError("postButton is null");
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent
+                makePost();
             }
         });
 
@@ -53,7 +66,9 @@ public class WallActivity extends AppCompatActivity {
     }
     private void makePost() {
         String url = "../user";
-        String text = findViewById(R.id.editPost).toString();
+        EditText editPost = (EditText) findViewById(R.id.etPost);
+        if (editPost == null) throw new AssertionError("editPost is null");
+        String text = editPost.getText().toString();
 
         final JSONObject params = new JSONObject();
         try {
@@ -70,7 +85,7 @@ public class WallActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(WallActivity.this, "An error occured, try again.", Toast.LENGTH_LONG).show();
+                Toast.makeText(WallActivity.this, "An error occurred, try again.", Toast.LENGTH_SHORT).show();
             }
         }){
             @Override
@@ -82,8 +97,41 @@ public class WallActivity extends AppCompatActivity {
             public String getBodyContentType() {
                 return "application/json";
             }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
         };
 
+        requestQueue.add(stringRequest);
+    }
+
+    private void checkToken() {
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "url", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+
+                headers.put("Authorization", "Bearer" + token);
+                return headers;
+            }
+        };
         requestQueue.add(stringRequest);
     }
 }
