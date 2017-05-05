@@ -5,11 +5,11 @@ import simplekv.memory
 from flask import Flask
 
 
-application = Flask(__name__)
-application.config['SECRET-KEY'] = 'super-secret'
 
+application = Flask(__name__)
 application.config['SQLALCHEMY_DATABASE_URI'] = config.db_uri
-application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+application.secret_key = 'super-secret'
+
 # Enable and configure the JWT blacklist / token revoke. We are using
 # an in memory store for this example. In production, you should
 # use something persistent (such as redis, memcached, sqlalchemy).

@@ -24,6 +24,8 @@ class User(db.Model):
 
     posts = db.relationship("Post", backref="user", lazy='dynamic')
 
+    comments = db.relationship("Comment", backref="user", lazy='dynamic')
+
     def __init__(self, email, password, first_name, last_name, birth_date, city):
         self.email = email
         self.set_password(password)
@@ -52,7 +54,7 @@ def register_user(email, password, first_name, last_name, birth_date, city):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
-    posted_at = db.Column(db.DateTime)
+    # posted_at = db.Column(db.DateTime)
 
     comments = db.relationship("Comment", backref="post", lazy='dynamic')
 
@@ -60,49 +62,84 @@ class Post(db.Model):
 
     def __init__(self, text):
         self.text = text
-        self.posted_at = datetime.now()
+        # self.posted_at = datetime.now()
 
 
 def create_post(user, text):
     post = Post(text)
-    user.post.append(post)
+    user.posts.append(post)
     db.session.add(post)
     db.session.commit()
     return 'Post created'
 
 
 def get_latest_posts():
-    posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
+    return get_latest_posts_from(Post.query.count() + 1)
+
+
+def get_latest_posts_from(latest):
+    """
+    :param latest:
+    :return:the 10 latest posts from latest (latest not included)
+    """
+    # posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
+    if latest < 11:
+        oldest = 1
+    else:
+        oldest = latest - 10
+
+    posts = Post.query.filter(Post.id.in_(range(oldest,latest))).all()
     response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
     for i in range(len(posts)):
         post = posts[i]
-        response.append({'post': {'index': i, 'name': post.user.first_name+' '+post.user.last_name, 'text': post.text}})
+        response.append({'post': {'id': post.id, 'name': post.user.first_name+' '+post.user.last_name, 'text': post.text}})
     return response
 
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
-    posted_at = db.Column(db.DateTime)
+    index = db.Column(db.Integer, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
-    def __init__(self, text):
+    def __init__(self, text, index):
         self.text = text
-        self.posted_at = datetime.now()
+        self.index = index
 
 
 def create_comment(user, post, text):
-    comment = Comment(text)
-    user.comment.append(comment)
-    post.comment.append(comment)
+    comment = Comment(text, post.comments.count())
+    user.comments.append(comment)
+    post.comments.append(comment)
     db.session.add(comment)
     db.session.commit()
     return 'Comment created'
 
 
+def get_latest_comments(post):
+    return get_latest_comments_from(post, post.comments.count() + 1)
+
+
+def get_latest_comments_from(post, latest):
+    """
+    :param latest:
+    :return:the 10 latest posts from latest (latest not included)
+    """
+    # posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
+    if latest < 10:
+        oldest = 0
+    else:
+        oldest = latest - 10
+
+    comments = Comment.query.filter(post.comments.index.in_(range(oldest,latest))).all()
+    response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
+    for i in range(len(comments)):
+        comment = comments[i]
+        response.append({'comment': {'id': comment.id, 'index': comment.index, 'name': comment.user.first_name+' '+comment.user.last_name, 'text': comment.text}})
+    return response
 
     # friends = db.relationship('User',
     #                            secondary=friendships,
