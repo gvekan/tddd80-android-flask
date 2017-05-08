@@ -1,5 +1,4 @@
 from backend import data, config
-import requests
 import json
 
 import requests
@@ -27,3 +26,7 @@ post_id = posts[1]['post']['id']
 
 r6 = requests.post(root_uri + 'create-comment', json={ 'text': 'Hej! Här är min första kommentar', "post": post_id}, headers={'Authorization': 'Bearer ' + token})
 print(json.loads(r6.text)['msg'])
+
+r6 = requests.get(root_uri + 'get-latest-comments', json={ 'post': post_id}, headers={'Authorization': 'Bearer ' + token})
+comments = json.loads(r5.text)['posts']
+print(comments)

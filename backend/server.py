@@ -193,8 +193,8 @@ def get_latest_comments():
     """
     id = request.json.get('post', None)
     post = data.Post.query.get(id)
-    post_list = data.get_latest_comments(post)
-    return jsonify({"posts": post_list}), 200
+    comment_list = data.get_latest_comments(post)
+    return jsonify({"comments": comment_list}), 200
 
 
 @application.route('/get-latest-comments-from', methods=['get'])
@@ -206,8 +206,8 @@ def get_latest_comments_from():
     id = request.json.get('post', None)
     post = data.Post.query.get(id)
     index = request.json.get('comment', None)
-    post_list = data.get_latest_comments_from(post, index)
-    return jsonify({"posts": post_list}), 200
+    comment_list = data.get_latest_comments_from(post, index)
+    return jsonify({"comments": comment_list}), 200
 
 # -- Messages --
 

@@ -1,5 +1,4 @@
 import datetime
-
 from backend import config
 import simplekv.memory
 from flask import Flask
