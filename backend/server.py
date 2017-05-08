@@ -11,6 +11,8 @@ from flask_jwt_extended import JWTManager, jwt_required, \
 
 jwt = JWTManager(application)
 
+data.initialize_db()
+
 
 # -- OAuth2 --
 # Create user
