@@ -1,6 +1,4 @@
 from backend import application
-from datetime import datetime
-from sqlalchemy import desc
 
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
