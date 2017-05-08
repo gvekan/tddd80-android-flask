@@ -28,5 +28,5 @@ r6 = requests.post(root_uri + 'create-comment', json={ 'text': 'Hej! Här är mi
 print(json.loads(r6.text)['msg'])
 
 r6 = requests.get(root_uri + 'get-latest-comments', json={ 'post': post_id}, headers={'Authorization': 'Bearer ' + token})
-comments = json.loads(r5.text)['posts']
+comments = json.loads(r6.text)['comments']
 print(comments)

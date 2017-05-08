@@ -1,4 +1,4 @@
 from backend import application, config
 
 if __name__ == '__main__':
-    application.run(port=config.port)
+    application.run(host="0.0.0.0", port=8080)
