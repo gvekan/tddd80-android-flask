@@ -1,5 +1,6 @@
 from backend import data, config
 import json
+import random
 
 import requests
 
@@ -13,20 +14,29 @@ print(json.loads(r1.text)['msg'])
 r2 = requests.post(root_uri + 'login', json={ 'email': 'gusan092@student.liu.se', 'password': 'password'})
 token = json.loads(r2.text)['access_token']
 print("Token: " + token)
-
-r3 = requests.post(root_uri + 'create-post', json={ 'text': 'Hej! Här är mitt första inlägg'}, headers={'Authorization': 'Bearer ' + token})
-print(json.loads(r3.text)['msg'])
-r4 = requests.post(root_uri + 'create-post', json={ 'text': 'Hej! Här är mitt andra inlägg'}, headers={'Authorization': 'Bearer ' + token})
-print(json.loads(r4.text)['msg'])
+for i in range(1,16):
+    r3 = requests.post(root_uri + 'create-post', json={ 'text': 'Hej! Här är mitt '+str(i)+' inlägg'}, headers={'Authorization': 'Bearer ' + token})
+    print(json.loads(r3.text)['msg'])
 
 r5 = requests.get(root_uri + 'get-latest-posts', headers={'Authorization': 'Bearer ' + token})
-posts = json.loads(r5.text)['posts']
-print(posts)
-post_id = posts[1]['post']['id']
+posts1 = json.loads(r5.text)['posts']
+print(posts1)
 
-r6 = requests.post(root_uri + 'create-comment', json={ 'text': 'Hej! Här är min första kommentar', "post": post_id}, headers={'Authorization': 'Bearer ' + token})
-print(json.loads(r6.text)['msg'])
+r4 = requests.get(root_uri + 'get-latest-posts-from', json={'post': 6}, headers={'Authorization': 'Bearer ' + token})
+posts2 = json.loads(r4.text)['posts']
+print(posts2)
 
-r6 = requests.get(root_uri + 'get-latest-comments', json={ 'post': post_id}, headers={'Authorization': 'Bearer ' + token})
-comments = json.loads(r6.text)['comments']
-print(comments)
+for i in range(20):
+    if random.randrange(1) == 0:
+        post_id = posts1[random.randrange(10)]['post']['id']
+    else:
+        post_id = posts1[random.randrange(5)]['post']['id']
+
+
+    r6 = requests.post(root_uri + 'create-comment', json={ 'text': 'Hej! Här är min '+str(i)+' kommentar', "post": post_id}, headers={'Authorization': 'Bearer ' + token})
+    print(json.loads(r6.text)['msg'])
+
+for i in range(1,16):
+    r6 = requests.get(root_uri + 'get-latest-comments', json={ 'post': i}, headers={'Authorization': 'Bearer ' + token})
+    comments = json.loads(r6.text)['comments']
+    print(comments)
