@@ -26,17 +26,17 @@ r4 = requests.get(root_uri + 'get-latest-posts-from', json={'post': 6}, headers=
 posts2 = json.loads(r4.text)['posts']
 print(posts2)
 
-for i in range(20):
-    if random.randrange(1) == 0:
+for i in range(1,21):
+    if random.randrange(2) == 0:
         post_id = posts1[random.randrange(10)]['post']['id']
     else:
-        post_id = posts1[random.randrange(5)]['post']['id']
+        post_id = posts2[random.randrange(5)]['post']['id']
 
 
     r6 = requests.post(root_uri + 'create-comment', json={ 'text': 'Hej! Här är min '+str(i)+' kommentar', "post": post_id}, headers={'Authorization': 'Bearer ' + token})
     print(json.loads(r6.text)['msg'])
 
 for i in range(1,16):
-    r6 = requests.get(root_uri + 'get-latest-comments', json={ 'post': i}, headers={'Authorization': 'Bearer ' + token})
+    r6 = requests.get(root_uri + 'get-latest-comments', json={'post': i}, headers={'Authorization': 'Bearer ' + token})
     comments = json.loads(r6.text)['comments']
     print(comments)
