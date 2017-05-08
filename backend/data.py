@@ -134,7 +134,7 @@ def get_latest_comments_from(post, latest):
     else:
         oldest = latest - 10
 
-    comments = Comment.query.filter(post.comments.index.in_(range(oldest,latest))).all()
+    comments = Comment.query.filter(Comment.index.in_(range(oldest,latest)), Comment.post_id == post.id).all()
     response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
     for i in range(len(comments)):
         comment = comments[i]
