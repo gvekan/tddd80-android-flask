@@ -14,11 +14,11 @@ def initialize_db():
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
-    pw_hash = db.Column(db.String, nullable=False)
-    first_name = db.Column(db.String, nullable=False)
-    last_name = db.Column(db.String, nullable=False)
-    birth_date = db.Column(db.Integer, nullable=False)
-    city = db.Column(db.String, nullable=False)
+    pw_hash = db.Column(db.String, unique=False, nullable=False)
+    first_name = db.Column(db.String, unique=False, nullable=False)
+    last_name = db.Column(db.String, unique=False, nullable=False)
+    birth_date = db.Column(db.Integer, unique=False, nullable=False)
+    city = db.Column(db.String, unique=False, nullable=False)
 
     posts = db.relationship("Post", backref="user", lazy='dynamic')
 
@@ -51,7 +51,7 @@ def register_user(email, password, first_name, last_name, birth_date, city):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String, nullable=False)
+    text = db.Column(db.String, unique=False, nullable=False)
     # posted_at = db.Column(db.DateTime)
 
     comments = db.relationship("Comment", backref="post", lazy='dynamic')
@@ -96,8 +96,8 @@ def get_latest_posts_from(latest):
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String, nullable=False)
-    index = db.Column(db.Integer, nullable=False)
+    text = db.Column(db.String, unique=False, nullable=False)
+    index = db.Column(db.Integer, unique=False, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 

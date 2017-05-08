@@ -4,9 +4,10 @@ import random
 
 import requests
 
-data.initialize_db()
+# data.initialize_db()
 
-root_uri = 'http://localhost:' + str(config.port) + '/'
+# root_uri = 'http://localhost:' + str(config.port) + '/'
+root_uri = 'http://app-project-tddd80.app.se/'
 
 r1 = requests.post(root_uri + 'register', json={ 'email': 'gusan092@student.liu.se', 'password': 'password', 'first_name': 'Gustav', 'last_name': 'Andersson', 'birth_date': '1996-05-08', 'city': 'Linkoping'})
 print(json.loads(r1.text)['msg'])
