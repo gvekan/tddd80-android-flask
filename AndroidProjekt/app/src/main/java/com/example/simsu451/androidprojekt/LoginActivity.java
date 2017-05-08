@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login() {
-        String url = "../user";
+        String url = Constants.URL + "login";
         final EditText etEmail = (EditText) findViewById(R.id.etEmail);
         final EditText etPassword = (EditText) findViewById(R.id.etPassword);
 
@@ -63,6 +63,10 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
+        if (email.length() == 0 || password.length() == 0 || password.length() < Constants.MIN_PASSWORD_LENGTH) {
+            Toast.makeText(this, "Email or password length is invalid", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         final JSONObject params = new JSONObject();
         try {

@@ -22,22 +22,7 @@ import org.json.JSONObject;
 
 
 public class RegisterActivity extends AppCompatActivity {
-
-    String firstname;
-    String lastname;
-    String birthdate;
-    String city;
-    String email;
-    String password;
-    String controlPassword;
-
-    EditText etFirstname;
-    EditText etLastname;
-    EditText etBirthdate;
-    EditText etCity;
     EditText etEmail;
-    EditText etPassword;
-    EditText etControlPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,41 +33,41 @@ public class RegisterActivity extends AppCompatActivity {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFieldInput();
+
                 createUser();
             }
         });
     }
 
-    private void getFieldInput() {
-        etFirstname = (EditText) findViewById(R.id.etFirstname);
-        etLastname = (EditText) findViewById(R.id.etLastname);
-        etBirthdate = (EditText) findViewById(R.id.etBirthdate);
-        etCity = (EditText) findViewById(R.id.etCity);
+
+    private void createUser() {
+        String url = Constants.URL + "register";
+
+        EditText etFirstname = (EditText) findViewById(R.id.etFirstname);
+        EditText etLastname = (EditText) findViewById(R.id.etLastname);
+        EditText etCity = (EditText) findViewById(R.id.etCity);
         etEmail = (EditText) findViewById(R.id.etEmail);
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        etControlPassword = (EditText) findViewById(R.id.etControlPassword);
+        EditText etPassword = (EditText) findViewById(R.id.etPassword);
+        EditText etControlPassword = (EditText) findViewById(R.id.etControlPassword);
 
         if (etFirstname == null) throw new AssertionError("etFirstname is null");
         if (etLastname == null) throw new AssertionError("etLastname is null");
-        if (etBirthdate == null) throw new AssertionError("etBirthdate is null");
         if (etCity == null) throw new AssertionError("etCity is null");
         if (etEmail == null) throw new AssertionError("etEmail is null");
         if (etPassword == null) throw new AssertionError("etPassword is null");
         if (etControlPassword == null) throw new AssertionError("etControlPassword is null");
 
-        firstname = etFirstname.getText().toString();
-        lastname = etLastname.getText().toString();
-        birthdate = etBirthdate.getText().toString();
-        city = etCity.getText().toString();
-        email = etEmail.getText().toString();
-        password = etPassword.getText().toString();
-        controlPassword = etControlPassword.getText().toString();
+        String firstname = etFirstname.getText().toString();
+        String lastname = etLastname.getText().toString();
+        String city = etCity.getText().toString();
+        String email = etEmail.getText().toString();
+        String password = etPassword.getText().toString();
+        String controlPassword = etControlPassword.getText().toString();
 
-    }
-
-    private void createUser() {
-        String url = "... /register";
+        if (firstname.length() == 0 || lastname.length() == 0 || city.length() == 0 || email.length() == 0 || password.length() == 0 || controlPassword.length() == 0) {
+            Toast.makeText(this, "All fields must be filled in", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (!password.equals(controlPassword)) { //Kolla så email inte redan finns, födelsedatum är giltigt, bara bokstäver i namnen, lösenorden är bra
             Toast.makeText(this, "Not matching passwords", Toast.LENGTH_SHORT).show();
@@ -90,11 +75,14 @@ public class RegisterActivity extends AppCompatActivity {
             etControlPassword.setText("");
             return;
         }
+        if (password.length() < Constants.MIN_PASSWORD_LENGTH) {
+            Toast.makeText(this, "Password length too short", Toast.LENGTH_SHORT).show();
+            return;
+        }
         final JSONObject params = new JSONObject();
         try {
             params.put("firstname", firstname);
             params.put("lastname", lastname);
-            params.put("birthdate",birthdate);
             params.put("city", city);
             params.put("email", email);
             params.put("password", password);
@@ -127,6 +115,5 @@ public class RegisterActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(stringRequest);
-
     }
 }

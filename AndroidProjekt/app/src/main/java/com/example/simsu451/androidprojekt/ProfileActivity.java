@@ -64,8 +64,9 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void getProfileInfo() {
+        String url = Constants.URL + "profile-info";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, ".../profile", new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 // Uppdatera adaptern

@@ -1,6 +1,9 @@
 package com.example.simsu451.androidprojekt;
 
+import android.app.ListActivity;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WallActivity extends AppCompatActivity {
-
     private String token;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +42,6 @@ public class WallActivity extends AppCompatActivity {
         if (bundle != null) {
             token = bundle.getString("token");
         }
-        ListView listView = (ListView) findViewById(R.id.listWall);
-        //listView.setAdapter(new WallAdapter());
 
         Button profileButton = (Button) findViewById(R.id.profileButton);
         if (profileButton == null) throw new AssertionError("profileButton is null");
@@ -61,11 +62,16 @@ public class WallActivity extends AppCompatActivity {
                 makePost();
             }
         });
-
+        ListView listView = (ListView) findViewById(R.id.lwWall);
+        WallAdapter wallAdapter = new WallAdapter(this);
+        if (listView == null) throw new AssertionError("listView is null");
+        listView.setAdapter(wallAdapter);
 
     }
+
+
     private void makePost() {
-        String url = "../user";
+        String url = Constants.URL + "create-post";
         EditText editPost = (EditText) findViewById(R.id.etPost);
         if (editPost == null) throw new AssertionError("editPost is null");
         String text = editPost.getText().toString();

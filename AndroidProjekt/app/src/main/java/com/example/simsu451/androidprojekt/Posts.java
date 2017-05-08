@@ -15,6 +15,9 @@ public class Posts {
     }
 
     public void setPosts(List<Post> posts) {
+        //sort
         this.posts = posts;
     }
+
+
 }
