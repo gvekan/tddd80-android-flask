@@ -101,20 +101,22 @@ def create_post(user, text):
     return 'Post created'
 
 
-def get_latest_posts():
-    return get_latest_posts_from(Post.query.count() + 1)
+def get_latest_posts(oldest):
+    latest = Post.query.count() + 1
+    if oldest == -1:
+        if latest < 11:
+            oldest = 1
+        else:
+            oldest = latest - 10
+    return get_latest_posts_from(latest, oldest)
 
 
-def get_latest_posts_from(latest):
+def get_latest_posts_from(latest, oldest):
     """
     :param latest:
     :return:the 10 latest posts from latest (latest not included)
     """
     # posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
-    if latest < 11:
-        oldest = 1
-    else:
-        oldest = latest - 10
 
     posts = Post.query.filter(Post.id.in_(range(oldest,latest))).all()
     response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python

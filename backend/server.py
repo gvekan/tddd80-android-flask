@@ -156,7 +156,8 @@ def get_latest_posts():
     """
     Get the ten latest posts on the wall
     """
-    post_list = data.get_latest_posts()
+    latest = request.json.get('post', None)
+    post_list = data.get_latest_posts(latest)
     return jsonify({"posts": post_list}), 200
 
 
@@ -166,8 +167,12 @@ def get_latest_posts_from():
     """
     Get the ten latest posts on the wall
     """
-    id = request.json.get('post', None)
-    post_list = data.get_latest_posts_from(id)
+    latest = request.json.get('post', None)
+    if latest < 11:
+        oldest = 1
+    else:
+        oldest = latest - 10
+    post_list = data.get_latest_posts_from(latest, oldest)
     return jsonify({"posts": post_list}), 200
 
 
