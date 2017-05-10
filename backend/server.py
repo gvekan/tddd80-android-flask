@@ -22,11 +22,10 @@ def register():
     password = request.json.get('password', None)
     first_name = request.json.get('first_name', None)
     last_name = request.json.get('last_name', None)
-    birth_date = request.json.get('birth_date', None)
     city = request.json.get('city', None)
     if data.User.query.filter_by(email=email).count():
         return jsonify({"msg": "Email taken"}), 401
-    data.register_user(email,password, first_name, last_name, birth_date, city)
+    data.register_user(email,password, first_name, last_name, city)
     return jsonify({"msg": "User created"}), 200
 
 

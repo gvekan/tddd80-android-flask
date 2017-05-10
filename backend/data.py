@@ -10,26 +10,23 @@ def initialize_db():
     db.drop_all()
     db.create_all()
 
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
     pw_hash = db.Column(db.String, unique=False, nullable=False)
     first_name = db.Column(db.String, unique=False, nullable=False)
     last_name = db.Column(db.String, unique=False, nullable=False)
-    birth_date = db.Column(db.Integer, unique=False, nullable=False)
     city = db.Column(db.String, unique=False, nullable=False)
 
     posts = db.relationship("Post", backref="user", lazy='dynamic')
 
     comments = db.relationship("Comment", backref="user", lazy='dynamic')
 
-    def __init__(self, email, password, first_name, last_name, birth_date, city):
+    def __init__(self, email, password, first_name, last_name, city):
         self.email = email
         self.set_password(password)
         self.first_name = first_name
         self.last_name = last_name
-        self.birth_date = birth_date
         self.city = city
 
     def set_password(self, password):
@@ -39,11 +36,11 @@ class User(db.Model):
         return check_password_hash(self.pw_hash, password)
 
 
-def register_user(email, password, first_name, last_name, birth_date, city):
+def register_user(email, password, first_name, last_name, city):
     """
     Creates a user
     """
-    user = User(email, password, first_name, last_name, birth_date, city)
+    user = User(email, password, first_name, last_name, city)
     db.session.add(user)
     db.session.commit()
     return 'User created'
