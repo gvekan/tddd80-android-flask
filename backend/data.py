@@ -26,7 +26,7 @@ class User(db.Model):
 
     posts = db.relationship("Post", backref="user", lazy='dynamic')
     comments = db.relationship("Comment", backref="user", lazy='dynamic')
-    chats = db.relationship("Chat", backref="user", lazy='dynamic')
+    messages = db.relationship("Message", backref="user", lazy="dynamic")
 
     def __init__(self, email, password, first_name, last_name, city):
         self.email = email
@@ -56,16 +56,27 @@ class Chat(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    chat_memb = db.relationship('user', secondary=chat_members, backref=db.backref('chats', lazy='dynamic'))
+    #chat_memb = db.relationship('user', secondary=chat_members, backref=db.backref('chats', lazy='dynamic'))
 
     messages = db.relationship('Message', backref='Chat', lazy='dynamic')
 
+    def __init__(self, receiver):
+        self.receiver_id = receiver
+
+
 def start_chat(user, friend):
-    chat = Chat()
+    chat = Chat(user, friend)
     db.session.add(chat)
     db.session.commit()
     return 'Chat started'
 
+def get_sent_messages(user, receiver):
+    messages = Message.query.filter_by(user=user_id, receiver=receiver_id).all()
+    return messages
+
+def get_received_messages(user, receiver):
+    messages = Message.query.filter_by(user=receiver_id, receiver=user_id).all()
+    return messages
 
 
 class Message(db.Model):
@@ -74,9 +85,9 @@ class Message(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-
-    def __init__(self, text):
+    def __init__(self, text, receiver):
         self.text = text
+        self.receiver_id = receiver
 
 
 class Post(db.Model):

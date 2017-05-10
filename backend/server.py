@@ -216,13 +216,18 @@ def get_latest_comments_from():
     return jsonify({"comments": comment_list}), 200
 
 
-@application.route('/start_chat', methods=['POST'])
+@application.route('/open_chat', methods=['POST'])
 @jwt_refresh_token_required
-def start_chat():
+def open_chat():
     email = get_jwt_identity()
-    friend = request.json.get('friend', None)
+    friend_email = request.json.get('friend', None)
+
     user = data.User.query.filter_by(email=email).first()
-    data.start_chat(user, friend)
+    friend = data.User.query.filter_by(email=friend_email).first()
+
+    sent_messages = data.get_sent_messages(user, friend)
+    received_messages = data.get_received_messages(user, friend)
+    return jsonify({"sent_messages": sent_messages, "received_messages": received_messages}), 200
 
 
 
