@@ -210,6 +210,17 @@ def get_latest_comments_from():
     comment_list = data.get_latest_comments_from(post, index)
     return jsonify({"comments": comment_list}), 200
 
+
+@application.route('/start_chat', methods=['POST'])
+@jwt_refresh_token_required
+def start_chat():
+    email = get_jwt_identity()
+    friend = request.json.get('friend', None)
+    user = data.User.query.filter_by(email=email).first()
+    data.start_chat(user, friend)
+
+
+
 # -- Messages --
 
 # @application.route('/send_message', methods=['POST'])

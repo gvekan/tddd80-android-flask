@@ -10,17 +10,23 @@ def initialize_db():
     db.drop_all()
     db.create_all()
 
+
+chat_members = db.Table('chat_members',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('chat_id', db.Integer, db.ForeignKey('chat.id'))
+)
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
-    pw_hash = db.Column(db.String, unique=False, nullable=False)
-    first_name = db.Column(db.String, unique=False, nullable=False)
-    last_name = db.Column(db.String, unique=False, nullable=False)
-    city = db.Column(db.String, unique=False, nullable=False)
+    pw_hash = db.Column(db.String, nullable=False)
+    first_name = db.Column(db.String, nullable=False)
+    last_name = db.Column(db.String, nullable=False)
+    city = db.Column(db.String, nullable=False)
 
     posts = db.relationship("Post", backref="user", lazy='dynamic')
-
     comments = db.relationship("Comment", backref="user", lazy='dynamic')
+    chats = db.relationship("Chat", backref="user", lazy='dynamic')
 
     def __init__(self, email, password, first_name, last_name, city):
         self.email = email
@@ -45,10 +51,37 @@ def register_user(email, password, first_name, last_name, city):
     db.session.commit()
     return 'User created'
 
+class Chat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    chat_memb = db.relationship('user', secondary=chat_members, backref=db.backref('chats', lazy='dynamic'))
+
+    messages = db.relationship('Message', backref='Chat', lazy='dynamic')
+
+def start_chat(user, friend):
+    chat = Chat()
+    db.session.add(chat)
+    db.session.commit()
+    return 'Chat started'
+
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+    def __init__(self, text):
+        self.text = text
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String, unique=False, nullable=False)
+    text = db.Column(db.String,  nullable=False)
     # posted_at = db.Column(db.DateTime)
 
     comments = db.relationship("Comment", backref="post", lazy='dynamic')
