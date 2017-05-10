@@ -1,4 +1,4 @@
-package com.example.simsu451.androidprojekt;
+package com.example.simsu451.androidprojekt.chat;
 
 /**
  * Created by simsu451 on 10/05/17.

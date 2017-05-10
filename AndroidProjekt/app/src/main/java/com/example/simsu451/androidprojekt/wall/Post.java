@@ -1,4 +1,4 @@
-package com.example.simsu451.androidprojekt;
+package com.example.simsu451.androidprojekt.wall;
 
 import java.util.List;
 
@@ -7,11 +7,19 @@ import java.util.List;
  */
 
 public class Post {
+    private int id;
     private String name;
     private String text;
     private int likes;
     private int dislikes;
-    private List<Comment> comments;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -43,13 +51,5 @@ public class Post {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 }

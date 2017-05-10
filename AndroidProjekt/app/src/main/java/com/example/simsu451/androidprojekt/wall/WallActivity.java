@@ -1,13 +1,9 @@
-package com.example.simsu451.androidprojekt;
+package com.example.simsu451.androidprojekt.wall;
 
-import android.app.ListActivity;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,28 +16,24 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
+import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.ProfileActivity;
+import com.example.simsu451.androidprojekt.R;
+import com.example.simsu451.androidprojekt.Token;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class WallActivity extends AppCompatActivity {
-    private String token;
-
+    private WallAdapter wallAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wall);
-
-        final Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            token = bundle.getString("token");
-        }
 
         Button profileButton = (Button) findViewById(R.id.profileButton);
         if (profileButton == null) throw new AssertionError("profileButton is null");
@@ -49,7 +41,6 @@ public class WallActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(WallActivity.this, ProfileActivity.class);
-                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -62,8 +53,10 @@ public class WallActivity extends AppCompatActivity {
                 makePost();
             }
         });
+
         ListView listView = (ListView) findViewById(R.id.lwWall);
         WallAdapter wallAdapter = new WallAdapter(this);
+        this.wallAdapter = wallAdapter;
         if (listView == null) throw new AssertionError("listView is null");
         listView.setAdapter(wallAdapter);
 
@@ -75,6 +68,10 @@ public class WallActivity extends AppCompatActivity {
         EditText editPost = (EditText) findViewById(R.id.etPost);
         if (editPost == null) throw new AssertionError("editPost is null");
         String text = editPost.getText().toString();
+        if (text.isEmpty()) {
+            Toast.makeText(this, "You have to write something", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         final JSONObject params = new JSONObject();
         try {
@@ -86,7 +83,7 @@ public class WallActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                // Uppdatera adaptern
+                wallAdapter.getLatestPosts();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -107,7 +104,7 @@ public class WallActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };
@@ -134,7 +131,7 @@ public class WallActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
 
-                headers.put("Authorization", "Bearer" + token);
+                headers.put("Authorization", "Bearer" + Token.getInstance().getToken());
                 return headers;
             }
         };
