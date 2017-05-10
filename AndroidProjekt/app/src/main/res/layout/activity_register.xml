@@ -12,28 +12,21 @@
     android:orientation="vertical">
 
     <EditText
-        android:hint="Firstname"
+        android:hint="First name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/etFirstname" />
+        android:id="@+id/etFirstName" />
 
     <EditText
-        android:hint="Lastname"
+        android:hint="Last name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/etLastname" />
+        android:id="@+id/etLastName" />
 
-    <EditText
-        android:hint="Date of birth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:id="@+id/etBirthdate" />
 
     <EditText
         android:hint="City"

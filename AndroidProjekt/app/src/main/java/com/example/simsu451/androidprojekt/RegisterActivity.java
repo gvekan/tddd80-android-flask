@@ -3,7 +3,6 @@ package com.example.simsu451.androidprojekt;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,28 +42,28 @@ public class RegisterActivity extends AppCompatActivity {
     private void createUser() {
         String url = Constants.URL + "register";
 
-        EditText etFirstname = (EditText) findViewById(R.id.etFirstname);
-        EditText etLastname = (EditText) findViewById(R.id.etLastname);
+        EditText etFirstName = (EditText) findViewById(R.id.etFirstName);
+        EditText etLastName = (EditText) findViewById(R.id.etLastName);
         EditText etCity = (EditText) findViewById(R.id.etCity);
         etEmail = (EditText) findViewById(R.id.etEmail);
         EditText etPassword = (EditText) findViewById(R.id.etPassword);
         EditText etControlPassword = (EditText) findViewById(R.id.etControlPassword);
 
-        if (etFirstname == null) throw new AssertionError("etFirstname is null");
-        if (etLastname == null) throw new AssertionError("etLastname is null");
+        if (etFirstName == null) throw new AssertionError("etFirstName is null");
+        if (etLastName == null) throw new AssertionError("etLastName is null");
         if (etCity == null) throw new AssertionError("etCity is null");
         if (etEmail == null) throw new AssertionError("etEmail is null");
         if (etPassword == null) throw new AssertionError("etPassword is null");
         if (etControlPassword == null) throw new AssertionError("etControlPassword is null");
 
-        String firstname = etFirstname.getText().toString();
-        String lastname = etLastname.getText().toString();
+        String first_name = etFirstName.getText().toString();
+        String last_name = etLastName.getText().toString();
         String city = etCity.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
         String controlPassword = etControlPassword.getText().toString();
 
-        if (firstname.length() == 0 || lastname.length() == 0 || city.length() == 0 || email.length() == 0 || password.length() == 0 || controlPassword.length() == 0) {
+        if (first_name.length() == 0 || last_name.length() == 0 || city.length() == 0 || email.length() == 0 || password.length() == 0 || controlPassword.length() == 0) {
             Toast.makeText(this, "All fields must be filled in", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -81,8 +80,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
         final JSONObject params = new JSONObject();
         try {
-            params.put("firstname", firstname);
-            params.put("lastname", lastname);
+            params.put("first_name", first_name);
+            params.put("last_name", last_name);
             params.put("city", city);
             params.put("email", email);
             params.put("password", password);
