@@ -71,7 +71,7 @@ class Message(db.Model):
 
 
 def send_message(user, receiver, text):
-    chat = Chat.query.join(User.chats).filter(User.id == user.id, User.id == receiver.id).first()
+    chat = Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == receiver.id)).first()
     if not chat:
         chat = Chat()
         chat.members.append(user)
@@ -97,8 +97,7 @@ def get_chats(user):
 
 
 def get_messages(user, receiver):
-    #chat = Chat.query.filter(Chat.members.contains(user.id), Chat.members.contains(receiver.id)).first()
-    chat = Chat.query.join(Chat.members).filter(User.id == user.id, User.id == receiver.id).first()
+    chat = Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == receiver.id)).first()
     messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
     response = []
     for message in messages:
@@ -129,7 +128,7 @@ def create_post(user, text):
 
 
 def get_latest_posts(oldest):
-    oldest + 1;
+    oldest = oldest + 1
     if oldest == 0:
         latest = Post.query.count() + 1
         if latest < 11:
