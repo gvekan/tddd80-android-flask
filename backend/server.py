@@ -216,18 +216,37 @@ def get_latest_comments_from():
     return jsonify({"comments": comment_list}), 200
 
 
-@application.route('/open_chat', methods=['POST'])
-@jwt_refresh_token_required
-def open_chat():
+@application.route('/send_message', methods=['POST'])
+@jwt_required
+def send_message():
+    receiver_email = request.json.get('receiver', None)
+    message = request.json.get('message', None)
     email = get_jwt_identity()
-    friend_email = request.json.get('friend', None)
-
     user = data.User.query.filter_by(email=email).first()
-    friend = data.User.query.filter_by(email=friend_email).first()
+    receiver = data.User.query.filter_by(email=receiver_email).first()
+    data.send_message(user, receiver, message)
+    return jsonify({"msg": "Message successfully sent"}), 200
 
-    sent_messages = data.get_sent_messages(user, friend)
-    received_messages = data.get_received_messages(user, friend)
-    return jsonify({"sent_messages": sent_messages, "received_messages": received_messages}), 200
+
+@application.route('/get_messages', methods=['GET'])
+@jwt_required
+def get_messages():
+    email = get_jwt_identity()
+    receiver_email = request.json.get('receiver', None)
+    user = data.User.query.filter_by(email=email).first()
+    receiver = data.User.query.filter_by(email=receiver_email).first()
+
+    messages = data.get_messages(user, receiver)
+    return jsonify({"messages": messages}), 200
+
+
+@application.route('/get_chats', methods=['GET'])
+@jwt_required
+def get_chats():
+    email = get_jwt_identity()
+    user = data.User.query.filter_by(email=email).first()
+    chats = data.get_chats(user)
+    return jsonify({'chats': chats}), 200
 
 
 
