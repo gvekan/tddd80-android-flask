@@ -1,10 +1,14 @@
 package com.example.simsu451.androidprojekt.wall;
 
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -32,11 +36,48 @@ import java.util.List;
 
 public class WallAdapter extends ArrayAdapter<Post> {
     private Posts posts = new Posts();
+    private boolean flag_loading;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private ListView listView;
 
-    public WallAdapter(Context context) {
+    public WallAdapter(Context context, ListView listView, SwipeRefreshLayout swipeRefreshLayout) {
         super(context, R.layout.wall_post);
         posts.setPosts(new ArrayList<Post>());
+        flag_loading = true;
+        this.swipeRefreshLayout = swipeRefreshLayout;
+        this.listView = listView;
         getLatestPosts();
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                Log.i("WallAdapter", "onScroll called from ListView");
+
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
+                {
+                    if(!flag_loading) getLatestPostsFromOldest();
+                }
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("WallAdapter", "onRefresh called from SwipeRefreshLayout");
+
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        if (!flag_loading) getLatestPosts();
+                    }
+                }
+        );
+
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -59,6 +100,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
     }
 
     public void getLatestPosts() {
+        flag_loading = true;
         String url = Constants.URL + "get-latest-posts";
         final JSONObject params = new JSONObject();
         try {
@@ -73,13 +115,25 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         Posts posts = gson.fromJson(response, Posts.class);
-                        WallAdapter.this.posts.addPosts(posts.getPosts());
-                        WallAdapter.this.clear();
-                        WallAdapter.this.addAll(WallAdapter.this.posts.getPosts());
+                        List<Post> postList = posts.getPosts();
+                        int size = postList.size();
+                        if (!postList.isEmpty()) {
+                            for (int i = size-1; i >= 0; i--) {
+                                Post post = postList.get(i);
+                                WallAdapter.this.insert(post, 0);
+                            }
+                            WallAdapter.this.posts.addPosts(postList);
+                        }
+                        WallAdapter.this.notifyDataSetChanged();
+                        if (!postList.isEmpty()) retainPosition(listView.getFirstVisiblePosition() + size);
+                        flag_loading = false;
+                        swipeRefreshLayout.setRefreshing(false);
                     }},
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        flag_loading = false;
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }
         );
@@ -87,6 +141,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
     }
 
     public void getLatestPostsFromOldest() {
+        flag_loading = true;
         final JSONObject params = new JSONObject();
         try {
             params.put("post", posts.getOldest());
@@ -104,10 +159,13 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         Posts posts = gson.fromJson(response, Posts.class);
                         WallAdapter.this.posts.addPosts(posts.getPosts());
                         WallAdapter.this.addAll(posts.getPosts());
+                        flag_loading = false;
+                        WallAdapter.this.notifyDataSetChanged();
                     }},
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        flag_loading = false;
                     }
                 }
         ){
@@ -124,5 +182,9 @@ public class WallAdapter extends ArrayAdapter<Post> {
         requestQueue.add(stringRequest);
     }
 
-
+    private void retainPosition(final int position) {
+        View v = listView.getChildAt(listView.getHeaderViewsCount());
+        int top = (v == null) ? 0 : v.getTop();
+        listView.setSelectionFromTop(position, top);
+    }
 }
