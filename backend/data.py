@@ -129,12 +129,15 @@ def create_post(user, text):
 
 
 def get_latest_posts(oldest):
-    latest = Post.query.count() + 1
-    if oldest == -1:
+    oldest + 1;
+    if oldest == 0:
+        latest = Post.query.count() + 1
         if latest < 11:
             oldest = 1
         else:
             oldest = latest - 10
+    else:
+        latest = oldest + 10
     return get_latest_posts_from(latest, oldest)
 
 
