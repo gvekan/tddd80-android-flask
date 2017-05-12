@@ -18,6 +18,7 @@ import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.Friend;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,15 +28,18 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
+    String jsonFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        ListView listView = (ListView) findViewById(R.id.lwChat);
-        final Bundle bundle = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();
+        jsonFriend = extras.getString("friend"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+        Friend friend = new Gson().fromJson(jsonFriend, Friend.class);
 
+        ListView listView = (ListView) findViewById(R.id.lwChat);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         if (sendButton == null) throw new AssertionError("sendButton is null");

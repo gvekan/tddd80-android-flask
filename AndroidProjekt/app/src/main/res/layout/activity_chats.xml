@@ -20,7 +20,7 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/lwChat" />
+            android:id="@+id/lwChats" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

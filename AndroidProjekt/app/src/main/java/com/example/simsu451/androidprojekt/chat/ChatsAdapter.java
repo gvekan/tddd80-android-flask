@@ -34,7 +34,7 @@ public class ChatsAdapter extends ArrayAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Bundle bundle = new Bundle();
-        bundle.putString("friend", friend);
+        //bundle.putString("friend", friend);
 
         Intent intent = new Intent(getContext(), ChatActivity.class);
         getContext().startActivity(intent);
