@@ -20,9 +20,6 @@ friendships = db.Table('friendships',
                        db.Column('Requester', db.Integer, db.ForeignKey('user.id')),
                        db.Column('Requested', db.Integer, db.ForeignKey('user.id')))
 
-blocked_users = db.Table('blocked',
-                         db.Column('User', db.Integer, db.ForeignKey('user.id')),
-                         db.Column('Blocked', db.Integer, db.ForeignKey('user.id')))
 
 
 
@@ -37,6 +34,15 @@ class User(db.Model):
     posts = db.relationship("Post", backref="user", lazy='dynamic')
     comments = db.relationship("Comment", backref="user", lazy='dynamic')
     messages = db.relationship("Message", backref="user", lazy="dynamic")
+
+    friends = db.relationship('User',
+                               secondary=friendships,
+                                primaryjoin=(friendships.c.Requester == id),
+                               secondaryjoin=(friendships.c.Requested == id),
+                               backref=db.backref('friendships', lazy='dynamic'),
+                               lazy='dynamic')
+
+
 
     def __init__(self, email, password, first_name, last_name, city):
         self.email = email
@@ -71,7 +77,7 @@ class User(db.Model):
         messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
         response = []
         for message in messages:
-            response.append({'message': message.text, 'id': message.sent_by})
+            response.append({'message': message.text, 'user_id': message.sent_by})
         return response
 
     def get_chats(self):
@@ -81,7 +87,7 @@ class User(db.Model):
             friends = User.query.join(Chat.members).filter(Chat.id == chat.id).all()
             for friend in friends:
                 if friend.id != self.id:
-                    response.append({'chat': {'id': friend.id, 'name': friend.first_name + ' ' + friend.last_name}})
+                    response.append({'chat': {'friend_id': friend.id, 'name': friend.first_name + ' ' + friend.last_name}})
         return response
 
     def send_friend_request(self, other):
@@ -113,6 +119,14 @@ class User(db.Model):
             other.friends.remove(self)
         self.friends.remove(other)
         return ''
+
+    def get_friend_requests(self):
+        requests = User.friends.filter(friendships.c.Requested == self.id).all()
+        response = []
+        for requester in requests:
+            response.append({'name': requester.first_name + ' ' + requester.last_name})
+        return response
+
 
     def get_number_of_requests(self):
         """
@@ -292,19 +306,7 @@ def get_latest_comments_from(post, latest):
                                      'text': comment.text}})
     return response
 
-    # # friends = db.relationship('User',
-    # #                            secondary=friendships,
-    # #                            primaryjoin=(friendships.c.Requester == id),
-    #                            secondaryjoin=(friendships.c.Requested == id),
-    #                            backref=db.backref('friendships', lazy='dynamic'),
-    #                            lazy='dynamic')
-    #
-    # blocked = db.relationship('User',
-    #                           secondary=blocked_users,
-    #                           primaryjoin=(blocked_users.c.User == id),
-    #                           secondaryjoin=(blocked_users.c.Blocked == id),
-    #                           backref=db.backref('blocked_users', lazy='dynamic'),
-    #                           lazy='dynamic')
+
 
 
 

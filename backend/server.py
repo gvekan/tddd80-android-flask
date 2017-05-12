@@ -261,29 +261,32 @@ def get_chats():
 @application.route('/send_friend_request', methods=['POST'])
 @jwt_required
 def send_friend_request():
-    friend_email = request.json.get('friend', None)
+    receiver_email = request.json.get('receiver', None)
     email = get_jwt_identity()
     user = data.get_user(email)
-    friend = data.get_user(friend_email)
-    return user.send_friend_request(user, friend)
+    receiver = data.get_user(receiver_email)
+    user.send_friend_request(receiver)
+    return jsonify({'msg': 'Friend request successfully sent'}), 200
 
 
 @application.route('/get_friend_requests', methods=['GET'])
 @jwt_required
 def get_friend_requests():
     email = get_jwt_identity()
-    requested = data.User.query.filter_by(email=email)
-    return requested.get_friend_requests()
+    user = data.get_user(email)
+    friend_requests = user.get_friend_requests()
+    return jsonify({'friend_requests': friend_requests}), 200
 
 
 @application.route('/accept_friend_request', methods=['POST'])
 @jwt_required
 def accept_friend_request():
-    requester = request.json.get('requester', None)
+    requester_email = request.json.get('requester', None)
     email = get_jwt_identity()
-    requested = data.User.query.filter_by(email=email)
-    return requested.send_friend_request(requester)
-
+    user = data.get_user(email)
+    requester = data.get_user(requester_email)
+    user.send_friend_request(requester)
+    return jsonify({'msg': 'You are now friends with ' + requester.first_name + ' ' + requester.last_name}), 200
 
 @application.route('/deny_friend_request', methods=['POST'])
 @jwt_required
