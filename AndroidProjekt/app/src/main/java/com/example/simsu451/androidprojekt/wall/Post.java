@@ -1,7 +1,5 @@
 package com.example.simsu451.androidprojekt.wall;
 
-import java.util.List;
-
 /**
  * Created by simsu451 on 28/04/17.
  */
@@ -11,7 +9,8 @@ public class Post {
     private String name;
     private String text;
     private int likes;
-    private int dislikes;
+    private boolean liking;
+    private int comments;
 
     public int getId() {
         return id;
@@ -45,11 +44,19 @@ public class Post {
         this.likes = likes;
     }
 
-    public int getDislikes() {
-        return dislikes;
+    public boolean isLiking() {
+        return liking;
     }
 
-    public void setDislikes(int dislikes) {
-        this.dislikes = dislikes;
+    public void setLiking(boolean liking) {
+        this.liking = liking;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public void setComments(int comments) {
+        this.comments = comments;
     }
 }
