@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -18,10 +19,13 @@ import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.Friend;
 import com.example.simsu451.androidprojekt.Friends;
 import com.example.simsu451.androidprojekt.R;
+import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatsActivity extends AppCompatActivity {
     private Friends friends = new Friends();
@@ -63,8 +67,14 @@ public class ChatsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }
-        );
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }
+        };
         requestQueue.add(stringRequest);
     }
 }

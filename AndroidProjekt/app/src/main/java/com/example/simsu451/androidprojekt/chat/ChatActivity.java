@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -28,7 +29,6 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
-    String jsonFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +36,16 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Bundle extras = getIntent().getExtras();
-        jsonFriend = extras.getString("friend"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+        String jsonFriend = extras.getString("friend"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
         Friend friend = new Gson().fromJson(jsonFriend, Friend.class);
+        TextView tvName = (TextView) findViewById(R.id.tvName);
+        tvName.setText(friend.getName());
 
         ListView listView = (ListView) findViewById(R.id.lwChat);
+        if (listView == null) throw new AssertionError("listView is null");
+        ChatAdapter chatAdapter = new ChatAdapter(this, listView);
+        this.chatAdapter = chatAdapter;
+        listView.setAdapter(chatAdapter);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         if (sendButton == null) throw new AssertionError("sendButton is null");
