@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="What's on your mind?"
-        android:ems="10"
+        android:ems="13"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:id="@+id/etPost" />

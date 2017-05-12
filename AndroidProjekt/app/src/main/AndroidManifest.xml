@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.simsu451.androidprojekt">
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -19,7 +20,9 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".wall.WallActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".chat.ChatActivity"></activity>
+        <activity android:name=".chat.ChatActivity" />
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".chat.ChatsActivity"></activity>
     </application>
 
 </manifest>

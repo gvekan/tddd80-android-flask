@@ -40,7 +40,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
     private boolean flag_loading;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
-    private TextView tvLikes;
 
     public WallAdapter(Context context, ListView listView, SwipeRefreshLayout swipeRefreshLayout) {
         super(context, R.layout.wall_post);

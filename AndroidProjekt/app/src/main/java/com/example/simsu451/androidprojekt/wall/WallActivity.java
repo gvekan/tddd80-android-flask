@@ -68,9 +68,9 @@ public class WallActivity extends AppCompatActivity {
 
     private void makePost() {
         String url = Constants.URL + "create-post";
-        EditText editPost = (EditText) findViewById(R.id.etPost);
-        if (editPost == null) throw new AssertionError("editPost is null");
-        String text = editPost.getText().toString();
+        EditText etPost = (EditText) findViewById(R.id.etPost);
+        if (etPost == null) throw new AssertionError("etPost is null");
+        String text = etPost.getText().toString();
         if (text.isEmpty()) {
             Toast.makeText(this, "You have to write something", Toast.LENGTH_SHORT).show();
             return;
