@@ -17,8 +17,12 @@ chat_members = db.Table('chat_members',
                         db.Column('chat_id', db.Integer, db.ForeignKey('chat.id')))
 
 friendships = db.Table('friendships',
-                       db.Column('Requester', db.Integer, db.ForeignKey('user.id')),
-                       db.Column('Requested', db.Integer, db.ForeignKey('user.id')))
+                       db.Column('requester', db.Integer, db.ForeignKey('user.id')),
+                       db.Column('requested', db.Integer, db.ForeignKey('user.id')))
+
+post_likes = db.Table('likes',
+                       db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                       db.Column('post_id', db.Integer, db.ForeignKey('post.id')))
 
 
 
@@ -36,11 +40,11 @@ class User(db.Model):
     messages = db.relationship("Message", backref="user", lazy="dynamic")
 
     friends = db.relationship('User',
-                               secondary=friendships,
-                                primaryjoin=(friendships.c.Requester == id),
-                               secondaryjoin=(friendships.c.Requested == id),
-                               backref=db.backref('friendships', lazy='dynamic'),
-                               lazy='dynamic')
+                              secondary=friendships,
+                              primaryjoin=(friendships.c.requester == id),
+                              secondaryjoin=(friendships.c.requested == id),
+                              backref=db.backref('friendships', lazy='dynamic'),
+                              lazy='dynamic')
 
 
 
@@ -108,7 +112,7 @@ class User(db.Model):
         """
         Check if a user has sent a request to another user
         """
-        return self.friends.filter(friendships.c.Requested == other).count() > 0
+        return self.friends.filter(friendships.c.requested == other).count() > 0
 
     def remove_friend_request(self, other):
         """
@@ -121,7 +125,7 @@ class User(db.Model):
         return ''
 
     def get_friend_requests(self):
-        requests = User.friends.filter(friendships.c.Requested == self.id).all()
+        requests = User.friends.filter(friendships.c.requested == self.id).all()
         response = []
         for requester in requests:
             response.append({'name': requester.first_name + ' ' + requester.last_name})
@@ -132,29 +136,131 @@ class User(db.Model):
         """
         Get the number of friend requests
         """
-        return User.friends.filter(friendships.c.Requested == self.id).count()
+        return User.friends.filter(friendships.c.requested == self.id).count()
 
     def get_number_of_friends(self):
         """
         Get the number of friends a user has
         """
-        others = User.friends.filter(friendships.c.Requested == self.id).all()
+        others = User.friends.filter(friendships.c.requested == self.id).all()
         count = 0
         for other in others:
             if self.are_friends(other):
                 count += 1
         return count
 
-    def block_user(self, other):
+    def create_post(self, text):
+        post = Post(text)
+        self.posts.append(post)
+        db.session.add(post)
+        db.session.commit()
+        return 'Post created'
+
+
+
+    def get_latest_posts(self, oldest):
+        oldest = oldest + 1
+        if oldest == 0:
+            latest = Post.query.count() + 1
+            if latest < 11:
+                oldest = 1
+            else:
+                oldest = latest - 10
+        else:
+            latest = oldest + 10
+        return self.get_latest_posts_from(latest, oldest)
+
+
+    def get_latest_posts_from(self, latest, oldest):
+
         """
-        Block a user. If they are friends,
-        also remove the friendship
+        :param latest:
+        :return:the 10 latest posts from latest (latest not included)
         """
-        if self.are_friends(other):
-            self.remove_friend_request(other)
-            other.remove_friend_request(self)
-        self.blocked.append(other)
-        return 'User blocked'
+        # posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
+
+        posts = Post.query.filter(Post.id.in_(range(oldest, latest))).all()
+        response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
+        for post in posts:
+            likes = User.query.filter(User.liked_posts.any(Post.id == post.id)).count()
+            if User.query.filter(Post.likes.any(User.id == self.id), Post.id == post.id).count() == 0:
+                liking = False
+            else:
+                liking = True
+            comments = Comment.query.filter(Comment.post_id == post.id).count()
+            response.append(
+                    {'post': {'id': post.id, 'name': post.user.first_name + ' ' + post.user.last_name, 'text': post.text, 'likes': likes, "liking": liking, "comments": comments}})
+        return response
+
+    def get_latest_posts_from_user(self):
+        """
+        Get 10 latest post where the latest is posted by user
+        """
+        post = Post.query.filter(Post.id == self.posts.count()).first()
+        latest = post.id
+        if latest < 11:
+            oldest = 1
+        else:
+            oldest = latest - 10
+        return self.get_latest_posts_from(latest, oldest)
+
+
+    def create_comment(self, post, text):
+        comment = Comment(text, post.comments.count())
+        self.comments.append(comment)
+        post.comments.append(comment)
+        db.session.add(comment)
+        db.session.commit()
+        return 'Comment created'
+
+
+    def get_latest_comments(self, post, oldest):
+        oldest = oldest + 1
+        if oldest == 0:
+            latest = Comment.query.filter(Comment.post_id == post.id).count()
+            if latest < 11:
+                oldest = 1
+            else:
+                oldest = latest - 10
+        else:
+            latest = oldest + 10
+        return self.get_latest_comments_from(post, latest, oldest)
+
+
+    def get_latest_comments_from(self, post, latest, oldest):
+        """
+        :param latest:
+        :return:the 10 latest posts from latest (latest not included)
+        """
+        comments = Comment.query.filter(Comment.index.in_(range(oldest, latest)), Comment.post_id == post.id).all() # index.in_ ger en varning
+        response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
+        for i in range(len(comments)):
+            comment = comments[i]
+            response.append({'comment': {'id': comment.id, 'index': comment.index,
+                                         'name': comment.user.first_name + ' ' + comment.user.last_name,
+                                         'text': comment.text}})
+        return response
+
+    def get_latest_comments_from_user(self, post):
+        """
+        Get 10 latest comments where the latest is posted by user
+        """
+        comment = Comment.query.filter(Comment.index == self.comments.count(), Comment.post_id == post.id).first()
+        latest = comment.index
+        if latest < 11:
+            oldest = 1
+        else:
+            oldest = latest - 10
+        return self.get_latest_comments_from(post, latest, oldest)
+
+    def like_post(self, post):
+        post.likes.append(self)
+        db.session.commit()
+
+    def dislike_post(self, post):
+        post.likes.remove(self)
+        db.session.commit()
+
 
 
 
@@ -215,6 +321,7 @@ class Post(db.Model):
     text = db.Column(db.String, nullable=False)
     # posted_at = db.Column(db.DateTime)
 
+    likes = db.relationship('User', secondary=post_likes, backref=db.backref('liked_posts', lazy='dynamic'))
     comments = db.relationship("Comment", backref="post", lazy='dynamic')
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -222,41 +329,6 @@ class Post(db.Model):
     def __init__(self, text):
         self.text = text
         # self.posted_at = datetime.now()
-
-
-def create_post(user, text):
-    post = Post(text)
-    user.posts.append(post)
-    db.session.add(post)
-    db.session.commit()
-    return 'Post created'
-
-
-def get_latest_posts(oldest):
-    oldest = oldest + 1
-    if oldest == 0:
-        latest = Post.query.count() + 1
-        if latest < 11:
-            oldest = 1
-        else:
-            oldest = latest - 10
-    else:
-        latest = oldest + 10
-    return get_latest_posts_from(latest, oldest)
-
-
-def get_latest_posts_from(latest, oldest):
-    """
-    :param latest:
-    :return:the 10 latest posts from latest (latest not included)
-    """
-    # posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
-
-    posts = Post.query.filter(Post.id.in_(range(oldest, latest))).all()
-    response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
-    for post in posts:
-        response.append({'post': {'id': post.id, 'name': post.user.first_name + ' ' + post.user.last_name, 'text': post.text}})
-    return response
 
 
 class Comment(db.Model):
@@ -271,40 +343,6 @@ class Comment(db.Model):
     def __init__(self, text, index):
         self.text = text
         self.index = index
-
-
-def create_comment(user, post, text):
-    comment = Comment(text, post.comments.count())
-    user.comments.append(comment)
-    post.comments.append(comment)
-    db.session.add(comment)
-    db.session.commit()
-    return 'Comment created'
-
-
-def get_latest_comments(post):
-    return get_latest_comments_from(post, post.comments.count() + 1)
-
-
-def get_latest_comments_from(post, latest):
-    """
-    :param latest:
-    :return:the 10 latest posts from latest (latest not included)
-    """
-    # posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
-    if latest < 10:
-        oldest = 0
-    else:
-        oldest = latest - 10
-
-    comments = Comment.query.filter(Comment.index.in_(range(oldest, latest)), Comment.post_id == post.id).all()
-    response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
-    for i in range(len(comments)):
-        comment = comments[i]
-        response.append({'comment': {'id': comment.id, 'index': comment.index,
-                                     'name': comment.user.first_name + ' ' + comment.user.last_name,
-                                     'text': comment.text}})
-    return response
 
 
 
