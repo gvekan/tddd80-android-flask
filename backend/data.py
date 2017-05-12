@@ -16,6 +16,15 @@ chat_members = db.Table('chat_members',
                         db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                         db.Column('chat_id', db.Integer, db.ForeignKey('chat.id')))
 
+friendships = db.Table('friendships',
+                       db.Column('Requester', db.Integer, db.ForeignKey('user.id')),
+                       db.Column('Requested', db.Integer, db.ForeignKey('user.id')))
+
+blocked_users = db.Table('blocked',
+                         db.Column('User', db.Integer, db.ForeignKey('user.id')),
+                         db.Column('Blocked', db.Integer, db.ForeignKey('user.id')))
+
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,6 +51,115 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.pw_hash, password)
 
+
+    def send_message(self, receiver, text):
+        chat = Chat.query.filter(Chat.members.any(User.id == self.id), Chat.members.any(User.id == receiver.id)).first()
+        if not chat:
+            chat = Chat()
+            chat.members.append(self)
+            chat.members.append(receiver)
+            db.session.add(chat)
+        message = Message(text)
+        chat.messages.append(message)
+        self.messages.append(message)
+        db.session.add(message)
+        db.session.commit()
+        return 'Chat started'
+
+    def get_messages(self, receiver):
+        chat = Chat.query.filter(Chat.members.any(User.id == self.id), Chat.members.any(User.id == receiver.id)).first()
+        messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
+        response = []
+        for message in messages:
+            response.append({'message': message.text, 'id': message.sent_by})
+        return response
+
+    def get_chats(self):
+        chats = Chat.query.join(User.chats).filter(User.id == self.id).all()
+        response = []
+        for chat in chats:
+            friends = User.query.join(Chat.members).filter(Chat.id == chat.id).all()
+            for friend in friends:
+                if friend.id != self.id:
+                    response.append({'chat': {'id': friend.id, 'name': friend.first_name + ' ' + friend.last_name}})
+        return response
+
+    def send_friend_request(self, other):
+        """
+        Send a request to a user
+        """
+        self.friends.append(other)
+        return 'Friend request sent'
+
+    def are_friends(self, other):
+        """
+        If both users has a friend request sent to
+        each other, they are friends
+        """
+        return self.friend_request_sent(other) and other.friend_request_sent(self)
+
+    def friend_request_sent(self, other):
+        """
+        Check if a user has sent a request to another user
+        """
+        return self.friends.filter(friendships.c.Requested == other).count() > 0
+
+    def remove_friend_request(self, other):
+        """
+        Remove a friend request. (Also used to
+        remove a friend.)
+        """
+        if self.are_friends(other):
+            other.friends.remove(self)
+        self.friends.remove(other)
+        return ''
+
+    def get_number_of_requests(self):
+        """
+        Get the number of friend requests
+        """
+        return User.friends.filter(friendships.c.Requested == self.id).count()
+
+    def get_number_of_friends(self):
+        """
+        Get the number of friends a user has
+        """
+        others = User.friends.filter(friendships.c.Requested == self.id).all()
+        count = 0
+        for other in others:
+            if self.are_friends(other):
+                count += 1
+        return count
+
+    def block_user(self, other):
+        """
+        Block a user. If they are friends,
+        also remove the friendship
+        """
+        if self.are_friends(other):
+            self.remove_friend_request(other)
+            other.remove_friend_request(self)
+        self.blocked.append(other)
+        return 'User blocked'
+
+
+
+
+    # # def mark_read(self, friend):
+    # #     """
+    # #     Mark all messages from a user as read
+    # #     """
+    # #     messages = Message.query.filter_by(receiver=self.id, sent_by=friend).all()
+    # #     for message in messages:
+    # #         message.read = True
+    # #     db.session.commit()
+    # #     return 'Message read'
+    #
+    # def get_number_of_unread(self):
+    #     """
+    #     Get the number of unread messages from all users
+    #     """
+    #     return Message.query.filter_by(receiver=self.id, read=False).count()
 
 def register_user(email, password, first_name, last_name, city):
     """
@@ -70,39 +188,12 @@ class Message(db.Model):
         self.text = text
 
 
-def send_message(user, receiver, text):
-    chat = Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == receiver.id)).first()
-    if not chat:
-        chat = Chat()
-        chat.members.append(user)
-        chat.members.append(receiver)
-        db.session.add(chat)
-    message = Message(text)
-    chat.messages.append(message)
-    user.messages.append(message)
-    db.session.add(message)
-    db.session.commit()
-    return 'Chat started'
+def get_user(email):
+    user = User.query.filter_by(email=email).first()
+    return user
 
 
-def get_chats(user):
-    chats = Chat.query.join(User.chats).filter(User.id == user.id).all()
-    response = []
-    for chat in chats:
-        friends = User.query.join(Chat.members).filter(Chat.id == chat.id).all()
-        for friend in friends:
-            if friend.id != user.id:
-                response.append({'chat': {'id': friend.id, 'name': friend.first_name + ' ' + friend.last_name}})
-    return response
 
-
-def get_messages(user, receiver):
-    chat = Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == receiver.id)).first()
-    messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
-    response = []
-    for message in messages:
-        response.append({'message': message.text, 'id': message.sent_by})
-    return response
 
 
 class Post(db.Model):
@@ -201,9 +292,9 @@ def get_latest_comments_from(post, latest):
                                      'text': comment.text}})
     return response
 
-    # friends = db.relationship('User',
-    #                            secondary=friendships,
-    #                            primaryjoin=(friendships.c.Requester == id),
+    # # friends = db.relationship('User',
+    # #                            secondary=friendships,
+    # #                            primaryjoin=(friendships.c.Requester == id),
     #                            secondaryjoin=(friendships.c.Requested == id),
     #                            backref=db.backref('friendships', lazy='dynamic'),
     #                            lazy='dynamic')
@@ -215,123 +306,6 @@ def get_latest_comments_from(post, latest):
     #                           backref=db.backref('blocked_users', lazy='dynamic'),
     #                           lazy='dynamic')
 
-    # def send_friend_request(self, other_id):
-    #     """
-    #     Send a request to a user
-    #     """
-    #     other = get_user(other_id)
-    #     self.friends.append(other)
-    #     return 'Friend request sent'
-    #
-    # def are_friends(self, other_id):
-    #     """
-    #     If both users has a friend request sent to
-    #     each other, they are friends
-    #     """
-    #     other = get_user(other_id)
-    #     return self.friend_request_sent(other) and other.friend_request_sent(self)
-    #
-    # def friend_request_sent(self, other_id):
-    #     """
-    #     Check if a user has sent a request to another user
-    #     """
-    #     return self.friends.filter(friendships.c.Requested == other_id).count() > 0
-    #
-    # def remove_friend_request(self, other_id):
-    #     """
-    #     Remove a friend request. (Also used to
-    #     remove a friend.)
-    #     """
-    #     other = get_user(other_id)
-    #     if self.are_friends(other_id):
-    #         other.friends.remove(self)
-    #     self.friends.remove(other)
-    #     return ''
-    #
-    # def get_number_of_requests(self):
-    #     """
-    #     Get the number of friend requests
-    #     """
-    #     return User.friends.filter(friendships.c.Requested == self.id).count()
-    #
-    # def get_number_of_friends(self):
-    #     """
-    #     Get the number of friends a user has
-    #     """
-    #     others = User.friends.filter(friendships.c.Requested == self.id).all()
-    #     count = 0
-    #     for other in others:
-    #         if self.are_friends(other.id):
-    #             count += 1
-    #     return count
-    #
-    # def block_user(self, other_id):
-    #     """
-    #     Block a user. If they are friends,
-    #     also remove the friendship
-    #     """
-    #     other = get_user(other_id)
-    #     if self.are_friends(other_id):
-    #         self.remove_friend_request(other_id)
-    #         other.remove_friend_request(self)
-    #     self.blocked.append(other_id)
-    #     return 'User blocked'
-    #
-    # def get_messages(self, sender_id):
-    #     """
-    #     Get all messages from a user
-    #     """
-    #     messages = Message.query.filter_by(receiver=self.id, sender=sender_id).all()
-    #     return messages
-    #
-    # def send_message(self, receiver_id, text):
-    #     """
-    #     Send message to a user
-    #     """
-    #     message = Message(self.id, receiver_id, text)
-    #     db.session.add(message)
-    #     db.session.commit(message)
-    #     return 'Message sent'
-    #
-    # def mark_read(self, sender_id):
-    #     """
-    #     Mark all messages from a user as read
-    #     """
-    #     messages = Message.query.filter_by(receiver=self.id, sender=sender_id).all()
-    #     for message in messages:
-    #         message.read = True
-    #     db.session.commit()
-    #     return 'Message read'
-    #
-    # def get_number_of_unread(self):
-    #     """
-    #     Get the number of unread messages from all users
-    #     """
-    #     return Message.query.filter_by(receiver=self.id, read=False).count()
+
 
 # Tables
-# friendships = db.Table('friendships',
-#                 db.Column('Requester', db.Integer, db.ForeignKey('user.id')),
-#                 db.Column('Requested', db.Integer, db.ForeignKey('user.id')))
-#
-# blocked_users = db.Table('blocked',
-#                     db.Column('User', db.Integer, db.ForeignKey('user.id')),
-#                     db.Column('Blocked', db.Integer, db.ForeignKey('user.id')))
-
-
-# class Message(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     read = db.Column(db.Boolean, nullable=False)
-#     text = db.Column(db.String, nullable=False)
-#     # Add a timestamp
-#
-#     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent')
-#     receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received')
-#
-#     def __init__(self, sender_id, receiver_id, text):
-#         self.sender_id = sender_id
-#         self.receiver_id = receiver_id
-#         self.text = text
-#         self.read = False

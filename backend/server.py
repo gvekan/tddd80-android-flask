@@ -145,7 +145,7 @@ def create_post():
     """
     text = request.json.get('text', None)
     email = get_jwt_identity()
-    user = data.User.query.filter_by(email=email).first()
+    user = data.get_user(email)
     data.create_post(user, text)
     return jsonify({"msg": "Post successfully made"}), 200
 
@@ -186,7 +186,7 @@ def create_comment():
     id = request.json.get('post', None)
     post = data.Post.query.get(id)
     email = get_jwt_identity()
-    user = data.User.query.filter_by(email=email).first()
+    user = data.get_user(email)
     data.create_comment(user, post, text)
     return jsonify({"msg": "Comment successfully made"}), 200
 
@@ -219,113 +219,93 @@ def get_latest_comments_from():
 @application.route('/send_message', methods=['POST'])
 @jwt_required
 def send_message():
+    """
+    Sends a message to another user
+    """
     receiver_email = request.json.get('receiver', None)
     message = request.json.get('message', None)
     email = get_jwt_identity()
-    user = data.User.query.filter_by(email=email).first()
-    receiver = data.User.query.filter_by(email=receiver_email).first()
-    data.send_message(user, receiver, message)
+    user = data.get_user(email)
+    receiver = data.get_user(receiver_email)
+    user.send_message(receiver, message)
     return jsonify({"msg": "Message successfully sent"}), 200
 
 
 @application.route('/get_messages', methods=['GET'])
 @jwt_required
 def get_messages():
+    """
+    Get all messages between two users
+    """
     email = get_jwt_identity()
     receiver_email = request.json.get('receiver', None)
-    user = data.User.query.filter_by(email=email).first()
-    receiver = data.User.query.filter_by(email=receiver_email).first()
-
-    messages = data.get_messages(user, receiver)
+    user = data.get_user(email)
+    receiver = data.get_user(receiver_email)
+    messages = user.get_messages(receiver)
     return jsonify({"messages": messages}), 200
 
 
 @application.route('/get_chats', methods=['GET'])
 @jwt_required
 def get_chats():
+    """
+    Get all active chat a user has
+    """
     email = get_jwt_identity()
-    user = data.User.query.filter_by(email=email).first()
-    chats = data.get_chats(user)
+    user = data.get_user(email)
+    chats = user.get_chats()
     return jsonify({'chats': chats}), 200
 
 
 
-# -- Messages --
-
-# @application.route('/send_message', methods=['POST'])
-# @jwt_required
-# def send_message():
-#     """
-#     Send a message
-#     """
-#     receiver = request.json.get('receiver', None)
-#     message = request.json.get('message', None)
-#     email = get_jwt_identity()
-#     mailer = data.User.query.filter_by(email=email)
-#     return mailer.send_message(receiver, message)
-#
-#
-# @application.route('/get_messages', methods=['GET'])
-# @jwt_required
-# def get_messages():
-#     """
-#     Get all messages by an user
-#     """
-#     mailer = request.json.get('mailer', None)
-#     email = get_jwt_identity()
-#     user = data.User.query.filter_by(email=email)
-#     return user.get_messages(mailer)
+@application.route('/send_friend_request', methods=['POST'])
+@jwt_required
+def send_friend_request():
+    friend_email = request.json.get('friend', None)
+    email = get_jwt_identity()
+    user = data.get_user(email)
+    friend = data.get_user(friend_email)
+    return user.send_friend_request(user, friend)
 
 
-# -- Friends --
+@application.route('/get_friend_requests', methods=['GET'])
+@jwt_required
+def get_friend_requests():
+    email = get_jwt_identity()
+    requested = data.User.query.filter_by(email=email)
+    return requested.get_friend_requests()
 
-# @application.route('/send_friend_request', methods=['POST'])
-# @jwt_required
-# def send_friend_request():
-#     requested = request.json.get('requested', None)
-#     email = get_jwt_identity()
-#     requester = data.User.query.filter_by(email=email)
-#     return requester.send_friend_request(requested)
-#
-#
-# @application.route('/get_friend_requests', methods=['GET'])
-# @jwt_required
-# def get_friend_requests():
-#     email = get_jwt_identity()
-#     requested = data.User.query.filter_by(email=email)
-#     return requested.get_friend_requests()
-#
-#
-# @application.route('/accept_friend_request', methods=['POST'])
-# @jwt_required
-# def accept_friend_request():
-#     requester = request.json.get('requester', None)
-#     email = get_jwt_identity()
-#     requested = data.User.query.filter_by(email=email)
-#     return requested.send_friend_request(requester)
-#
-#
-# @application.route('/deny_friend_request', methods=['POST'])
-# @jwt_required
-# def deny_friend_request():
-#     requester = request.json.get('requester', None)
-#     email = get_jwt_identity()
-#     requested = data.User.query.filter_by(email=email)
-#     return requested.remove_friend_request(requester)
-#
-#
-# @application.route('/block_user', methods=['POST'])
-# @jwt_required
-# def block_user():
-#     user_to_block = request.json.get('user_to_block', None)
-#     email = get_jwt_identity()
-#     user = data.User.query.filter_by(email=email)
-#     return user.block_user(user_to_block)
-#
-#
-# @application.route('/get_number_of_friends', methods=['GET'])
-# @jwt_required
-# def get_number_of_friends():
-#     email = get_jwt_identity()
-#     user = data.User.query.filter_by(email=email)
-#     return user.get_number_of_friends()
+
+@application.route('/accept_friend_request', methods=['POST'])
+@jwt_required
+def accept_friend_request():
+    requester = request.json.get('requester', None)
+    email = get_jwt_identity()
+    requested = data.User.query.filter_by(email=email)
+    return requested.send_friend_request(requester)
+
+
+@application.route('/deny_friend_request', methods=['POST'])
+@jwt_required
+def deny_friend_request():
+    requester = request.json.get('requester', None)
+    email = get_jwt_identity()
+    requested = data.User.query.filter_by(email=email)
+    return requested.remove_friend_request(requester)
+
+
+@application.route('/block_user', methods=['POST'])
+@jwt_required
+def block_user():
+    user_to_block = request.json.get('user_to_block', None)
+    email = get_jwt_identity()
+    user = data.User.query.filter_by(email=email)
+    return user.block_user(user_to_block)
+
+
+@application.route('/get_number_of_friends', methods=['GET'])
+@jwt_required
+def get_number_of_friends():
+    email = get_jwt_identity()
+    user = data.User.query.filter_by(email=email)
+    return user.get_number_of_friends()
