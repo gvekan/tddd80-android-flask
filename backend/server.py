@@ -184,8 +184,28 @@ def get_latest_posts_from_user():
     Get the ten latest posts on the wall
     """
     user = data.get_user(get_jwt_identity())
-    post_list = user.get_latest_posts()
+    post_list = user.get_latest_posts_from_user()
     return jsonify({"posts": post_list}), 200
+
+
+@application.route('/like-post', methods=['post'])
+@jwt_required
+def like_post():
+    id = request.json.get('post', None)
+    post = data.Post.query.get(id)
+    user = data.get_user(get_jwt_identity())
+    user.like_post(post)
+    return jsonify({"msg": "Post liked"}), 200
+
+
+@application.route('/dislike-post', methods=['post'])
+@jwt_required
+def dislike_post():
+    id = request.json.get('post', None)
+    post = data.Post.query.get(id)
+    user = data.get_user(get_jwt_identity())
+    user.dislike_post(post)
+    return jsonify({"msg": "Post unliked"}), 200
 
 
 @application.route('/create-comment', methods=['post'])
@@ -243,7 +263,7 @@ def get_latest_comments_from_user():
     id = request.json.get('post', None)
     post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
-    comment_list = user.get_latest_comments(post)
+    comment_list = user.get_latest_comments_from_user(post)
     return jsonify({"posts": comment_list}), 200
 
 

@@ -11,53 +11,87 @@ root_uri = 'http://localhost:' + str(config.port) + '/'
 
 
 # CREATING USERS
-register_gustav = requests.post(root_uri + 'register', json={'email': 'gusan092@student.liu.se', 'password': 'password', 'first_name': 'Gustav', 'last_name': 'Andersson', 'city': 'Linkoping'})
-register_simon = requests.post(root_uri + 'register', json={'email': 'simsu451@student.liu.se', 'password': 'password', 'first_name': 'Simon', 'last_name': 'Sundberg', 'city': 'Stockholm'})
-register_ronny = requests.post(root_uri + 'register', json={'email': 'ronny451@student.liu.se', 'password': 'password', 'first_name': 'Ronny', 'last_name': 'Connysson', 'city': 'Stockholm'})
+requests.post(root_uri + 'register', json={'email': 'gusan092@student.liu.se', 'password': 'password', 'first_name': 'Gustav', 'last_name': 'Andersson', 'city': 'Linkoping'})
+requests.post(root_uri + 'register', json={'email': 'simsu451@student.liu.se', 'password': 'password', 'first_name': 'Simon', 'last_name': 'Sundberg', 'city': 'Stockholm'})
+requests.post(root_uri + 'register', json={'email': 'ronny451@student.liu.se', 'password': 'password', 'first_name': 'Ronny', 'last_name': 'Connysson', 'city': 'Stockholm'})
 
 # LOGIN
 login_gustav = requests.post(root_uri + 'login', json={'email': 'gusan092@student.liu.se', 'password': 'password'})
 token_gustav = json.loads(login_gustav.text)['access_token']
-print("Gustavs token: " + token_gustav)
 login_simon = requests.post(root_uri + 'login', json={'email': 'simsu451@student.liu.se', 'password': 'password'})
 token_simon = json.loads(login_simon.text)['access_token']
-print("Simons token: " + token_simon)
 login_ronny = requests.post(root_uri + 'login', json={'email': 'ronny451@student.liu.se', 'password': 'password'})
 token_ronny = json.loads(login_ronny.text)['access_token']
-print("Ronnys token: " + token_ronny)
 
 # CREATING POSTS
-post_gustav = requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Gustavs inlägg'},
+for i in range(1, 6):
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Gustavs ' + str(i) + ' inlägg'},
                         headers={'Authorization': 'Bearer ' + token_gustav})
-post_simon = requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Simons inlägg'},
-                        headers={'Authorization': 'Bearer ' + token_simon})
-post_ronny = requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Ronnys inlägg'},
-                        headers={'Authorization': 'Bearer ' + token_simon})
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Simons ' + str(i) + ' inlägg'},
+                            headers={'Authorization': 'Bearer ' + token_simon})
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Ronnys ' + str(i) + ' inlägg'},
+                            headers={'Authorization': 'Bearer ' + token_ronny})
 
 # CREATE COMMENTS
-for i in range(1, 16):
-    comment_gustav = requests.post(root_uri + 'create-comment',
-                       json={'text': 'Hej! Här är Gustavs ' + str(i) + ' kommentar', "post": 2},
+for i in range(1, 6):
+    requests.post(root_uri + 'create-comment',
+                       json={'text': 'Hej! Här är Gustavs ' + str(i) + ' kommentar', "post": 6},
                        headers={'Authorization': 'Bearer ' + token_gustav})
 
-for i in range(1, 11):
-    comment_simon = requests.post(root_uri + 'create-comment',
-                       json={'text': 'Hej! Här är Simons ' + str(i) + ' kommentar', "post": 1},
+for i in range(1, 6):
+    requests.post(root_uri + 'create-comment',
+                       json={'text': 'Hej! Här är Simons ' + str(i) + ' kommentar', "post": 6},
                        headers={'Authorization': 'Bearer ' + token_simon})
 
 
-for i in range(1, 6):
-    comment_ronny = requests.post(root_uri + 'create-comment',
-                       json={'text': 'Hej! Här är Ronnys ' + str(i) + ' kommentar', "post": 1},
+for i in range(1,6):
+    requests.post(root_uri + 'create-comment',
+                       json={'text': 'Hej! Här är Ronnys ' + str(i) + ' kommentar', "post": 6},
                        headers={'Authorization': 'Bearer ' + token_ronny})
 
-r5 = requests.get(root_uri + 'get-latest-posts', json={'post': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
-posts1 = json.loads(r5.text)['posts']
-print(posts1)
+# LIKE POSTS:
+requests.post(root_uri + 'like-post',
+                   json={"post": 1},
+                   headers={'Authorization': 'Bearer ' + token_gustav})
+requests.post(root_uri + 'like-post',
+                   json={"post": 14},
+                   headers={'Authorization': 'Bearer ' + token_gustav})
+requests.post(root_uri + 'like-post',
+                   json={"post": 14},
+                   headers={'Authorization': 'Bearer ' + token_simon})
+requests.post(root_uri + 'like-post',
+                   json={"post": 14},
+                   headers={'Authorization': 'Bearer ' + token_ronny})
 
-for i in range(1, 4):
-    r6 = requests.get(root_uri + 'get-latest-comments', json={'post': i, 'comment': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
-    print(json.loads(r6.text)['comments'])
+# DISLIKE POST
+requests.post(root_uri + 'dislike-post',
+                   json={"post": 1},
+                   headers={'Authorization': 'Bearer ' + token_gustav})
+
+# GET POSTS
+get_latest_gustav = requests.get(root_uri + 'get-latest-posts', json={'post': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
+posts = json.loads(get_latest_gustav.text)['posts']
+print(posts)
+
+
+get_latest_gustav = requests.get(root_uri + 'get-latest-posts', json={'post': 11}, headers={'Authorization': 'Bearer ' + token_gustav})
+posts = json.loads(get_latest_gustav.text)['posts']
+print(posts)
+
+
+get_latest_from_user_gustav = requests.get(root_uri + 'get-latest-posts-from-user', headers={'Authorization': 'Bearer ' + token_gustav})
+posts = json.loads(get_latest_from_user_gustav.text)['posts']
+print(posts)
+
+get_latest_from_gustav = requests.get(root_uri + 'get-latest-posts-from', json={'post': 6}, headers={'Authorization': 'Bearer ' + token_gustav})
+posts = json.loads(get_latest_from_gustav.text)['posts']
+print(posts)
+
+# # GET_COMMENTS
+#
+# for i in range(1, 4):
+#     r6 = requests.get(root_uri + 'get-latest-comments', json={'post': i, 'comment': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
+#     print(json.loads(r6.text)['comments'])
 
 # for i in range(1, 16):
 #     r3 = requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är mitt ' + str(i) + ' inlägg'},
@@ -126,4 +160,13 @@ for i in range(1, 4):
 # # ACCEPT FRIEND REQUEST
 # f2 = requests.post(root_uri + 'accept_friend_request', json={'requester': 'gusan092@student.liu.se'}, headers={'Authorization': 'Bearer ' + token})
 # print(json.loads(f2.text)['msg'])
+
+# FACIT
+# RAD 1; Post 6-15
+# RAD 2: Post 12-15
+# RAD 3: Post 4-13
+# RAD 4: Post 1-5
+# Post 1; likes: 0, liking: False
+# Post 6; comments: 15
+# Post 14; likes: 3, liking: True
 

@@ -196,8 +196,8 @@ class User(db.Model):
         """
         Get 10 latest post where the latest is posted by user
         """
-        post = Post.query.filter(Post.id == self.posts.count()).first()
-        latest = post.id
+        post = Post.query.filter(Post.user_id == self.id).order_by(Post.id.desc()).first()
+        latest = post.id + 1
         if latest < 11:
             oldest = 1
         else:
