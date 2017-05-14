@@ -245,10 +245,10 @@ def get_latest_comments_from():
     id = request.json.get('post', None)
     post = data.Post.query.get(id)
     latest = request.json.get('comment', None)
-    if latest < 10:
+    if latest < 11:
         oldest = 0
     else:
-        oldest = latest - 10
+        oldest = latest - 11
     user = data.get_user(get_jwt_identity())
     comment_list = user.get_latest_comments_from(post, latest, oldest)
     return jsonify({"comments": comment_list}), 200
@@ -264,7 +264,7 @@ def get_latest_comments_from_user():
     post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
     comment_list = user.get_latest_comments_from_user(post)
-    return jsonify({"posts": comment_list}), 200
+    return jsonify({"comments": comment_list}), 200
 
 
 @application.route('/send_message', methods=['POST'])

@@ -69,29 +69,34 @@ requests.post(root_uri + 'dislike-post',
                    headers={'Authorization': 'Bearer ' + token_gustav})
 
 # GET POSTS
-get_latest_gustav = requests.get(root_uri + 'get-latest-posts', json={'post': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
-posts = json.loads(get_latest_gustav.text)['posts']
-print(posts)
+get_latest_posts = requests.get(root_uri + 'get-latest-posts', json={'post': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_latest_posts.text)['posts'])
 
 
-get_latest_gustav = requests.get(root_uri + 'get-latest-posts', json={'post': 11}, headers={'Authorization': 'Bearer ' + token_gustav})
-posts = json.loads(get_latest_gustav.text)['posts']
-print(posts)
+get_latest_posts = requests.get(root_uri + 'get-latest-posts', json={'post': 11}, headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_latest_posts.text)['posts'])
 
 
-get_latest_from_user_gustav = requests.get(root_uri + 'get-latest-posts-from-user', headers={'Authorization': 'Bearer ' + token_gustav})
-posts = json.loads(get_latest_from_user_gustav.text)['posts']
-print(posts)
+get_latest_posts = requests.get(root_uri + 'get-latest-posts-from-user', headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_latest_posts.text)['posts'])
 
-get_latest_from_gustav = requests.get(root_uri + 'get-latest-posts-from', json={'post': 6}, headers={'Authorization': 'Bearer ' + token_gustav})
-posts = json.loads(get_latest_from_gustav.text)['posts']
-print(posts)
+get_latest_posts = requests.get(root_uri + 'get-latest-posts-from', json={'post': 6}, headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_latest_posts.text)['posts'])
 
-# # GET_COMMENTS
-#
-# for i in range(1, 4):
-#     r6 = requests.get(root_uri + 'get-latest-comments', json={'post': i, 'comment': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
-#     print(json.loads(r6.text)['comments'])
+# GET_COMMENTS
+
+get_latest_comments = requests.get(root_uri + 'get-latest-comments', json={'post': 6, 'comment': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_latest_comments.text))
+
+get_latest_comments = requests.get(root_uri + 'get-latest-comments', json={'post': 6, 'comment': 11}, headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_latest_comments.text))
+
+get_latest_comments = requests.get(root_uri + 'get-latest-comments-from-user', json={'post': 6, 'comment': 11}, headers={'Authorization': 'Bearer ' + token_simon})
+print(json.loads(get_latest_comments.text))
+
+get_latest_comments = requests.get(root_uri + 'get-latest-comments-from', json={'post': 6, 'comment': 5}, headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_latest_comments.text))
+
 
 # for i in range(1, 16):
 #     r3 = requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är mitt ' + str(i) + ' inlägg'},
@@ -169,4 +174,8 @@ print(posts)
 # Post 1; likes: 0, liking: False
 # Post 6; comments: 15
 # Post 14; likes: 3, liking: True
+# RAD 1; Comment index 5-14
+# RAD 2: Comment index 11-14
+# RAD 3: comment index 0-9
+# RAD 4: Post 0-4
 

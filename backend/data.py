@@ -206,7 +206,7 @@ class User(db.Model):
 
 
     def create_comment(self, post, text):
-        comment = Comment(text, post.comments.count())
+        comment = Comment(text, post.comments.count() + 1)
         self.comments.append(comment)
         post.comments.append(comment)
         db.session.add(comment)
@@ -217,7 +217,7 @@ class User(db.Model):
     def get_latest_comments(self, post, oldest):
         oldest = oldest + 1
         if oldest == 0:
-            latest = Comment.query.filter(Comment.post_id == post.id).count()
+            latest = post.comments.count()
             if latest < 11:
                 oldest = 1
             else:
@@ -245,8 +245,8 @@ class User(db.Model):
         """
         Get 10 latest comments where the latest is posted by user
         """
-        comment = Comment.query.filter(Comment.index == self.comments.count(), Comment.post_id == post.id).first()
-        latest = comment.index
+        comment = Comment.query.filter(Comment.user_id == self.id).order_by(Comment.index.desc()).first()
+        latest = comment.index + 1
         if latest < 11:
             oldest = 1
         else:
@@ -311,8 +311,6 @@ class Message(db.Model):
 def get_user(email):
     user = User.query.filter_by(email=email).first()
     return user
-
-
 
 
 
