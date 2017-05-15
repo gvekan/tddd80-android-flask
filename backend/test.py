@@ -69,11 +69,11 @@ requests.post(root_uri + 'dislike-post',
                    headers={'Authorization': 'Bearer ' + token_gustav})
 
 # GET POSTS
-get_latest_posts = requests.get(root_uri + 'get-latest-posts', json={'post': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
+get_latest_posts = requests.post(root_uri + 'get-latest-posts', json={'post': -1})
 print(json.loads(get_latest_posts.text)['posts'])
 
 
-get_latest_posts = requests.get(root_uri + 'get-latest-posts', json={'post': 11}, headers={'Authorization': 'Bearer ' + token_gustav})
+get_latest_posts = requests.post(root_uri + 'get-latest-posts', json={'post': 11})
 print(json.loads(get_latest_posts.text)['posts'])
 
 

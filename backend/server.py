@@ -149,8 +149,8 @@ def create_post():
     return jsonify({"msg": "Post successfully made"}), 200
 
 
-@application.route('/get-latest-posts', methods=['get'])
-#@jwt_required
+@application.route('/get-latest-posts', methods=['post'])
+# @jwt_required
 def get_latest_posts():
     """
     Get the ten latest posts on the wall
