@@ -69,7 +69,7 @@ requests.post(root_uri + 'dislike-post',
                    headers={'Authorization': 'Bearer ' + token_gustav})
 
 # GET POSTS
-get_latest_posts = requests.get(root_uri + 'get-latest-posts', json={'post': "-1"}, headers={'Authorization': 'Bearer ' + token_gustav})
+get_latest_posts = requests.get(root_uri + 'get-latest-posts', json={'post': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(get_latest_posts.text)['posts'])
 
 

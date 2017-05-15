@@ -150,7 +150,7 @@ def create_post():
 
 
 @application.route('/get-latest-posts', methods=['get'])
-@jwt_required
+#@jwt_required
 def get_latest_posts():
     """
     Get the ten latest posts on the wall
@@ -227,7 +227,7 @@ def create_comment():
 
 
 @application.route('/get-latest-comments', methods=['get'])
-# @jwt_required
+@jwt_required
 def get_latest_comments():
     """
     Get the ten latest posts on the wall
