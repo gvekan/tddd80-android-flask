@@ -248,7 +248,7 @@ def get_latest_comments_from(post_id, comment_index):
     if latest < 11:
         oldest = 0
     else:
-        oldest = latest - 11
+        oldest = latest - 10
     user = data.get_user(get_jwt_identity())
     comment_list = user.get_latest_comments_from(post, latest, oldest)
     return jsonify({"comments": comment_list}), 200

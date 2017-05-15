@@ -217,7 +217,7 @@ class User(db.Model):
     def get_latest_comments(self, post, oldest):
         oldest = oldest + 1
         if oldest == 0:
-            latest = post.comments.count()
+            latest = post.comments.count() + 1
             if latest < 11:
                 oldest = 1
             else:
