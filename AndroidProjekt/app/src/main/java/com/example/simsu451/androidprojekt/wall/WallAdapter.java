@@ -21,13 +21,16 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.R;
+import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Nätverksanrop från adaptern
@@ -37,34 +40,19 @@ import java.util.List;
 
 public class WallAdapter extends ArrayAdapter<Post> {
     private Posts posts = new Posts();
-    private boolean flag_loading;
+    private boolean flagLoading;
+    private boolean scrollListenerCreated;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
 
     public WallAdapter(Context context, ListView listView, SwipeRefreshLayout swipeRefreshLayout) {
         super(context, R.layout.wall_post);
         posts.setPosts(new ArrayList<Post>());
-        flag_loading = true;
+        flagLoading = true;
+        scrollListenerCreated = false;
         this.swipeRefreshLayout = swipeRefreshLayout;
         this.listView = listView;
         updateLatestPosts();
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-
-            }
-
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                Log.i("WallAdapter", "onScroll called from ListView");
-
-                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
-                {
-                    if(!flag_loading && !WallAdapter.this.isEmpty()) updateLatestPostsFromOldest();
-                }
-            }
-        });
 
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -74,7 +62,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
 
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        if (!flag_loading) updateLatestPosts();
+                        if (!flagLoading) updateLatestPosts();
                         else WallAdapter.this.swipeRefreshLayout.setRefreshing(false);
                     }
                 }
@@ -133,8 +121,29 @@ public class WallAdapter extends ArrayAdapter<Post> {
         return convertView;
     }
 
+    private void createScrollListener() {
+        scrollListenerCreated = true;
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                Log.i("WallAdapter", "onScroll called from ListView");
+
+                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
+                {
+                    if(!flagLoading && !WallAdapter.this.isEmpty()) updateLatestPostsFromOldest();
+                }
+            }
+        });
+    }
+
     public void updatePostsForUser() {
-        flag_loading = true;
+        flagLoading = true;
         String url = Constants.URL + "get-latest-posts-from-user";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -147,20 +156,28 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         WallAdapter.this.addAll(posts.getPosts());
                         WallAdapter.this.posts = posts;
                         WallAdapter.this.notifyDataSetChanged();
-                        flag_loading = false;
+                        if (!scrollListenerCreated && !WallAdapter.this.isEmpty()) createScrollListener();
+                        flagLoading = false;
                     }},
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        flag_loading = false;
+                        error.printStackTrace();
+                        flagLoading = false;
                     }
-                }
-        );
+                }){
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+            return headers;
+        }};
         requestQueue.add(stringRequest);
     }
 
     private void updateLatestPosts() {
-        flag_loading = true;
+        flagLoading = true;
         String url = Constants.URL + "get-latest-posts";
         final JSONObject params = new JSONObject();
         try {
@@ -186,14 +203,16 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         }
                         WallAdapter.this.notifyDataSetChanged();
                         if (!postList.isEmpty() && !WallAdapter.this.isEmpty()) retainPosition(listView.getFirstVisiblePosition() + size);
+                        if (!scrollListenerCreated && !WallAdapter.this.isEmpty()) createScrollListener();
                         swipeRefreshLayout.setRefreshing(false);
-                        flag_loading = false;
+                        flagLoading = false;
                     }},
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
                         swipeRefreshLayout.setRefreshing(false);
-                        flag_loading = false;
+                        flagLoading = false;
                     }
                 }
         ){
@@ -206,12 +225,19 @@ public class WallAdapter extends ArrayAdapter<Post> {
             public String getBodyContentType() {
                 return "application/json";
             }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }
         };
         requestQueue.add(stringRequest);
     }
 
     private void updateLatestPostsFromOldest() {
-        flag_loading = true;
+        flagLoading = true;
         final JSONObject params = new JSONObject();
         try {
             params.put("post", posts.getOldest());
@@ -225,21 +251,22 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (!flag_loading) {
+                        if (flagLoading) {
                             Gson gson = new Gson();
                             Posts posts = gson.fromJson(response, Posts.class);
                             WallAdapter.this.posts.addPosts(posts.getPosts());
                             WallAdapter.this.addAll(posts.getPosts());
                             WallAdapter.this.notifyDataSetChanged();
                             retainPosition(listView.getFirstVisiblePosition());
-                            flag_loading = false;
+                            flagLoading = false;
                         }
                     }},
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (!flag_loading) {
-                            flag_loading = false;
+                        error.printStackTrace();
+                        if (flagLoading) {
+                            flagLoading = false;
                         }
                     }
                 }
@@ -252,6 +279,13 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public String getBodyContentType() {
                 return "application/json";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
             }
         };
         requestQueue.add(stringRequest);
@@ -296,6 +330,13 @@ public class WallAdapter extends ArrayAdapter<Post> {
             public String getBodyContentType() {
                 return "application/json";
             }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }
         };
         requestQueue.add(stringRequest);
     }
@@ -329,6 +370,13 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public String getBodyContentType() {
                 return "application/json";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
             }
         };
         requestQueue.add(stringRequest);
