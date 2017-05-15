@@ -4,10 +4,10 @@ import random
 
 import requests
 
-data.initialize_db()
+# data.initialize_db()
 
-root_uri = 'http://localhost:' + str(config.port) + '/'
-# root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
+# root_uri = 'http://localhost:' + str(config.port) + '/'
+root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
 
 
 # CREATING USERS
