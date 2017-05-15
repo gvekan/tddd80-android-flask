@@ -1,25 +1,17 @@
 package com.example.simsu451.androidprojekt;
 
 /**
- * Created by gusan092 on 10/05/17.
+ * Created by simsu451 on 15/05/17.
  */
 
 public class Token {
-    private static final Token instance = new Token();
-    private String token = null;
-
-    private Token() {
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+    private String token;
 
     public String getToken() {
         return token;
     }
 
-    public static Token getInstance() {
-        return instance;
+    public void setToken(String token) {
+        this.token = token;
     }
 }

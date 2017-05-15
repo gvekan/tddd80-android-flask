@@ -1,7 +1,6 @@
 package com.example.simsu451.androidprojekt.chat;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +18,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.Friend;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.TokenInstance;
 import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +77,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
                 return headers;
             }
         };

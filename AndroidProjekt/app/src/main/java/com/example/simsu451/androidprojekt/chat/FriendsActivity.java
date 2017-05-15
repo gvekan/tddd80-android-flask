@@ -19,7 +19,7 @@ import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.Friend;
 import com.example.simsu451.androidprojekt.Friends;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.TokenInstance;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
                 return headers;
             }
         };

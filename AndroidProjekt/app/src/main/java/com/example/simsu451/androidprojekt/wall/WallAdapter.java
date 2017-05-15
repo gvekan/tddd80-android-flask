@@ -21,7 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.TokenInstance;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -77,9 +77,10 @@ public class WallAdapter extends ArrayAdapter<Post> {
             final TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
             TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
             tvName.setText(post.getName());
+            //System.out.println(post.getName());
             tvText.setText(post.getText());
             if (post.isLiking()) tvLikes.setTextColor(Color.GREEN);
-            tvLikes.setText(post.getLikes());
+            tvLikes.setText(Integer.toString(post.getLikes()));
             View.OnClickListener likesClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -87,13 +88,15 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         dislikePost(post.getId());
                         post.setLiking(false);
                         post.setLikes(post.getLikes()-1);
+                        tvLikes.setText(Integer.toString(post.getLikes()));
                         tvLikes.setTextColor(Color.BLACK);
                     } else {
                         likePost(post.getId());
                         post.setLiking(true);
                         post.setLikes(post.getLikes()+1);
+                        tvLikes.setText(Integer.toString(post.getLikes()));
                         tvLikes.setTextColor(Color.GREEN);
-                    }
+                    } WallAdapter.this.notifyDataSetChanged();
                 }
             };
             tvLikes.setOnClickListener(likesClickListener);
@@ -104,27 +107,28 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 public void onClick(View v) {
                 }
             };
-            tvComments.setText(post.getComments());
+            tvComments.setText(Integer.toString(post.getComments()));
             tvComments.setOnClickListener(commentsClickListener);
             TextView textComments = (TextView) convertView.findViewById(R.id.textComments);
             textComments.setOnClickListener(likesClickListener);
         }
+        this.notifyDataSetChanged();
         return convertView;
     }
     private void createScrollListener() {
         scrollListenerCreated = true;
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                Log.i("WallAdapter", "onScroll called from ListView");
-                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
-                {
-                    if(!flagLoading && !WallAdapter.this.isEmpty()) updateLatestPostsFromOldest();
-                }
-            }
-        });
+//        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//            }
+//            public void onScroll(AbsListView view, int firstVisibleItem,
+//                                 int visibleItemCount, int totalItemCount) {
+//                Log.i("WallAdapter", "onScroll called from ListView");
+//                if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
+//                {
+//                    if(!flagLoading && !WallAdapter.this.isEmpty()) updateLatestPostsFromOldest();
+//                }
+//            }
+//        });
     }
     public void updatePostsForUser() {
         flagLoading = true;
@@ -153,12 +157,13 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
                 return headers;
             }};
         requestQueue.add(stringRequest);
     }
     private void updateLatestPosts() {
+        System.out.println(TokenInstance.getInstance().getToken());
         flagLoading = true;
         String url = Constants.URL + "get-latest-posts/" + posts.getLatest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -168,7 +173,9 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         Posts posts = gson.fromJson(response, Posts.class);
-                        List<Post> postList = posts.getPosts();
+                        ArrayList<Post> postList = posts.getPosts();
+                        Post post1 = postList.get(1);
+                        System.out.println(post1.getText());
                         int size = postList.size();
                         if (!postList.isEmpty()) {
                             for (int i = size-1; i >= 0; i--) {
@@ -195,7 +202,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
                 return headers;
             }
         };
@@ -232,7 +239,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
                 return headers;
             }
         };
@@ -278,7 +285,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
                 return headers;
             }
         };
@@ -315,7 +322,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
                 return headers;
             }
         };

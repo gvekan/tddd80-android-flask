@@ -1,6 +1,7 @@
 package com.example.simsu451.androidprojekt.wall;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
@@ -10,18 +11,18 @@ import java.util.Collections;
  */
 
 public class Posts {
-    private List<Post> posts;
+    private ArrayList<Post> posts;
 
-    public List<Post> getPosts() {
+    public ArrayList<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(ArrayList<Post> posts) {
         this.posts = posts;
         Collections.sort(this.posts, new PostComparator());
     }
 
-    public void addPosts(List<Post> posts) {
+    public void addPosts(ArrayList<Post> posts) {
         this.posts.addAll(posts);
         Collections.sort(this.posts, new PostComparator());
     }

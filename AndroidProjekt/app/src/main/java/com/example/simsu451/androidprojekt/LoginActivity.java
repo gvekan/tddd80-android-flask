@@ -15,8 +15,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.wall.WallActivity;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,21 +78,27 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        CustomStringRequest stringRequest = new CustomStringRequest(Request.Method.POST, url, new Response.Listener<CustomStringRequest.ResponseM>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
-            public void onResponse(CustomStringRequest.ResponseM result) {
-                String token = result.headers.get("Authorization");
-                Token.getInstance().setToken(token);
+            public void onResponse(String response) {
+                JSONObject jsonResponse = null;
+                String token = null;
+                try {
+                    jsonResponse = new JSONObject(response);
+                    token = jsonResponse.getString("access_token");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(token);
+                TokenInstance.getInstance().setToken(token);
 
                 Intent intent = new Intent(LoginActivity.this, WallActivity.class);
                 startActivity(intent);
-            }
-        }, new Response.ErrorListener() {
+
+        }}, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(LoginActivity.this, "Wrong email or password", Toast.LENGTH_LONG).show();
-                etEmail.setText("");
-                etPassword.setText("");
             }
         }){
             @Override
