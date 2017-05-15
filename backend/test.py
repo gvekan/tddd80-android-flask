@@ -69,18 +69,18 @@ requests.post(root_uri + 'dislike-post',
 
 # GET POSTS
 get_latest_posts = requests.get(root_uri + 'get-latest-posts/-1', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(get_latest_posts.text)['posts'])
+print(json.loads(get_latest_posts.text))
 
 
 get_latest_posts = requests.get(root_uri + 'get-latest-posts/11', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(get_latest_posts.text)['posts'])
+print(json.loads(get_latest_posts.text))
 
 
 get_latest_posts = requests.get(root_uri + 'get-latest-posts-from-user', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(get_latest_posts.text)['posts'])
+print(json.loads(get_latest_posts.text))
 
 get_latest_posts = requests.get(root_uri + 'get-latest-posts-from/6', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(get_latest_posts.text)['posts'])
+print(json.loads(get_latest_posts.text))
 
 # GET_COMMENTS
 

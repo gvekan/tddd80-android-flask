@@ -188,8 +188,7 @@ class User(db.Model):
             else:
                 liking = True
             comments = Comment.query.filter(Comment.post_id == post.id).count()
-            response.append(
-                    {'post': {'id': post.id, 'name': post.user.first_name + ' ' + post.user.last_name, 'text': post.text, 'likes': likes, "liking": liking, "comments": comments}})
+            response.append({'id': post.id, 'name': post.user.first_name + ' ' + post.user.last_name, 'text': post.text, 'likes': likes, "liking": liking, "comments": comments})
         return response
 
     def get_latest_posts_from_user(self):
@@ -236,9 +235,9 @@ class User(db.Model):
         response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
         for i in range(len(comments)):
             comment = comments[i]
-            response.append({'comment': {'id': comment.id, 'index': comment.index,
+            response.append({'id': comment.id, 'index': comment.index,
                                          'name': comment.user.first_name + ' ' + comment.user.last_name,
-                                         'text': comment.text}})
+                                         'text': comment.text})
         return response
 
     def get_latest_comments_from_user(self, post):
