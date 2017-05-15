@@ -155,13 +155,9 @@ def get_latest_posts():
     """
     Get the ten latest posts on the wall
     """
-    print("start")
     latest = request.json.get('post', None)
-    print(isinstance(latest, int))
-    user = data.get_user(get_jwt_identity())
-    print(user)
+    user = data.get_user("gusan092@student.liu.se")
     post_list = user.get_latest_posts(latest)
-    print("end")
     return jsonify({"posts": post_list}), 200
 
 
