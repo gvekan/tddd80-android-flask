@@ -209,7 +209,7 @@ def dislike_post():
 
 
 @application.route('/create-comment', methods=['post'])
-#@jwt_required
+@jwt_required
 def create_comment():
     """
     Creates a post to the wall
@@ -223,7 +223,7 @@ def create_comment():
 
 
 @application.route('/get-latest-comments/<post_id>/<comment_index>', methods=['get'])
-#@jwt_required
+@jwt_required
 def get_latest_comments(post_id, comment_index):
     """
     Get the ten latest posts on the wall
