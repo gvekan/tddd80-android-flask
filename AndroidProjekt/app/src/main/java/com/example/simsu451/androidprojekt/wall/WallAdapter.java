@@ -44,7 +44,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
     private boolean scrollListenerCreated;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
-
     public WallAdapter(Context context, ListView listView, SwipeRefreshLayout swipeRefreshLayout) {
         super(context, R.layout.wall_post);
         posts.setPosts(new ArrayList<Post>());
@@ -53,13 +52,11 @@ public class WallAdapter extends ArrayAdapter<Post> {
         this.swipeRefreshLayout = swipeRefreshLayout;
         this.listView = listView;
         updateLatestPosts();
-
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         Log.i("WallAdapter", "onRefresh called from SwipeRefreshLayout");
-
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         if (!flagLoading) updateLatestPosts();
@@ -67,7 +64,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     }
                 }
         );
-
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -80,12 +76,10 @@ public class WallAdapter extends ArrayAdapter<Post> {
             TextView tvText = (TextView) convertView.findViewById(R.id.tvText);
             final TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
             TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
-
             tvName.setText(post.getName());
             tvText.setText(post.getText());
             if (post.isLiking()) tvLikes.setTextColor(Color.GREEN);
             tvLikes.setText(post.getLikes());
-
             View.OnClickListener likesClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -105,35 +99,26 @@ public class WallAdapter extends ArrayAdapter<Post> {
             tvLikes.setOnClickListener(likesClickListener);
             TextView textLikes = (TextView) convertView.findViewById(R.id.textLikes);
             textLikes.setOnClickListener(likesClickListener);
-
             View.OnClickListener commentsClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                 }
             };
             tvComments.setText(post.getComments());
             tvComments.setOnClickListener(commentsClickListener);
             TextView textComments = (TextView) convertView.findViewById(R.id.textComments);
             textComments.setOnClickListener(likesClickListener);
-
         }
         return convertView;
     }
-
     private void createScrollListener() {
         scrollListenerCreated = true;
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-
             }
-
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
                 Log.i("WallAdapter", "onScroll called from ListView");
-
                 if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0)
                 {
                     if(!flagLoading && !WallAdapter.this.isEmpty()) updateLatestPostsFromOldest();
@@ -141,7 +126,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
             }
         });
     }
-
     public void updatePostsForUser() {
         flagLoading = true;
         String url = Constants.URL + "get-latest-posts-from-user";
@@ -166,16 +150,14 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         flagLoading = false;
                     }
                 }){
-
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
-            return headers;
-        }};
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }};
         requestQueue.add(stringRequest);
     }
-
     private void updateLatestPosts() {
         flagLoading = true;
         String url = Constants.URL + "get-latest-posts";
@@ -220,12 +202,10 @@ public class WallAdapter extends ArrayAdapter<Post> {
             public byte[] getBody() throws AuthFailureError {
                 return params.toString().getBytes();
             }
-
             @Override
             public String getBodyContentType() {
                 return "application/json";
             }
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -235,7 +215,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
         };
         requestQueue.add(stringRequest);
     }
-
     private void updateLatestPostsFromOldest() {
         flagLoading = true;
         final JSONObject params = new JSONObject();
@@ -244,7 +223,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         String url = Constants.URL + "get-latest-posts-from";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -275,12 +253,10 @@ public class WallAdapter extends ArrayAdapter<Post> {
             public byte[] getBody() throws AuthFailureError {
                 return params.toString().getBytes();
             }
-
             @Override
             public String getBodyContentType() {
                 return "application/json";
             }
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -290,7 +266,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
         };
         requestQueue.add(stringRequest);
     }
-
     /**
      * keeps the position it had before data was added
      */
@@ -299,7 +274,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
         int top = (v == null) ? 0 : v.getTop();
         listView.setSelectionFromTop(position, top);
     }
-
     private void likePost(int post) {
         final JSONObject params = new JSONObject();
         try {
@@ -307,7 +281,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         String url = Constants.URL + "like-post";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -325,12 +298,10 @@ public class WallAdapter extends ArrayAdapter<Post> {
             public byte[] getBody() throws AuthFailureError {
                 return params.toString().getBytes();
             }
-
             @Override
             public String getBodyContentType() {
                 return "application/json";
             }
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -340,7 +311,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
         };
         requestQueue.add(stringRequest);
     }
-
     private void dislikePost(int post) {
         final JSONObject params = new JSONObject();
         try {
@@ -348,7 +318,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         String url = Constants.URL + "dislike-post";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -366,12 +335,10 @@ public class WallAdapter extends ArrayAdapter<Post> {
             public byte[] getBody() throws AuthFailureError {
                 return params.toString().getBytes();
             }
-
             @Override
             public String getBodyContentType() {
                 return "application/json";
             }
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
