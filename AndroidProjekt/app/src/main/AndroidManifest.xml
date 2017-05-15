@@ -21,8 +21,7 @@
         <activity android:name=".wall.WallActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".chat.ChatActivity" />
-        <activity android:name=".FriendsActivity" />
-        <activity android:name=".chat.ChatsActivity"></activity>
+        <activity android:name=".chat.FriendsActivity"></activity>
     </application>
 
 </manifest>

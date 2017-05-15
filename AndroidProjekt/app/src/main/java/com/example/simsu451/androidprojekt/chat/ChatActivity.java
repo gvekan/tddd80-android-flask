@@ -29,6 +29,7 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
+    private Friend friend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +38,16 @@ public class ChatActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         String jsonFriend = extras.getString("friend"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
-        Friend friend = new Gson().fromJson(jsonFriend, Friend.class);
+        friend = new Gson().fromJson(jsonFriend, Friend.class);
         TextView tvName = (TextView) findViewById(R.id.tvName);
+        if (tvName == null) throw new AssertionError("tvName is null");
         tvName.setText(friend.getName());
 
         ListView listView = (ListView) findViewById(R.id.lwChat);
         if (listView == null) throw new AssertionError("listView is null");
         ChatAdapter chatAdapter = new ChatAdapter(this, listView);
         this.chatAdapter = chatAdapter;
+        chatAdapter.setFriend(friend);
         listView.setAdapter(chatAdapter);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -71,6 +74,7 @@ public class ChatActivity extends AppCompatActivity {
         final JSONObject params = new JSONObject();
         try {
             params.put("text", text);
+            params.put("friend_email", friend.getEmail());
         } catch (JSONException e){
             e.printStackTrace();
         }
@@ -78,12 +82,11 @@ public class ChatActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //chatAdapter.updateMessages
+                chatAdapter.updateMessages();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         }) {
             @Override

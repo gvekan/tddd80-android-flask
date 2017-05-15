@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -15,16 +16,26 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.chat.ChatActivity;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
     private String token;
+    private TextView tvFirstName;
+    private TextView tvLastName;
+    private TextView tvCity;
+    private TextView tvEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        tvFirstName = (TextView) findViewById(R.id.tvFirstName);
+        tvLastName = (TextView) findViewById(R.id.tvLastName);
+        tvCity = (TextView) findViewById(R.id.tvCity);
+        tvEmail = (TextView) findViewById(R.id.tvEmail);
 
         final Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -41,16 +52,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        Button chatButton = (Button) findViewById(R.id.chatButton);
-        if (chatButton == null) throw new AssertionError("chatButton is null");
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, ChatActivity.class);
-                startActivity(intent);
-            }
-        });
-
         Button logoutButton = (Button) findViewById(R.id.logoutButton);
 
         if (logoutButton == null) throw new AssertionError("logoutButton is null");
@@ -65,17 +66,19 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void getProfileInfo() {
-        String url = Constants.URL + "profile-info";
+        String url = Constants.URL + "get-profile-info";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                // Uppdatera adaptern
+                Gson gson = new Gson();
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(ProfileActivity.this, "An error occurred, try again.", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
             }
         }){
 
@@ -87,5 +90,6 @@ public class ProfileActivity extends AppCompatActivity {
                 return headers;
             }
         };
+        requestQueue.add(stringRequest);
     }
 }

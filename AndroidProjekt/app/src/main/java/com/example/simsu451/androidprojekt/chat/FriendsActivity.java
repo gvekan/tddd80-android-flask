@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChatsActivity extends AppCompatActivity {
+public class FriendsActivity extends AppCompatActivity {
     private Friends friends = new Friends();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chats);
+        setContentView(R.layout.activity_friends);
         friends.setFriends(new ArrayList<Friend>());
         getFriends();
 
@@ -42,7 +42,7 @@ public class ChatsActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ChatsActivity.this, ChatActivity.class);
+                Intent intent = new Intent(FriendsActivity.this, ChatActivity.class);
                 intent.putExtra("friend", new Gson().toJson(friends.getFriends().get(position))); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
                 startActivity(intent);
             }
@@ -64,7 +64,6 @@ public class ChatsActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         }) {
             @Override

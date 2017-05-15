@@ -1,6 +1,7 @@
 package com.example.simsu451.androidprojekt.chat;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.Friend;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +36,14 @@ import java.util.Map;
 public class ChatAdapter extends ArrayAdapter<Message> {
     private Messages messages = new Messages();
     private ListView listView;
+    private Friend friend;
 
     public ChatAdapter(Context context, ListView listView) {
         super(context, R.layout.chat_message);
         messages.setMessages(new ArrayList<Message>());
         this.listView = listView;
         updateMessages();
+
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -52,7 +59,8 @@ public class ChatAdapter extends ArrayAdapter<Message> {
     }
 
     public void updateMessages() {
-        String url = Constants.URL + "get-messages";
+        String url = Constants.URL + "get-messages/" + friend.getEmail();
+
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -78,5 +86,9 @@ public class ChatAdapter extends ArrayAdapter<Message> {
             }
         };
         requestQueue.add(stringRequest);
+    }
+
+    public void setFriend(Friend friend) {
+        this.friend = friend;
     }
 }
