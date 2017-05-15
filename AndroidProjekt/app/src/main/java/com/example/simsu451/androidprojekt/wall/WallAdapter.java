@@ -160,13 +160,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
     }
     private void updateLatestPosts() {
         flagLoading = true;
-        String url = Constants.URL + "get-latest-posts";
-        final JSONObject params = new JSONObject();
-        try {
-            params.put("post", posts.getLatest());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        String url = Constants.URL + "get-latest-posts/" + posts.getLatest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -199,14 +193,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 }
         ){
             @Override
-            public byte[] getBody() throws AuthFailureError {
-                return params.toString().getBytes();
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/json";
-            }
-            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
@@ -217,13 +203,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
     }
     private void updateLatestPostsFromOldest() {
         flagLoading = true;
-        final JSONObject params = new JSONObject();
-        try {
-            params.put("post", posts.getOldest());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String url = Constants.URL + "get-latest-posts-from";
+        String url = Constants.URL + "get-latest-posts-from/" + posts.getOldest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -250,14 +230,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 }
         ){
             @Override
-            public byte[] getBody() throws AuthFailureError {
-                return params.toString().getBytes();
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/json";
-            }
-            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
@@ -274,6 +246,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
         int top = (v == null) ? 0 : v.getTop();
         listView.setSelectionFromTop(position, top);
     }
+
     private void likePost(int post) {
         final JSONObject params = new JSONObject();
         try {
