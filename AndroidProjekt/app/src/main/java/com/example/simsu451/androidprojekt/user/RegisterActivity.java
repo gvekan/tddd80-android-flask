@@ -28,11 +28,10 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         Button createButton = (Button) findViewById(R.id.createButton);
-        assert createButton != null;
+        if (createButton == null) throw new AssertionError("createButton is null");
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 createUser();
             }
         });
@@ -56,19 +55,19 @@ public class RegisterActivity extends AppCompatActivity {
         if (etPassword == null) throw new AssertionError("etPassword is null");
         if (etControlPassword == null) throw new AssertionError("etControlPassword is null");
 
-        String first_name = etFirstName.getText().toString();
-        String last_name = etLastName.getText().toString();
+        String firstName = etFirstName.getText().toString();
+        String lastName = etLastName.getText().toString();
         String city = etCity.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
         String controlPassword = etControlPassword.getText().toString();
 
-        if (first_name.length() == 0 || last_name.length() == 0 || city.length() == 0 || email.length() == 0 || password.length() == 0 || controlPassword.length() == 0) {
+        if (firstName.length() == 0 || lastName.length() == 0 || city.length() == 0 || email.length() == 0 || password.length() == 0 || controlPassword.length() == 0) {
             Toast.makeText(this, "All fields must be filled in", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!password.equals(controlPassword)) { //Kolla så email inte redan finns, födelsedatum är giltigt, bara bokstäver i namnen, lösenorden är bra
+        if (!password.equals(controlPassword)) {
             Toast.makeText(this, "Not matching passwords", Toast.LENGTH_SHORT).show();
             etPassword.setText("");
             etControlPassword.setText("");
@@ -80,8 +79,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
         final JSONObject params = new JSONObject();
         try {
-            params.put("first_name", first_name);
-            params.put("last_name", last_name);
+            params.put("first_name", firstName);
+            params.put("last_name", lastName);
             params.put("city", city);
             params.put("email", email);
             params.put("password", password);

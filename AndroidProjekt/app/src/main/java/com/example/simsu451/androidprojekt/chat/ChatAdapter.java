@@ -18,7 +18,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.Friend;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.TokenInstance;
+import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };

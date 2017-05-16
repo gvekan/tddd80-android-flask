@@ -15,14 +15,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.simsu451.androidprojekt.chat.ChatActivity;
+import com.example.simsu451.androidprojekt.chat.FriendsActivity;
+import com.example.simsu451.androidprojekt.user.Profile;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
-    private String token;
     private TextView tvFirstName;
     private TextView tvLastName;
     private TextView tvCity;
@@ -36,18 +36,15 @@ public class ProfileActivity extends AppCompatActivity {
         tvLastName = (TextView) findViewById(R.id.tvLastName);
         tvCity = (TextView) findViewById(R.id.tvCity);
         tvEmail = (TextView) findViewById(R.id.tvEmail);
-
-        final Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            token = bundle.getString("token");
-        }
+        getProfileInfo();
 
         Button friendsButton = (Button) findViewById(R.id.friendsButton);
         if (friendsButton == null) throw new AssertionError("friendsButton is null");
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(ProfileActivity.this, FriendsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -59,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                Token.getInstance().setToken(null);
                 startActivity(intent);
             }
         });
@@ -72,6 +70,11 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Gson gson = new Gson();
+                Profile profile = gson.fromJson(response, Profile.class);
+                tvFirstName.setText(profile.getFirstName());
+                tvLastName.setText(profile.getLastName());
+                tvCity.setText(profile.getCity());
+                tvEmail.setText(profile.getEmail());
 
             }
         }, new Response.ErrorListener() {
@@ -86,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };

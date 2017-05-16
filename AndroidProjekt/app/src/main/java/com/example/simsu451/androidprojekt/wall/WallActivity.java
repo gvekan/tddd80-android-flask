@@ -20,7 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.ProfileActivity;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.TokenInstance;
+import com.example.simsu451.androidprojekt.Token;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,7 +107,7 @@ public class WallActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };

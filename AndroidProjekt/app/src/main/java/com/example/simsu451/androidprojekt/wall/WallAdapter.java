@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,7 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.TokenInstance;
+import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -29,7 +28,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -157,13 +155,13 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }};
         requestQueue.add(stringRequest);
     }
     private void updateLatestPosts() {
-        System.out.println(TokenInstance.getInstance().getToken());
+        System.out.println(Token.getInstance().getToken());
         flagLoading = true;
         String url = Constants.URL + "get-latest-posts/" + posts.getLatest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -175,7 +173,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         Posts posts = gson.fromJson(response, Posts.class);
                         ArrayList<Post> postList = posts.getPosts();
                         Post post1 = postList.get(1);
-                        System.out.println(post1.getText());
                         int size = postList.size();
                         if (!postList.isEmpty()) {
                             for (int i = size-1; i >= 0; i--) {
@@ -202,7 +199,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };
@@ -239,7 +236,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };
@@ -285,7 +282,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };
@@ -322,7 +319,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + TokenInstance.getInstance().getToken());
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
                 return headers;
             }
         };
