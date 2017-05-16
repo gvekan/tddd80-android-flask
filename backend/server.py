@@ -303,6 +303,12 @@ def get_chats():
     chats = user.get_chats()
     return jsonify({'chats': chats}), 200
 
+@application.route('/get_profile_info', methods=['GET'])
+@jwt_required
+def get_profile_info():
+    user = data.get_user(get_jwt_identity())
+    info_list = user.get_profile_info()
+    return jsonify({"info": info_list})
 
 
 @application.route('/send_friend_request/<receiver_email>', methods=['POST'])

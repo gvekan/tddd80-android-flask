@@ -165,6 +165,10 @@ print(json.loads(get_latest_comments.text))
 # f2 = requests.post(root_uri + 'accept_friend_request', json={'requester': 'gusan092@student.liu.se'}, headers={'Authorization': 'Bearer ' + token})
 # print(json.loads(f2.text)['msg'])
 
+# GET PROFILE INFO
+#get_info = requests.get(root_uri + 'get_profile_info', headers={'Authorization': 'Bearer ' + token})
+#print(json.loads(get_info.text))
+
 # FACIT
 # RAD 1; Post 6-15
 # RAD 2: Post 12-15

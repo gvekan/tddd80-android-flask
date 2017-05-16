@@ -47,7 +47,6 @@ class User(db.Model):
                               lazy='dynamic')
 
 
-
     def __init__(self, email, password, first_name, last_name, city):
         self.email = email
         self.set_password(password)
@@ -61,6 +60,9 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.pw_hash, password)
 
+    def get_profile_info(self):
+        info = {'first_name': self.first_name, 'last_name': self.last_name, 'city': self.city, 'email': self.email}
+        return info
 
     def send_message(self, receiver, text):
         chat = Chat.query.filter(Chat.members.any(User.id == self.id), Chat.members.any(User.id == receiver.id)).first()
@@ -175,6 +177,7 @@ class User(db.Model):
 
         """
         :param latest:
+        :param oldest
         :return:the 10 latest posts from latest (latest not included)
         """
         # posts = Post.query.order_by(desc(Post.posted_at)).limit(10).all()
@@ -228,7 +231,9 @@ class User(db.Model):
 
     def get_latest_comments_from(self, post, latest, oldest):
         """
+        :param post:
         :param latest:
+        :param oldest:
         :return:the 10 latest posts from latest (latest not included)
         """
         comments = Comment.query.filter(Comment.index.in_(range(oldest, latest)), Comment.post_id == post.id).all() # index.in_ ger en varning
