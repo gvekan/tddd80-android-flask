@@ -173,7 +173,7 @@ class User(db.Model):
         return self.get_latest_posts_from(latest, oldest)
 
 
-    def get_latest_posts_from(self, latest, oldest):
+    def get_latest_posts_from(self, latest, oldest): # stödjer inte att posts tas bort
 
         """
         :param latest:
@@ -229,7 +229,7 @@ class User(db.Model):
         return self.get_latest_comments_from(post, latest, oldest)
 
 
-    def get_latest_comments_from(self, post, latest, oldest):
+    def get_latest_comments_from(self, post, latest, oldest): # stödjer inte att posts tas bort
         """
         :param post:
         :param latest:

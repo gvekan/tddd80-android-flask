@@ -37,19 +37,19 @@ for i in range(1, 6):
 
 # CREATE COMMENTS
 for i in range(1, 6):
-    requests.post(root_uri + 'create-comment',
-                       json={'text': 'Hej! Här är Gustavs ' + str(i) + ' kommentar', "post": 6},
+    requests.post(root_uri + 'create-comment/6',
+                       json={'text': 'Hej! Här är Gustavs ' + str(i) + ' kommentar'},
                        headers={'Authorization': 'Bearer ' + token_gustav})
 
 for i in range(1, 6):
-    requests.post(root_uri + 'create-comment',
-                       json={'text': 'Hej! Här är Simons ' + str(i) + ' kommentar', "post": 6},
+    requests.post(root_uri + 'create-comment/6',
+                       json={'text': 'Hej! Här är Simons ' + str(i) + ' kommentar'},
                        headers={'Authorization': 'Bearer ' + token_simon})
 
 
 for i in range(1,6):
-    requests.post(root_uri + 'create-comment',
-                       json={'text': 'Hej! Här är Ronnys ' + str(i) + ' kommentar', "post": 6},
+    requests.post(root_uri + 'create-comment/6',
+                       json={'text': 'Hej! Här är Ronnys ' + str(i) + ' kommentar'},
                        headers={'Authorization': 'Bearer ' + token_ronny})
 
 # LIKE POSTS:
