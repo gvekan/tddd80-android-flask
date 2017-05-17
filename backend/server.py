@@ -191,7 +191,8 @@ def get_latest_posts_from_user():
 @application.route('/like-post/<post_id>', methods=['post'])
 @jwt_required
 def like_post(post_id):
-    post = data.Post.query.get(post_id)
+    id = int(post_id)
+    post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
     user.like_post(post)
     return jsonify({"msg": "Post liked"}), 200
@@ -200,7 +201,8 @@ def like_post(post_id):
 @application.route('/dislike-post/<post_id>', methods=['post'])
 @jwt_required
 def dislike_post(post_id):
-    post = data.Post.query.get(post_id)
+    id = int(post_id)
+    post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
     user.dislike_post(post)
     return jsonify({"msg": "Post unliked"}), 200
@@ -213,7 +215,8 @@ def create_comment(post_id):
     Creates a post to the wall
     """
     text = request.json.get('text', None)
-    post = data.Post.query.get(post_id)
+    id = int(post_id)
+    post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
     user.create_comment(post, text)
     return jsonify({"msg": "Comment successfully made"}), 200
