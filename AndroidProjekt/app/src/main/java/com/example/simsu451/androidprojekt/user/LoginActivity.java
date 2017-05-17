@@ -1,4 +1,4 @@
-package com.example.simsu451.androidprojekt;
+package com.example.simsu451.androidprojekt.user;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.wall.WallActivity;
 
 import org.json.JSONException;
@@ -75,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                JSONObject jsonResponse = null;
+                JSONObject jsonResponse;
                 String token = null;
                 try {
                     jsonResponse = new JSONObject(response);

@@ -20,7 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.user.Token;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -172,7 +172,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         Gson gson = new Gson();
                         Posts posts = gson.fromJson(response, Posts.class);
                         ArrayList<Post> postList = posts.getPosts();
-                        Post post1 = postList.get(1);
                         int size = postList.size();
                         if (!postList.isEmpty()) {
                             for (int i = size-1; i >= 0; i--) {

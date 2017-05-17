@@ -18,9 +18,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
-import com.example.simsu451.androidprojekt.ProfileActivity;
+import com.example.simsu451.androidprojekt.user.ProfileActivity;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.user.Token;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.example.simsu451.androidprojekt.chat;
+package com.example.simsu451.androidprojekt.friend;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +16,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
-import com.example.simsu451.androidprojekt.Friend;
-import com.example.simsu451.androidprojekt.Friends;
+import com.example.simsu451.androidprojekt.chat.ChatActivity;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.user.Token;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

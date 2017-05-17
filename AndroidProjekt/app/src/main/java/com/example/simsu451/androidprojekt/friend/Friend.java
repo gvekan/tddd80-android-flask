@@ -1,4 +1,4 @@
-package com.example.simsu451.androidprojekt;
+package com.example.simsu451.androidprojekt.friend;
 
 /**
  * Created by simsu451 on 12/05/17.

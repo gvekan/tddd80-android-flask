@@ -5,6 +5,12 @@ package com.example.simsu451.androidprojekt.user;
  */
 
 public class Profile {
+
+    private String firstName;
+    private String lastName;
+    private String city;
+    private String email;
+
     public String getFirstName() {
         return firstName;
     }
@@ -36,9 +42,4 @@ public class Profile {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    private String firstName;
-    private String lastName;
-    private String city;
-    private String email;
 }

@@ -1,4 +1,6 @@
-package com.example.simsu451.androidprojekt;
+package com.example.simsu451.androidprojekt.friend;
+
+import com.example.simsu451.androidprojekt.friend.Friend;
 
 import java.util.List;
 
