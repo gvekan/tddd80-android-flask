@@ -313,8 +313,7 @@ class Message(db.Model):
 
 
 def get_user(email):
-    user = User.query.filter_by(email=email).first()
-    return user
+    return User.query.filter_by(email=email).first()
 
 
 
