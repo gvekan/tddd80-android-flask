@@ -53,22 +53,17 @@ for i in range(1,6):
                        headers={'Authorization': 'Bearer ' + token_ronny})
 
 # LIKE POSTS:
-requests.post(root_uri + 'like-post',
-                   json={"post": 1},
+requests.post(root_uri + 'like-post/1',
                    headers={'Authorization': 'Bearer ' + token_gustav})
-requests.post(root_uri + 'like-post',
-                   json={"post": 14},
+requests.post(root_uri + 'like-post/14',
                    headers={'Authorization': 'Bearer ' + token_gustav})
-requests.post(root_uri + 'like-post',
-                   json={"post": 14},
+requests.post(root_uri + 'like-post/14',
                    headers={'Authorization': 'Bearer ' + token_simon})
-requests.post(root_uri + 'like-post',
-                   json={"post": 14},
+requests.post(root_uri + 'like-post/14',
                    headers={'Authorization': 'Bearer ' + token_ronny})
 
 # DISLIKE POST
-requests.post(root_uri + 'dislike-post',
-                   json={"post": 1},
+requests.post(root_uri + 'like-post/14',
                    headers={'Authorization': 'Bearer ' + token_gustav})
 
 # GET POSTS
