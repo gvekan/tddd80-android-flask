@@ -1,6 +1,7 @@
 package com.example.simsu451.androidprojekt.wall;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -20,13 +21,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.user.Token;
+import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +77,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             final TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
             TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
             tvName.setText(post.getName());
+            final ColorStateList oldColors =  tvLikes.getTextColors();
             //System.out.println(post.getName());
             tvText.setText(post.getText());
             if (post.isLiking()) tvLikes.setTextColor(Color.GREEN);
@@ -87,7 +90,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         post.setLiking(false);
                         post.setLikes(post.getLikes()-1);
                         tvLikes.setText(Integer.toString(post.getLikes()));
-                        tvLikes.setTextColor(Color.BLACK);
+                        tvLikes.setTextColor(oldColors);
                     } else {
                         likePost(post.getId());
                         post.setLiking(true);
@@ -137,10 +140,11 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        Posts posts = gson.fromJson(response, Posts.class);
+                        posts = gson.fromJson(response, Posts.class);
                         WallAdapter.this.clear();
-                        WallAdapter.this.addAll(posts.getPosts());
-                        WallAdapter.this.posts = posts;
+                        ArrayList<Post> postList = posts.getPosts();
+                        Collections.sort(postList, new PostComparator());
+                        WallAdapter.this.addAll(postList);
                         WallAdapter.this.notifyDataSetChanged();
                         if (!scrollListenerCreated && !WallAdapter.this.isEmpty()) createScrollListener();
                         flagLoading = false;
@@ -172,6 +176,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         Gson gson = new Gson();
                         Posts posts = gson.fromJson(response, Posts.class);
                         ArrayList<Post> postList = posts.getPosts();
+                        Collections.sort(postList, new PostComparator());
                         int size = postList.size();
                         if (!postList.isEmpty()) {
                             for (int i = size-1; i >= 0; i--) {
@@ -181,7 +186,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                             WallAdapter.this.posts.addPosts(postList);
                         }
                         WallAdapter.this.notifyDataSetChanged();
-                        if (!postList.isEmpty() && !WallAdapter.this.isEmpty()) retainPosition(listView.getFirstVisiblePosition() + size);
+                        if (!postList.isEmpty() && scrollListenerCreated) retainPosition(listView.getFirstVisiblePosition() + size);
                         if (!scrollListenerCreated && !WallAdapter.this.isEmpty()) createScrollListener();
                         swipeRefreshLayout.setRefreshing(false);
                         flagLoading = false;
@@ -251,13 +256,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
     }
 
     private void likePost(int post) {
-        final JSONObject params = new JSONObject();
-        try {
-            params.put("post", post);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String url = Constants.URL + "like-post";
+        String url = Constants.URL + "like-post/" + post;
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -270,14 +269,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     }
                 }
         ){
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                return params.toString().getBytes();
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/json";
-            }
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -288,13 +279,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
         requestQueue.add(stringRequest);
     }
     private void dislikePost(int post) {
-        final JSONObject params = new JSONObject();
-        try {
-            params.put("post", post);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String url = Constants.URL + "dislike-post";
+        String url = Constants.URL + "dislike-post/" + post;
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -307,14 +292,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     }
                 }
         ){
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                return params.toString().getBytes();
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/json";
-            }
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();

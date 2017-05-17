@@ -1,4 +1,4 @@
-package com.example.simsu451.androidprojekt.user;
+package com.example.simsu451.androidprojekt;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +15,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.simsu451.androidprojekt.Constants;
-import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.wall.WallActivity;
 
 import org.json.JSONException;

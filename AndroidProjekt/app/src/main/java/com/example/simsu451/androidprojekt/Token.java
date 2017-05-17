@@ -1,4 +1,4 @@
-package com.example.simsu451.androidprojekt.user;
+package com.example.simsu451.androidprojekt;
 
 /**
  * Created by gusan092 on 10/05/17.

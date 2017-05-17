@@ -20,7 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.user.ProfileActivity;
 import com.example.simsu451.androidprojekt.R;
-import com.example.simsu451.androidprojekt.user.Token;
+import com.example.simsu451.androidprojekt.Token;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,7 +68,7 @@ public class WallActivity extends AppCompatActivity {
 
     private void makePost() {
         String url = Constants.URL + "create-post";
-        EditText etPost = (EditText) findViewById(R.id.etPost);
+        final EditText etPost = (EditText) findViewById(R.id.etPost);
         if (etPost == null) throw new AssertionError("etPost is null");
         String text = etPost.getText().toString();
         if (text.isEmpty()) {
@@ -87,6 +87,7 @@ public class WallActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 wallAdapter.updatePostsForUser();
+                etPost.setText("");
             }
         }, new Response.ErrorListener() {
             @Override

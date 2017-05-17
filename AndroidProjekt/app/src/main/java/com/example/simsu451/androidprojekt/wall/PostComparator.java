@@ -10,8 +10,9 @@ public class PostComparator implements Comparator<Post> {
 
     @Override
     public int compare(Post lhs, Post rhs) {
-        if (lhs.getId() > rhs.getId()) return 1;
-        else if (lhs.getId() < rhs.getId()) return -1;
+        if (lhs.getId() > rhs.getId()) return -1;
+        else if (lhs.getId() < rhs.getId()) return 1;
         return 0;
     }
+
 }

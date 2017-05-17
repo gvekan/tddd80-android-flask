@@ -19,7 +19,6 @@ public class Posts {
 
     public void setPosts(ArrayList<Post> posts) {
         this.posts = posts;
-        Collections.sort(this.posts, new PostComparator());
     }
 
     public void addPosts(ArrayList<Post> posts) {
