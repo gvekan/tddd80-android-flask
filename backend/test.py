@@ -23,12 +23,16 @@ login_ronny = requests.post(root_uri + 'login', json={'email': 'ronny451@student
 token_ronny = json.loads(login_ronny.text)['access_token']
 
 # CREATING POSTS
+r = 0
 for i in range(1, 6):
-    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Gustavs ' + str(i) + ' inlägg'},
+    r += 1
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Gustavs inlägg med id: ' + str(r)},
                         headers={'Authorization': 'Bearer ' + token_gustav})
-    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Simons ' + str(i) + ' inlägg'},
+    r += 1
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Simons inlägg med id: ' + str(r)},
                             headers={'Authorization': 'Bearer ' + token_simon})
-    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Ronnys ' + str(i) + ' inlägg'},
+    r += 1
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Ronnys inlägg med id: ' + str(r)},
                             headers={'Authorization': 'Bearer ' + token_ronny})
 
 # CREATE COMMENTS

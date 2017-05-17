@@ -186,7 +186,7 @@ class User(db.Model):
         response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
         for post in posts:
             likes = User.query.filter(User.liked_posts.any(Post.id == post.id)).count()
-            if User.query.filter(Post.likes.any(User.id == self.id), Post.id == post.id).count() == 0:
+            if User.query.filter(Post.likes.any(User.id == self.id), Post.id == post.id).count() == 0: # kanske ger fel, syns i appen
                 liking = False
             else:
                 liking = True
