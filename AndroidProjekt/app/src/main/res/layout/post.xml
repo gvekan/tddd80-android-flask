@@ -2,12 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/commentContainer"
-        android:layout_below="@+id/textLikes"/>
-
     <TextView
         android:text="Name"
         android:layout_width="wrap_content"
@@ -55,4 +49,45 @@
         android:layout_below="@+id/tvText"
         android:layout_toEndOf="@+id/tvLikes"
         android:layout_marginStart="10dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentContainer"
+        android:layout_below="@+id/textLikes"/>
+
+    <Button
+        android:text="Load more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btLoad"
+        android:layout_below="@+id/textLikes"
+        android:visibility="gone"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btLoad"
+        android:id="@+id/lwComments"
+        android:visibility="gone"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Write your comment here..."
+        android:ems="10"
+        android:id="@+id/etComment"
+        android:layout_below="@+id/lwComments"
+        android:layout_alignParentStart="true"
+        android:visibility="gone"/>
+
+    <Button
+        android:text="Comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btComment"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/lwComments"
+        android:layout_toEndOf="@+id/etComment"
+        android:visibility="gone"/>
 </RelativeLayout>

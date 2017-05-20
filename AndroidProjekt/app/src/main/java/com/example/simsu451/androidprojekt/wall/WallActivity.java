@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -70,6 +71,8 @@ public class WallActivity extends AppCompatActivity {
         String url = Constants.URL + "create-post";
         final EditText etPost = (EditText) findViewById(R.id.etPost);
         if (etPost == null) throw new AssertionError("etPost is null");
+//        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_wall);
+//        if (relativeLayout == null) throw new AssertionError("relativeLayout is null");
         String text = etPost.getText().toString();
         if (text.isEmpty()) {
             Toast.makeText(this, "You have to write something", Toast.LENGTH_SHORT).show();
@@ -88,6 +91,8 @@ public class WallActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 wallAdapter.updatePostsForUser();
                 etPost.setText("");
+//                relativeLayout.setFocusable(true);
+//                relativeLayout.setFocusableInTouchMode(true);
             }
         }, new Response.ErrorListener() {
             @Override
