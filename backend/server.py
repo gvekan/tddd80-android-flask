@@ -307,8 +307,8 @@ def get_chats():
 @jwt_required
 def get_profile_info():
     user = data.get_user(get_jwt_identity())
-    info_list = user.get_profile_info()
-    return jsonify({'info': info_list}), 200
+    info = user.get_profile_info()
+    return jsonify({'Profile': info}), 200
 
 
 @application.route('/send-friend-request/<receiver_email>', methods=['POST'])
