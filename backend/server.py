@@ -293,15 +293,15 @@ def get_messages(receiver_email):
     return jsonify({"messages": messages}), 200
 
 
-@application.route('/get-chats', methods=['GET'])
+@application.route('/get-friends', methods=['GET'])
 @jwt_required
-def get_chats():
+def get_friends():
     """
     Get all active chat a user has
     """
     user = data.get_user(get_jwt_identity())
-    chats = user.get_chats()
-    return jsonify({'chats': chats}), 200
+    friends_list = user.get_friends()
+    return jsonify({'friends': friends_list}), 200
 
 @application.route('/get-profile-info', methods=['GET'])
 @jwt_required

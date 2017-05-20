@@ -83,17 +83,15 @@ class User(db.Model):
         messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
         response = []
         for message in messages:
-            response.append({'message': message.text, 'user_id': message.sent_by})
+            response.append({'message': message.text, 'sentBy': message.sent_by})
         return response
 
-    def get_chats(self):
-        chats = Chat.query.join(User.chats).filter(User.id == self.id).all()
+    def get_friends(self):
+        friends = User.friends.filter(friendships.c.requested == self.id, friendships.c.requested == self.id).all()
         response = []
-        for chat in chats:
-            friends = User.query.join(Chat.members).filter(Chat.id == chat.id).all()
-            for friend in friends:
-                if friend.id != self.id:
-                    response.append({'chat': {'friend_id': friend.id, 'name': friend.first_name + ' ' + friend.last_name}})
+        for friend in friends:
+            #if friend.id != self.id:
+            response.append({'name': friend.first_name + ' ' + friend.last_name, 'email': friend.email, 'isFriend': True})
         return response
 
     def send_friend_request(self, other):
@@ -130,7 +128,7 @@ class User(db.Model):
         requests = User.friends.filter(friendships.c.requested == self.id).all()
         response = []
         for requester in requests:
-            response.append({'name': requester.first_name + ' ' + requester.last_name})
+            response.append({'name': requester.first_name + ' ' + requester.last_name, 'email': requester.email, 'isFriend': False})
         return response
 
 
