@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.simsu451.androidprojekt">
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.location.gps" />
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -19,7 +24,7 @@
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".wall.WallActivity" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".user.ProfileActivity" />
         <activity android:name=".chat.ChatActivity" />
         <activity android:name=".friend.FriendsActivity"></activity>
     </application>
