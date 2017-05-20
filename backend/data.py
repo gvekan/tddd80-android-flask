@@ -61,7 +61,7 @@ class User(db.Model):
         return check_password_hash(self.pw_hash, password)
 
     def get_profile_info(self):
-        info = {'first_name': self.first_name, 'last_name': self.last_name, 'city': self.city, 'email': self.email}
+        info = {'firstName': self.first_name, 'lastName': self.last_name, 'city': self.city, 'email': self.email}
         return info
 
     def send_message(self, receiver, text):
