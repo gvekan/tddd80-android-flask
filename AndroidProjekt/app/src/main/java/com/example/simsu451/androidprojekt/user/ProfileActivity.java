@@ -186,10 +186,10 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             public void onResponse(String response) {
                 Gson gson = new Gson();
                 Profile profile = gson.fromJson(response, Profile.class);
-                tvFirstName.setText(profile.getFirstName());
-                tvLastName.setText(profile.getLastName());
-                tvCity.setText(profile.getCity());
-                tvEmail.setText(profile.getEmail());
+                tvFirstName.setText(String.format("First name: %s", profile.getFirstName()));
+                tvLastName.setText(String.format("Last name: %s", profile.getLastName()));
+                tvCity.setText(String.format("City: %s", profile.getCity()));
+                tvEmail.setText(String.format("Email: %s", profile.getEmail()));
 
             }
         }, new Response.ErrorListener() {

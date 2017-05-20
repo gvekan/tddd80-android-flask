@@ -5,17 +5,16 @@ package com.example.simsu451.androidprojekt.friend;
  */
 
 public class Friend {
-    private int id;
     private String name;
-
     private String email;
+    private boolean isFriend;
 
-    public int getId() {
-        return id;
+    public boolean isFriend() {
+        return isFriend;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setFriend(boolean friend) {
+        isFriend = friend;
     }
 
     public String getName() {

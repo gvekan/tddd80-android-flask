@@ -7,6 +7,26 @@ package com.example.simsu451.androidprojekt.chat;
 public class Message {
     private int id;
     private String text;
+    private String sentBy;
+    private String receiver;
+
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getSentBy() {
+        return sentBy;
+    }
+
+    public void setSentBy(String sentBy) {
+        this.sentBy = sentBy;
+    }
+
 
     public String getText() {
         return text;

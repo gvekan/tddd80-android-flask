@@ -10,18 +10,30 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.simsu451.androidprojekt.friend.FriendsActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/newChatButton"
-        android:id="@+id/swiperefresh">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvFriendRequests"
+        android:id="@+id/lwFriends" />
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lwChats" />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lwFriends"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:text="Friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/tvFriends" />
+
+    <TextView
+        android:text="Friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:id="@+id/tvFriendRequests" />
 
 </RelativeLayout>

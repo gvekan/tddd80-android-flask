@@ -45,8 +45,7 @@ public class ChatActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.lwChat);
         if (listView == null) throw new AssertionError("listView is null");
-        ChatAdapter chatAdapter = new ChatAdapter(this, listView);
-        this.chatAdapter = chatAdapter;
+        chatAdapter = new ChatAdapter(this, listView);
         chatAdapter.setFriend(friend);
         listView.setAdapter(chatAdapter);
 
