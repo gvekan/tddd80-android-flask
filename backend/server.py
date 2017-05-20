@@ -267,7 +267,7 @@ def get_latest_comments_from_user(post_id):
     return jsonify({"comments": comment_list}), 200
 
 
-@application.route('/send_message', methods=['POST'])
+@application.route('/send-message', methods=['POST'])
 @jwt_required
 def send_message():
     """
@@ -281,7 +281,7 @@ def send_message():
     return jsonify({"msg": "Message successfully sent"}), 200
 
 
-@application.route('/get_messages/<receiver_email>', methods=['GET'])
+@application.route('/get-messages/<receiver_email>', methods=['GET'])
 @jwt_required
 def get_messages(receiver_email):
     """
@@ -293,7 +293,7 @@ def get_messages(receiver_email):
     return jsonify({"messages": messages}), 200
 
 
-@application.route('/get_chats', methods=['GET'])
+@application.route('/get-chats', methods=['GET'])
 @jwt_required
 def get_chats():
     """
@@ -303,15 +303,15 @@ def get_chats():
     chats = user.get_chats()
     return jsonify({'chats': chats}), 200
 
-@application.route('/get_profile_info', methods=['GET'])
+@application.route('/get-profile-info', methods=['GET'])
 @jwt_required
 def get_profile_info():
     user = data.get_user(get_jwt_identity())
     info_list = user.get_profile_info()
-    return jsonify({"info": info_list})
+    return jsonify({'info': info_list}), 200
 
 
-@application.route('/send_friend_request/<receiver_email>', methods=['POST'])
+@application.route('/send-friend-request/<receiver_email>', methods=['POST'])
 @jwt_required
 def send_friend_request(receiver_email):
     user = data.get_user(get_jwt_identity())
@@ -320,7 +320,7 @@ def send_friend_request(receiver_email):
     return jsonify({'msg': 'Friend request successfully sent'}), 200
 
 
-@application.route('/get_friend_requests', methods=['GET'])
+@application.route('/get-friend-requests', methods=['GET'])
 @jwt_required
 def get_friend_requests():
     user = data.get_user(get_jwt_identity())
@@ -328,7 +328,7 @@ def get_friend_requests():
     return jsonify({'friend_requests': friend_requests}), 200
 
 
-@application.route('/accept_friend_request/<requester_email>', methods=['POST'])
+@application.route('/accept-friend-request/<requester_email>', methods=['POST'])
 @jwt_required
 def accept_friend_request(requester_email):
     user = data.get_user(get_jwt_identity())

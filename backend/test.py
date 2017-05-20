@@ -95,6 +95,9 @@ print(json.loads(get_latest_comments.text))
 get_latest_comments = requests.get(root_uri + 'get-latest-comments-from/6/11', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(get_latest_comments.text))
 
+get_profile_info = requests.get(root_uri + 'get-profile-info', headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(get_profile_info.text))
+
 
 # for i in range(1, 16):
 #     r3 = requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är mitt ' + str(i) + ' inlägg'},
