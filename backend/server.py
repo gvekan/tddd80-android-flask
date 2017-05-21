@@ -194,7 +194,7 @@ def like_post(post_id):
     id = int(post_id)
     post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
-    user.like_post(post)
+    post.like_post(user)
     return jsonify({"msg": "Post liked"}), 200
 
 
@@ -204,7 +204,7 @@ def dislike_post(post_id):
     id = int(post_id)
     post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
-    user.dislike_post(post)
+    post.dislike_post(user)
     return jsonify({"msg": "Post unliked"}), 200
 
 

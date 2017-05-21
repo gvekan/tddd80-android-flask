@@ -183,8 +183,8 @@ class User(db.Model):
         posts = Post.query.filter(Post.id.in_(range(oldest, latest))).all()
         response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
         for post in posts:
-            likes = User.query.filter(User.liked_posts.any(Post.id == post.id)).count()
-            if User.query.filter(Post.likes.any(User.id == self.id), Post.id == post.id).count() == 0: # kanske ger fel, syns i appen
+            likes = post.likes.count()
+            if post.likes.filter(User.id == self.id).count() == 0: # kanske ger fel, syns i appen
                 liking = False
             else:
                 liking = True
@@ -255,14 +255,6 @@ class User(db.Model):
             oldest = latest - 10
         return self.get_latest_comments_from(post, latest, oldest)
 
-    def like_post(self, post):
-        post.likes.append(self)
-        db.session.commit()
-
-    def dislike_post(self, post):
-        post.likes.remove(self)
-        db.session.commit()
-
 
 
 
@@ -320,7 +312,7 @@ class Post(db.Model):
     text = db.Column(db.String, nullable=False)
     # posted_at = db.Column(db.DateTime)
 
-    likes = db.relationship('User', secondary=post_likes, backref=db.backref('liked_posts', lazy='dynamic'))
+    likes = db.relationship('User', secondary=post_likes, backref=db.backref('liked_posts', lazy='dynamic'), lazy='dynamic')
     comments = db.relationship("Comment", backref="post", lazy='dynamic')
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -328,6 +320,14 @@ class Post(db.Model):
     def __init__(self, text):
         self.text = text
         # self.posted_at = datetime.now()
+
+    def like_post(self, user):
+        self.likes.append(user)
+        db.session.commit()
+
+    def dislike_post(self, user):
+        self.likes.remove(user)
+        db.session.commit()
 
 
 class Comment(db.Model):

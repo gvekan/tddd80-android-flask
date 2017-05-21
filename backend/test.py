@@ -63,7 +63,7 @@ requests.post(root_uri + 'like-post/14',
                    headers={'Authorization': 'Bearer ' + token_ronny})
 
 # DISLIKE POST
-requests.post(root_uri + 'like-post/14',
+requests.post(root_uri + 'dislike-post/14',
                    headers={'Authorization': 'Bearer ' + token_gustav})
 
 # GET POSTS
