@@ -10,8 +10,8 @@ public class CommentComparator implements Comparator<Comment> {
 
     @Override
     public int compare(Comment lhs, Comment rhs) {
-        if (lhs.getIndex() > rhs.getIndex()) return -1;
-        else if (lhs.getIndex() < rhs.getIndex()) return 1;
+        if (lhs.getIndex() < rhs.getIndex()) return -1;
+        else if (lhs.getIndex() > rhs.getIndex()) return 1;
         return 0;
     }
 }
