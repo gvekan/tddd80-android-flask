@@ -48,6 +48,9 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         Message message = getItem(position);
         if (message != null) {
             TextView tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
+            if (message.getSentBy().equals(friend.getEmail())) {
+                tvMessage.setTextColor(5);
+            }
             tvMessage.setText(message.getText());
         }
         return convertView;
