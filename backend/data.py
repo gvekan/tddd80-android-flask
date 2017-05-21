@@ -16,9 +16,13 @@ chat_members = db.Table('chat_members',
                         db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                         db.Column('chat_id', db.Integer, db.ForeignKey('chat.id')))
 
+friend_requests = db.Table('friend_requests',
+                           db.Column('requester_id', db.Integer, db.ForeignKey('user.id')),
+                           db.Column('requested_id', db.Integer, db.ForeignKey('user.id')))
+
 friendships = db.Table('friendships',
-                       db.Column('requester', db.Integer, db.ForeignKey('user.id')),
-                       db.Column('requested', db.Integer, db.ForeignKey('user.id')))
+                       db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                       db.Column('friend_id', db.Integer, db.ForeignKey('user.id')))
 
 post_likes = db.Table('likes',
                        db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -39,11 +43,18 @@ class User(db.Model):
     comments = db.relationship("Comment", backref="user", lazy='dynamic')
     messages = db.relationship("Message", backref="user", lazy="dynamic")
 
+    sent_requests = db.relationship('User',
+                                    secondary=friend_requests,
+                                    primaryjoin=(friend_requests.c.requester_id == id),
+                                    secondaryjoin=(friend_requests.c.requested_id == id),
+                                    backref=db.backref('received_requests', lazy='dynamic'),
+                                    lazy='dynamic')
+
     friends = db.relationship('User',
                               secondary=friendships,
-                              primaryjoin=(friendships.c.requester == id),
-                              secondaryjoin=(friendships.c.requested == id),
-                              backref=db.backref('friendships', lazy='dynamic'),
+                              primaryjoin=(friendships.c.user_id == id),
+                              secondaryjoin=(friendships.c.friend_id == id),
+                              backref=db.backref('friendship', lazy='dynamic'),
                               lazy='dynamic')
 
 
@@ -65,13 +76,13 @@ class User(db.Model):
         return info
 
     def send_message(self, receiver, text):
-        chat = Chat.query.filter(Chat.members.any(User.id == self.id), Chat.members.any(User.id == receiver.id)).first()
+        chat = get_chat(self, receiver)
         if not chat:
             chat = Chat()
             chat.members.append(self)
             chat.members.append(receiver)
             db.session.add(chat)
-        message = Message(text)
+        message = Message(text, chat.messages.count() + 1)
         chat.messages.append(message)
         self.messages.append(message)
         db.session.add(message)
@@ -79,7 +90,7 @@ class User(db.Model):
         return 'Chat started'
 
     def get_messages(self, receiver):
-        chat = Chat.query.filter(Chat.members.any(User.id == self.id), Chat.members.any(User.id == receiver.id)).first()
+        chat = get_chat(self, receiver)
         messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
         response = []
         for message in messages:
@@ -87,32 +98,49 @@ class User(db.Model):
         return response
 
     def get_friends(self):
-        friends = User.friends.filter(friendships.c.requested == self.id, friendships.c.requested == self.id).all()
+        friends = self.friends.all()
         response = []
         for friend in friends:
-            #if friend.id != self.id:
-            response.append({'name': friend.first_name + ' ' + friend.last_name, 'email': friend.email, 'isFriend': True})
+            response.append({'name': friend.first_name + ' ' + friend.last_name, 'email': friend.email})
         return response
+
+    def remove_friend(self, friend):
+        self.friends.remove(friend)
+        friend.friendship.remove(self)
+        db.session.commit()
+        return 'Friend removed'
+
 
     def send_friend_request(self, other):
         """
         Send a request to a user
         """
-        self.friends.append(other)
+        if not self.friend_request_sent(other):
+            self.sent_requests.append(other)
+            other.received_requests.append(self)
+        db.session.commit()
         return 'Friend request sent'
+
+    def accept_friend_request(self, other):
+        if not other.friend_request_sent(self):
+            return "No friend request from that User"
+        other.sent_requests.remove(self)
+        self.friends.append(other)
+        db.session.commit()
+        return "Friend request accepted"
 
     def are_friends(self, other):
         """
         If both users has a friend request sent to
         each other, they are friends
         """
-        return self.friend_request_sent(other) and other.friend_request_sent(self)
+        return self.sent_requests.filter(friend_requests.c.requested_id == other.id).count() > 0
 
     def friend_request_sent(self, other):
         """
         Check if a user has sent a request to another user
         """
-        return self.friends.filter(friendships.c.requested == other).count() > 0
+        return self.sent_requests.filter(friend_requests.c.requested_id == other.id).count() > 0
 
     def remove_friend_request(self, other):
         """
@@ -120,15 +148,15 @@ class User(db.Model):
         remove a friend.)
         """
         if self.are_friends(other):
-            other.friends.remove(self)
-        self.friends.remove(other)
+            self.sent_requests.remove(other)
+        db.session.commit()
         return ''
 
     def get_friend_requests(self):
-        requests = User.friends.filter(friendships.c.requested == self.id).all()
+        requests = self.received_requests.all()
         response = []
         for requester in requests:
-            response.append({'name': requester.first_name + ' ' + requester.last_name, 'email': requester.email, 'isFriend': False})
+            response.append({'name': requester.first_name + ' ' + requester.last_name, 'email': requester.email})
         return response
 
 
@@ -136,18 +164,13 @@ class User(db.Model):
         """
         Get the number of friend requests
         """
-        return User.friends.filter(friendships.c.requested == self.id).count()
+        return self.received_requests.count()
 
     def get_number_of_friends(self):
         """
         Get the number of friends a user has
         """
-        others = User.friends.filter(friendships.c.requested == self.id).all()
-        count = 0
-        for other in others:
-            if self.are_friends(other):
-                count += 1
-        return count
+        return self.friends.count()
 
     def create_post(self, text):
         post = Post(text)
@@ -183,8 +206,8 @@ class User(db.Model):
         posts = Post.query.filter(Post.id.in_(range(oldest, latest))).all()
         response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
         for post in posts:
-            likes = User.query.filter(User.liked_posts.any(Post.id == post.id)).count()
-            if User.query.filter(Post.likes.any(User.id == self.id), Post.id == post.id).count() == 0: # kanske ger fel, syns i appen
+            likes = post.likes.count()
+            if post.likes.filter(User.id == self.id).count() == 0: # kanske ger fel, syns i appen
                 liking = False
             else:
                 liking = True
@@ -215,7 +238,7 @@ class User(db.Model):
 
 
     def get_latest_comments(self, post, oldest):
-        oldest = oldest + 1
+        oldest += 1
         if oldest == 0:
             latest = post.comments.count() + 1
             if latest < 11:
@@ -255,33 +278,34 @@ class User(db.Model):
             oldest = latest - 10
         return self.get_latest_comments_from(post, latest, oldest)
 
-    def like_post(self, post):
-        post.likes.append(self)
-        db.session.commit()
+    def get_latest_messages(self, chat, oldest):
+        oldest = oldest + 1
+        if oldest == 0:
+            latest = chat.messages.count() + 1
+            if latest < 11:
+                oldest = 1
+            else:
+                oldest = latest - 10
+        else:
+            latest = oldest + 10
+        return self.get_latest_messages_from(chat, latest, oldest)
 
-    def dislike_post(self, post):
-        post.likes.remove(self)
-        db.session.commit()
+    def get_latest_messages_from(self, chat, latest, oldest):
+        """
+        :param chat:
+        :param latest:
+        :param oldest:
+        :return:the 10 latest posts from latest (latest not included)
+        """
+        messages = Message.query.filter(Message.index.in_(range(oldest, latest)), Message.chat_id == chat.id).all() # index.in_ ger en varning
+        response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
+        for i in range(len(messages)):
+            message = messages[i]
+            response.append({'id': message.id, 'index': message.index,
+                             'name': message.user.first_name + ' ' + message.user.last_name,
+                             'text': message.text})
+        return response
 
-
-
-
-
-    # # def mark_read(self, friend):
-    # #     """
-    # #     Mark all messages from a user as read
-    # #     """
-    # #     messages = Message.query.filter_by(receiver=self.id, sent_by=friend).all()
-    # #     for message in messages:
-    # #         message.read = True
-    # #     db.session.commit()
-    # #     return 'Message read'
-    #
-    # def get_number_of_unread(self):
-    #     """
-    #     Get the number of unread messages from all users
-    #     """
-    #     return Message.query.filter_by(receiver=self.id, read=False).count()
 
 def register_user(email, password, first_name, last_name, city):
     """
@@ -304,30 +328,40 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
     chat_id = db.Column(db.Integer, db.ForeignKey('chat.id'))
-    sent_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    sent_by = db.Column(db.Integer, db.ForeignKey('user.email'))
+    index = db.Column(db.Integer, unique=False, nullable=False)
 
-    def __init__(self, text):
+    def __init__(self, text, index):
         self.text = text
-
+        self.index = index
 
 def get_user(email):
     return User.query.filter_by(email=email).first()
 
+def get_chat(user, other):
+    return Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == other.id)).first()
 
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
-    # posted_at = db.Column(db.DateTime)
 
-    likes = db.relationship('User', secondary=post_likes, backref=db.backref('liked_posts', lazy='dynamic'))
+    likes = db.relationship('User', secondary=post_likes, backref=db.backref('liked_posts', lazy='dynamic'), lazy='dynamic')
     comments = db.relationship("Comment", backref="post", lazy='dynamic')
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, text):
         self.text = text
-        # self.posted_at = datetime.now()
+
+    def like_post(self, user):
+        self.likes.append(user)
+        db.session.commit()
+
+    def dislike_post(self, user):
+        self.likes.remove(user)
+        db.session.commit()
+
 
 
 class Comment(db.Model):

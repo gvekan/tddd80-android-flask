@@ -98,39 +98,10 @@ print(json.loads(get_latest_comments.text))
 get_profile_info = requests.get(root_uri + 'get-profile-info', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(get_profile_info.text))
 
-
-# for i in range(1, 16):
-#     r3 = requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är mitt ' + str(i) + ' inlägg'},
-#                        headers={'Authorization': 'Bearer ' + token_gustav})
-#     print(json.loads(r3.text)['msg'])
-#
-# # GET POSTS
-# r5 = requests.get(root_uri + 'get-latest-posts', json={'post': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
-#
-# r4 = requests.get(root_uri + 'get-latest-posts-from', json={'post': 6}, headers={'Authorization': 'Bearer ' + token_gustav})
-# posts2 = json.loads(r4.text)['posts']
-# print(posts2)
-#
-# # CREATE COMMENTS
-# for i in range(1, 21):
-#     if random.randrange(2) == 0:
-#         post_id = posts1[random.randrange(10)]['post']['id']
-#     else:
-#         post_id = posts2[random.randrange(5)]['post']['id']
-#
-#     r6 = requests.post(root_uri + 'create-comment',
-#                        json={'text': 'Hej! Här är min ' + str(i) + ' kommentar', "post": post_id},
-#                        headers={'Authorization': 'Bearer ' + token_gustav})
-#     print(json.loads(r6.text)['msg'])
-#
-# for i in range(1, 16):
-#     r6 = requests.get(root_uri + 'get-latest-comments', json={'post': i, 'comment': -1}, headers={'Authorization': 'Bearer ' + token_gustav})
-#     print(json.loads(r6.text)['comments'])
-
 # # SENDING MESSAGES
-m1 = requests.post(root_uri + 'send-message', json={'message': 'Mitt meddelande', 'receiver': 'simsu451@student.liu.se'}, headers={'Authorization': 'Bearer ' + token_gustav})
+m1 = requests.post(root_uri + 'send-message', json={'text': 'Mitt meddelande', 'receiver': 'simsu451@student.liu.se'}, headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(m1.text)['msg'])
-m2 = requests.post(root_uri + 'send-message', json={'message': 'Mitt meddelande 2', 'receiver': 'simsu451@student.liu.se'}, headers={'Authorization': 'Bearer ' + token_gustav})
+m2 = requests.post(root_uri + 'send-message', json={'text': 'Mitt meddelande 2', 'receiver': 'simsu451@student.liu.se'}, headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(m2.text)['msg'])
 
 # m3 = requests.post(root_uri + 'send_message', json={'message': 'Mitt meddelande 3', 'receiver': 'simsu451@student.liu.se'}, headers={'Authorization': 'Bearer ' + token})
