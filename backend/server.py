@@ -246,7 +246,7 @@ def get_latest_comments_from(post_id, comment_index):
     post = data.Post.query.get(id)
     latest = int(comment_index)
     if latest < 11:
-        oldest = 0
+        oldest = 1
     else:
         oldest = latest - 10
     user = data.get_user(get_jwt_identity())
@@ -315,7 +315,7 @@ def get_profile_info():
 def remove_friend(friend_email):
     user = data.get_user(get_jwt_identity())
     friend = friend_email
-    data.user.remove_friend_request()
+    user.remove_friend_request(friend)
     return jsonify({'msg': "Friend removed"}), 200
 
 @application.route('/send-friend-request/<receiver_email>', methods=['POST'])
@@ -324,7 +324,7 @@ def send_friend_request(receiver_email):
     user = data.get_user(get_jwt_identity())
     receiver = data.get_user(receiver_email)
     user.send_friend_request(receiver)
-    return jsonify({'msg': 'Friend request successfully sent'}), 200
+    return jsonify({'msg': 'Friend request successfully sent to ' + receiver.first_name + ' ' + receiver.last_name}), 200
 
 
 @application.route('/get-friend-requests', methods=['GET'])
@@ -340,5 +340,5 @@ def get_friend_requests():
 def accept_friend_request(requester_email):
     user = data.get_user(get_jwt_identity())
     requester = data.get_user(requester_email)
-    user.send_friend_request(requester)
+    user.accept_friend_request(requester)
     return jsonify({'msg': 'You are now friends with ' + requester.first_name + ' ' + requester.last_name}), 200
