@@ -163,7 +163,12 @@ print(json.loads(f2.text)['msg'])
 fr1 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(fr1.text)['friends'])
 #
-#
+# GET LATEST MESSAGES
+
+lm1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se/1', headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(lm1.text)['messages'])
+lm2 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se/0', headers={'Authorization': 'Bearer ' + token_gustav})
+print(json.loads(lm2.text)['messages'])
 # # LOGIN ANOTHER USER
 # logout1 = requests.post(root_uri + 'logout', headers={'Authorization': 'Bearer ' + token})
 # login2 = requests.post(root_uri + 'login', json={'email': 'simsu451@student.liu.se', 'password': 'password'})

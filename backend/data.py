@@ -76,13 +76,13 @@ class User(db.Model):
         return info
 
     def send_message(self, receiver, text):
-        chat = Chat.query.filter(Chat.members.any(User.id == self.id), Chat.members.any(User.id == receiver.id)).first()
+        chat = get_chat(self, receiver)
         if not chat:
             chat = Chat()
             chat.members.append(self)
             chat.members.append(receiver)
             db.session.add(chat)
-        message = Message(text)
+        message = Message(text, chat.messages.count() + 1)
         chat.messages.append(message)
         self.messages.append(message)
         db.session.add(message)
@@ -90,7 +90,7 @@ class User(db.Model):
         return 'Chat started'
 
     def get_messages(self, receiver):
-        chat = Chat.query.filter(Chat.members.any(User.id == self.id), Chat.members.any(User.id == receiver.id)).first()
+        chat = get_chat(self, receiver)
         messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
         response = []
         for message in messages:
@@ -104,12 +104,19 @@ class User(db.Model):
             response.append({'name': friend.first_name + ' ' + friend.last_name, 'email': friend.email})
         return response
 
+    def remove_friend(self, friend):
+        self.friends.remove(friend)
+        friend.friendship.remove(self)
+        db.session.commit()
+        return 'Friend removed'
+
     def send_friend_request(self, other):
         """
         Send a request to a user
         """
         if not self.friend_request_sent(other):
             self.sent_requests.append(other)
+            other.received_requests.append(self)
         db.session.commit()
         return 'Friend request sent'
 
@@ -173,7 +180,6 @@ class User(db.Model):
         return 'Post created'
 
 
-
     def get_latest_posts(self, oldest):
         oldest = oldest + 1
         if oldest == 0:
@@ -230,8 +236,9 @@ class User(db.Model):
         return 'Comment created'
 
 
+
     def get_latest_comments(self, post, oldest):
-        oldest = oldest + 1
+        oldest += 1
         if oldest == 0:
             latest = post.comments.count() + 1
             if latest < 11:
@@ -279,6 +286,33 @@ class User(db.Model):
         post.likes.remove(self)
         db.session.commit()
 
+    def get_latest_messages(self, chat, oldest):
+        oldest = oldest + 1
+        if oldest == 0:
+            latest = chat.messages.count() + 1
+            if latest < 11:
+                oldest = 1
+            else:
+                oldest = latest - 10
+        else:
+            latest = oldest + 10
+        return self.get_latest_messages_from(chat, latest, oldest)
+
+    def get_latest_messages_from(self, chat, latest, oldest):
+        """
+        :param chat:
+        :param latest:
+        :param oldest:
+        :return:the 10 latest posts from latest (latest not included)
+        """
+        messages = Message.query.filter(Message.index.in_(range(oldest, latest)), Message.chat_id == chat.id).all() # index.in_ ger en varning
+        response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
+        for i in range(len(messages)):
+            message = messages[i]
+            response.append({'id': message.id, 'index': message.index,
+                             'name': message.user.first_name + ' ' + message.user.last_name,
+                             'text': message.text})
+        return response
 
 
 def register_user(email, password, first_name, last_name, city):
@@ -303,13 +337,19 @@ class Message(db.Model):
     text = db.Column(db.String, nullable=False)
     chat_id = db.Column(db.Integer, db.ForeignKey('chat.id'))
     sent_by = db.Column(db.Integer, db.ForeignKey('user.email'))
+    index = db.Column(db.Integer, unique=False, nullable=False)
 
-    def __init__(self, text):
+    def __init__(self, text, index):
         self.text = text
+        self.index = index
 
 
 def get_user(email):
     return User.query.filter_by(email=email).first()
+
+
+def get_chat(user, other):
+    return Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == other.id)).first()
 
 
 
