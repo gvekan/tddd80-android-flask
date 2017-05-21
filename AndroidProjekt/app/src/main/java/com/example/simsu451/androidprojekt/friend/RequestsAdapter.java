@@ -29,8 +29,6 @@ public class RequestsAdapter extends ArrayAdapter<Friend> {
 
     public RequestsAdapter(Context context) {
         super(context, R.layout.activity_friends);
-
-
     }
 
     @Override

@@ -44,13 +44,8 @@ public class FriendsAdapter extends ArrayAdapter<Friend> {
         final Friend friend = getItem(position);
         if (friend != null) {
             TextView tvFriend = (TextView) convertView.findViewById(R.id.tvFriend);
-            Button button = (Button) convertView.findViewById(R.id.button);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteFriend(friend);
-                }
-            });
+            tvFriend.setText(friend.getName());
+
             tvFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -59,13 +54,21 @@ public class FriendsAdapter extends ArrayAdapter<Friend> {
                     getContext().startActivity(intent);
                 }
             });
-            }
+
+            Button button = (Button) convertView.findViewById(R.id.button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeFriend(friend);
+                }
+            });
+        }
         return convertView;
     }
 
 
-    private void deleteFriend(Friend friend) {
-        String url = Constants.URL + "delete-friend/" + friend.getEmail();
+    private void removeFriend(Friend friend) {
+        String url = Constants.URL + "remove-friend/" + friend.getEmail();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

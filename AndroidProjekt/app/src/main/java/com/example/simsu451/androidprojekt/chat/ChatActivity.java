@@ -45,8 +45,7 @@ public class ChatActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.lwChat);
         if (listView == null) throw new AssertionError("listView is null");
-        chatAdapter = new ChatAdapter(this, listView);
-        chatAdapter.setFriend(friend);
+        chatAdapter = new ChatAdapter(this, friend);
         listView.setAdapter(chatAdapter);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -60,8 +59,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-
-
     private void sendMessage() {
         String url = Constants.URL + "send-message";
         EditText etMessage = (EditText) findViewById(R.id.etMessage);
@@ -73,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
         final JSONObject params = new JSONObject();
         try {
             params.put("text", text);
-            params.put("friend_email", friend.getEmail());
+            params.put("receiver", friend.getEmail());
         } catch (JSONException e){
             e.printStackTrace();
         }

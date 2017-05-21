@@ -31,13 +31,12 @@ import java.util.Map;
 
 public class ChatAdapter extends ArrayAdapter<Message> {
     private Messages messages = new Messages();
-    private ListView listView;
     private Friend friend;
 
-    public ChatAdapter(Context context, ListView listView) {
+    public ChatAdapter(Context context, Friend friend) {
         super(context, R.layout.chat_message);
         messages.setMessages(new ArrayList<Message>());
-        this.listView = listView;
+        this.friend = friend;
         updateMessages();
 
     }
@@ -55,7 +54,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
     }
 
     public void updateMessages() {
-        String url = Constants.URL + "get-messages/" + friend.getEmail();
+        String url = Constants.URL + "get-latest-messages/" + friend.getEmail();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -64,6 +63,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         ChatAdapter.this.messages.setMessages(gson.fromJson(response, Messages.class).getMessages());
+                        ChatAdapter.this.clear();
                         ChatAdapter.this.addAll(messages.getMessages());
                         ChatAdapter.this.notifyDataSetChanged();
                     }
@@ -84,7 +84,4 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         requestQueue.add(stringRequest);
     }
 
-    public void setFriend(Friend friend) {
-        this.friend = friend;
-    }
 }

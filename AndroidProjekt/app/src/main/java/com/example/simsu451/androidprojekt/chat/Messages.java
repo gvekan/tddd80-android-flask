@@ -20,9 +20,4 @@ public class Messages {
         this.messages = messages;
         Collections.sort(this.messages, new MessageComparator());
     }
-
-    public void addMessages(List<Message> messages) {
-        this.messages.addAll(messages);
-        Collections.sort(this.messages, new MessageComparator());
-    }
 }
