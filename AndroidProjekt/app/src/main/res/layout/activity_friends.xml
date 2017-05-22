@@ -14,31 +14,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvFriends"
-        android:layout_above="@+id/usersButton"
+        android:layout_above="@+id/requestsButton"
         android:id="@+id/lvFriends" />
 
 
     <TextView
-        android:text="Friends"
-        android:layout_width="wrap_content"
+        android:text="@string/friends"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="11"
+        android:gravity="center"
+        android:textColor="#000"
+        android:textSize="30sp"
         android:layout_alignParentTop="true"
         android:id="@+id/tvFriends" />
 
-    <TextView
-        android:text="Friend requests"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/tvFriends"
-        android:id="@+id/tvFriendRequests" />
-
     <Button
-        android:text="All users"
+        android:text="@string/friend_requests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/usersButton" />
+        android:id="@+id/requestsButton" />
 
 
 </RelativeLayout>

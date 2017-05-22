@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -50,11 +50,11 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         }
         Message message = getItem(position);
         if (message != null) {
-            TextView tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
+            EditText etMessage = (EditText) convertView.findViewById(R.id.etMessage);
             if (message.getSentBy().equals(user.getEmail())) {
-                tvMessage.setTextColor(Color.GREEN);
+                etMessage.setTextColor(Color.GREEN);
             }
-            tvMessage.setText(message.getText());
+            etMessage.setText(message.getText());
         }
         return convertView;
     }

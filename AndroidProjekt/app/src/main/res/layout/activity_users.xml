@@ -13,7 +13,26 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/friendsButton"
+        android:layout_below="@+id/tvUsers"
+        android:id="@+id/lvUsers"/>
+
+    <Button
+        android:text="@string/friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/lvUsers"/>
+        android:id="@+id/friendsButton" />
+
+    <TextView
+        android:text="@string/users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#000"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/tvUsers" />
 </RelativeLayout>

@@ -5,4 +5,22 @@
     <string name="add_friend">Add friend</string>
     <string name="remove_friend">Remove friend</string>
     <string name="accept">Accept</string>
+    <string name="friends">Friends</string>
+    <string name="logout">Logout</string>
+    <string name="users">Users</string>
+    <string name="friend_requests">Friend requests</string>
+    <string name="post">Post</string>
+    <string name="what_s_on_your_mind">What\'s on your mind?</string>
+    <string name="profile">Profile</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="write_your_message_here">Write your message here...</string>
+    <string name="send">Send</string>
+    <string name="name">Name</string>
+    <string name="last_name">Last name</string>
+    <string name="city">City</string>
+    <string name="create_user">Create user</string>
+    <string name="first_name">First name</string>
 </resources>

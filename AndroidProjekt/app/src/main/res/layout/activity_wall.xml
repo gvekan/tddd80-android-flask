@@ -25,9 +25,10 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <Button
-        android:text="Profile"
-        android:layout_width="match_parent"
+        android:text="@string/profile"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ems="12"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:id="@+id/profileButton"/>
@@ -36,18 +37,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="What's on your mind?"
+        android:hint="@string/what_s_on_your_mind"
         android:ems="13"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:id="@+id/etPost" />
 
     <Button
-        android:text="Post"
+        android:text="@string/post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/etPost"
         android:id="@+id/postButton" />
+
+    <Button
+        android:text="@string/users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/profileButton"
+        android:id="@+id/usersButton" />
 
 </RelativeLayout>

@@ -11,33 +11,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.simsu451.androidprojekt.user.ProfileActivity">
 
-    <Button
-        android:text="Friends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/friendsButton"/>
 
     <Button
-        android:text="Logout"
-        android:layout_width="wrap_content"
+        android:text="@string/logout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/photoButton"
         android:id="@+id/logoutButton"/>
-
-    <Button
-        android:text="Take photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/friendsButton"
-        android:id="@+id/photoButton"/>
 
 
     <TextView
-        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -45,7 +28,6 @@
         android:id="@+id/tvFirstName" />
 
     <TextView
-        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvFirstName"
@@ -53,7 +35,6 @@
         android:id="@+id/tvLastName" />
 
     <TextView
-        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvLastName"
@@ -61,28 +42,12 @@
         android:id="@+id/tvCity" />
 
     <TextView
-        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvCity"
         android:layout_alignParentStart="true"
         android:id="@+id/tvEmail" />
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvEmail"
-        android:layout_alignParentStart="true"
-        android:id="@+id/tvLocation" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/picture_frame"
-        android:layout_below="@+id/tvLocation"
-        android:layout_above="@+id/friendsButton"
-        android:id="@+id/ivPhoto"/>
 
 </RelativeLayout>
 

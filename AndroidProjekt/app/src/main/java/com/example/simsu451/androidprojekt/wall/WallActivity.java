@@ -27,6 +27,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.UsersActivity;
+import com.example.simsu451.androidprojekt.friend.FriendsActivity;
 import com.example.simsu451.androidprojekt.user.ProfileActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
@@ -67,6 +69,15 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
+        Button usersButton = (Button) findViewById(R.id.usersButton);
+        if (usersButton == null) throw new AssertionError("usersButton is null");
+        usersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WallActivity.this, UsersActivity.class);
+                startActivity(intent);
+            }
+        });
         Button postButton = (Button) findViewById(R.id.postButton);
         if (postButton == null) throw new AssertionError("postButton is null");
         postButton.setOnClickListener(new View.OnClickListener() {

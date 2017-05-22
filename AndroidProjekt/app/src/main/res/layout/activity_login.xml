@@ -12,7 +12,7 @@
     android:orientation="vertical">
 
     <EditText
-        android:hint="E-mail"
+        android:hint="@string/e_mail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
@@ -20,7 +20,7 @@
         android:id="@+id/etEmail" />
 
     <EditText
-        android:hint="Password"
+        android:hint="@string/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
@@ -28,13 +28,13 @@
         android:id="@+id/etPassword" />
 
     <Button
-        android:text="Login"
+        android:text="@string/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/loginButton" />
 
     <Button
-        android:text="Register"
+        android:text="@string/register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/registerButton" />

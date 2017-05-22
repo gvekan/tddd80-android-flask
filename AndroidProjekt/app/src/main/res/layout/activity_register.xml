@@ -12,7 +12,7 @@
     android:orientation="vertical">
 
     <EditText
-        android:hint="First name"
+        android:hint="@string/first_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
@@ -20,7 +20,7 @@
         android:id="@+id/etFirstName" />
 
     <EditText
-        android:hint="Last name"
+        android:hint="@string/last_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
@@ -29,7 +29,7 @@
 
 
     <EditText
-        android:hint="City"
+        android:hint="@string/city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
@@ -37,7 +37,7 @@
         android:id="@+id/etCity" />
 
     <EditText
-        android:hint="E-mail"
+        android:hint="@string/e_mail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
@@ -45,7 +45,7 @@
         android:id="@+id/etEmail" />
 
     <EditText
-        android:hint="Password"
+        android:hint="@string/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
@@ -53,7 +53,7 @@
         android:id="@+id/etPassword" />
 
     <EditText
-        android:hint="Password"
+        android:hint="@string/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
@@ -61,7 +61,7 @@
         android:id="@+id/etControlPassword" />
 
     <Button
-        android:text="Create user"
+        android:text="@string/create_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/createButton" />

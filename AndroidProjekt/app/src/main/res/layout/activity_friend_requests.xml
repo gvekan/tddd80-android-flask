@@ -13,15 +13,25 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/friendsButton"
+        android:layout_below="@id/tvRequests"
         android:id="@+id/lvRequests"/>
 
     <Button
-        android:text="Friends"
+        android:text="@string/friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:id="@+id/friendsButton" />
+
+    <TextView
+        android:text="@string/friend_requests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#000"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/tvRequests" />
 </RelativeLayout>
