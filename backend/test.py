@@ -5,8 +5,8 @@ import random
 import requests
 
 data.initialize_db()
-#root_uri = 'http://localhost:' + str(config.port) + '/'
-root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
+root_uri = 'http://localhost:' + str(config.port) + '/'
+# root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
 
 
 # CREATING USERS
@@ -26,13 +26,13 @@ token_ronny = json.loads(login_ronny.text)['access_token']
 r = 0
 for i in range(1, 6):
     r += 1
-    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Gustavs inlägg med id: ' + str(r)},
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Gustavs inlägg med id: ' + str(r), 'city': ''},
                         headers={'Authorization': 'Bearer ' + token_gustav})
     r += 1
-    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Simons inlägg med id: ' + str(r)},
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Simons inlägg med id: ' + str(r), 'city': ''},
                             headers={'Authorization': 'Bearer ' + token_simon})
     r += 1
-    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Ronnys inlägg med id: ' + str(r)},
+    requests.post(root_uri + 'create-post', json={'text': 'Hej! Här är Ronnys inlägg med id: ' + str(r), 'city': ''},
                             headers={'Authorization': 'Bearer ' + token_ronny})
 
 # CREATE COMMENTS
@@ -126,13 +126,13 @@ f1 = requests.post(root_uri + 'send-friend-request/gusan092@student.liu.se', hea
 print(json.loads(f1.text)['msg'])
 #   GET FRIEND REQUESTS
 gfr1 = requests.get(root_uri + 'get-friend-requests', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(gfr1.text)['friend_requests'])
+print(json.loads(gfr1.text)['users'])
 # # ACCEPT FRIEND REQUEST
 f2 = requests.post(root_uri + 'accept-friend-request/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(f2.text)['msg'])
 #   GET FRIENDS
 fr1 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(fr1.text)['friends'])
+print(json.loads(fr1.text)['users'])
 #
 # GET LATEST MESSAGES
 

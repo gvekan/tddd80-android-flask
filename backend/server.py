@@ -144,8 +144,9 @@ def create_post():
     Creates a post to the wall
     """
     text = request.json.get('text', None)
+    city = request.json.get('city', None)
     user = data.get_user(get_jwt_identity())
-    user.create_post(text)
+    user.create_post(text, city)
     return jsonify({"msg": "Post successfully made"}), 200
 
 
