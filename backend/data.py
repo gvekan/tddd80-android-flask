@@ -101,7 +101,7 @@ class User(db.Model):
         friends = self.friends.all()
         response = []
         for friend in friends:
-            response.append({'name': friend.first_name + ' ' + friend.last_name, 'email': friend.email})
+            response.append({'firstName': friend.first_name, 'lastName': friend.last_name, 'email': friend.email, 'city': friend.city})
         return response
 
     def remove_friend(self, friend):
@@ -156,7 +156,7 @@ class User(db.Model):
         requests = self.received_requests.all()
         response = []
         for requester in requests:
-            response.append({'name': requester.first_name + ' ' + requester.last_name, 'email': requester.email})
+            response.append({'firstName': requester.first_name, 'lastName': requester.last_name, 'email': requester.email, 'city': requester.city})
         return response
 
 
@@ -341,6 +341,12 @@ def get_user(email):
 def get_chat(user, other):
     return Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == other.id)).first()
 
+def get_all_users():
+    users = User.query.all()
+    response = []
+    for user in users:
+        response.append({'firstName': user.first_name, 'lastName': user.last_name, 'email': user.email, 'city': user.city})
+    return response
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
