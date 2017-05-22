@@ -3,6 +3,7 @@ package com.example.simsu451.androidprojekt;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +22,6 @@ import org.json.JSONObject;
 
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText etEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         EditText etFirstName = (EditText) findViewById(R.id.etFirstName);
         EditText etLastName = (EditText) findViewById(R.id.etLastName);
         EditText etCity = (EditText) findViewById(R.id.etCity);
-        etEmail = (EditText) findViewById(R.id.etEmail);
+        final EditText etEmail = (EditText) findViewById(R.id.etEmail);
         EditText etPassword = (EditText) findViewById(R.id.etPassword);
         EditText etControlPassword = (EditText) findViewById(R.id.etControlPassword);
 
@@ -64,6 +64,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (firstName.length() == 0 || lastName.length() == 0 || city.length() == 0 || email.length() == 0 || password.length() == 0 || controlPassword.length() == 0) {
             Toast.makeText(this, "All fields must be filled in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Not valid email", Toast.LENGTH_SHORT).show();
+            etEmail.setText("");
             return;
         }
 

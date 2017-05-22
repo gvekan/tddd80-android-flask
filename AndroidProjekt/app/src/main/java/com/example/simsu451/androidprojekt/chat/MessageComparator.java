@@ -10,8 +10,8 @@ import java.util.Comparator;
 public class MessageComparator implements Comparator<Message> {
     @Override
     public int compare(Message lhs, Message rhs) {
-        if (lhs.getId() > rhs.getId()) return 1;
-        else if (lhs.getId() < rhs.getId()) return -1;
+        if (lhs.getIndex() > rhs.getIndex()) return 1;
+        else if (lhs.getIndex() < rhs.getIndex()) return -1;
         return 0;
     }
 }

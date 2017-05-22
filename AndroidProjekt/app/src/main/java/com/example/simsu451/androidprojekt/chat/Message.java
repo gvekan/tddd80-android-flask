@@ -5,28 +5,18 @@ package com.example.simsu451.androidprojekt.chat;
  */
 
 public class Message {
-    private int id;
+    private int index;
     private String text;
     private String sentBy;
-    private String receiver;
 
 
-    public String getReceiver() {
-        return receiver;
+    public int getIndex() {
+        return index;
     }
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
+    public void setIndex(int index) {
+        this.index = index;
     }
-
-    public String getSentBy() {
-        return sentBy;
-    }
-
-    public void setSentBy(String sentBy) {
-        this.sentBy = sentBy;
-    }
-
 
     public String getText() {
         return text;
@@ -36,11 +26,11 @@ public class Message {
         this.text = text;
     }
 
-    public int getId() {
-        return id;
+    public String getSentBy() {
+        return sentBy;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSentBy(String sentBy) {
+        this.sentBy = sentBy;
     }
 }

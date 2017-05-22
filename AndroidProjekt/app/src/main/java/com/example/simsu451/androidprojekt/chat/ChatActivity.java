@@ -2,7 +2,9 @@ package com.example.simsu451.androidprojekt.chat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,6 +21,7 @@ import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.wall.WallAdapter;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -43,10 +46,23 @@ public class ChatActivity extends AppCompatActivity {
         if (tvName == null) throw new AssertionError("tvName is null");
         tvName.setText(user.getFirstName() + ' ' + user.getLastName());
 
-        ListView listView = (ListView) findViewById(R.id.lwChat);
-        if (listView == null) throw new AssertionError("listView is null");
-        chatAdapter = new ChatAdapter(this, user);
-        listView.setAdapter(chatAdapter);
+        ListView lwChat = (ListView) findViewById(R.id.lwChat);
+        if (lwChat == null) throw new AssertionError("listView is null");
+        chatAdapter = new ChatAdapter(this, user, lwChat);
+        lwChat.setAdapter(chatAdapter);
+        lwChat.setOnScrollListener(new AbsListView.OnScrollListener() {
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                Log.i("WallAdapter", "onScroll called from ListView");
+                if(!chatAdapter.isEmpty() && firstVisibleItem == 0 && totalItemCount!=0)
+                {
+                    chatAdapter.updateLatestMessagesFromOldest();
+
+                }
+            }
+        });
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         if (sendButton == null) throw new AssertionError("sendButton is null");
@@ -78,7 +94,7 @@ public class ChatActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                chatAdapter.updateMessages();
+                chatAdapter.updateLatestMessages();
             }
         }, new Response.ErrorListener() {
             @Override

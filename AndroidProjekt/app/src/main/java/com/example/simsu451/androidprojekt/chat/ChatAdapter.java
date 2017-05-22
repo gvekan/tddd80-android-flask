@@ -1,10 +1,12 @@
 package com.example.simsu451.androidprojekt.chat;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -31,12 +33,14 @@ import java.util.Map;
 public class ChatAdapter extends ArrayAdapter<Message> {
     private Messages messages = new Messages();
     private User user;
+    private ListView lwChat;
 
-    public ChatAdapter(Context context, User user) {
+    public ChatAdapter(Context context, User user, ListView lwChat) {
         super(context, R.layout.chat_message);
+        this.lwChat = lwChat;
         messages.setMessages(new ArrayList<Message>());
         this.user = user;
-        updateMessages();
+        updateLatestMessages();
 
     }
     @Override
@@ -48,14 +52,14 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         if (message != null) {
             TextView tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
             if (message.getSentBy().equals(user.getEmail())) {
-                tvMessage.setTextColor(5);
+                tvMessage.setTextColor(Color.GREEN);
             }
             tvMessage.setText(message.getText());
         }
         return convertView;
     }
 
-    public void updateMessages() {
+    public void updateLatestMessages() {
         String url = Constants.URL + "get-latest-messages/" + user.getEmail();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -64,9 +68,45 @@ public class ChatAdapter extends ArrayAdapter<Message> {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        clear();
                         messages = gson.fromJson(response, Messages.class);
+                        clear();
                         addAll(messages.getMessages());
+                        notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }
+        };
+        requestQueue.add(stringRequest);
+    }
+
+    public void updateLatestMessagesFromOldest() {
+        String url = Constants.URL + "get-latest-messages-from/" + user.getEmail() + "/" + messages.getOldest();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        messages.addMessages(gson.fromJson(response, Messages.class).getMessages());
+                        clear();
+                        addAll(messages.getMessages());
+                        int size = messages.getMessages().size();
+                        int position = lwChat.getFirstVisiblePosition() + size;
+                        View v = lwChat.getChildAt(lwChat.getHeaderViewsCount());
+                        int top = (v == null) ? 0 : v.getTop();
+                        lwChat.setSelectionFromTop(position, top);
                         notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {

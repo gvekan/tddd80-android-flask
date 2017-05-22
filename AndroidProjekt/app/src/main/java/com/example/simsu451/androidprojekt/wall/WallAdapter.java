@@ -1,5 +1,6 @@
 package com.example.simsu451.androidprojekt.wall;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -612,5 +613,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
         Intent intent = new Intent(getContext(), LoginActivity.class);
         Toast.makeText(getContext(), "Please login again", Toast.LENGTH_SHORT).show();
         getContext().startActivity(intent);
+        Activity context = (Activity) getContext();
+        context.finish();
     }
 }
