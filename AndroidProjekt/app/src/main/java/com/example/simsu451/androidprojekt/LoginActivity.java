@@ -1,5 +1,6 @@
 package com.example.simsu451.androidprojekt;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        String toast = savedInstanceState.getString("toast");
+        if (toast != null && !toast.isEmpty()) Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
 
         Button registerButton = (Button) findViewById(R.id.registerButton);
         if (registerButton == null) throw new AssertionError("registerButton is null");
@@ -106,6 +111,12 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    public static void tokenExpired(Context context, Bundle bundle) {
+        bundle.putString("toast", "Please log in again");
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
     }
 
 }

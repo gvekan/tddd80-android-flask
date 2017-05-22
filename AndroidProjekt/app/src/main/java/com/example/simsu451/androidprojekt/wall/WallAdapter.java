@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -237,7 +238,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                                 }, new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        if (error.networkResponse.statusCode == 401) logout();
+                                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                                         Toast.makeText(WallAdapter.this.getContext(), "An error occurred, try again.", Toast.LENGTH_SHORT).show();
                                     }
                                 }) {
@@ -308,7 +309,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         postsLoading = false;
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }){
             @Override
@@ -357,7 +358,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         error.printStackTrace();
                         srlPosts.setRefreshing(false);
                         postsLoading = false;
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ) {
@@ -401,7 +402,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         if (postsLoading) {
                             postsLoading = false;
                         }
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ){
@@ -435,7 +436,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ){
@@ -460,7 +461,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ){
@@ -497,7 +498,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         commentsLoading = false;
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }){
             @Override
@@ -530,7 +531,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         commentsLoading = false;
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ){
@@ -564,7 +565,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         commentsLoading = false;
-                        if (error.networkResponse.statusCode == 401) logout();
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ){
@@ -607,13 +608,5 @@ public class WallAdapter extends ArrayAdapter<Post> {
             btComment.setVisibility(View.GONE);
             notifyDataSetChanged();
         }
-    }
-
-    private void logout() {
-        Intent intent = new Intent(getContext(), LoginActivity.class);
-        Toast.makeText(getContext(), "Please login again", Toast.LENGTH_SHORT).show();
-        getContext().startActivity(intent);
-        Activity context = (Activity) getContext();
-        context.finish();
     }
 }
