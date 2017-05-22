@@ -70,7 +70,10 @@ class User(db.Model):
         return check_password_hash(self.pw_hash, password)
 
     def get_profile_info(self):
-        info = {'firstName': self.first_name, 'lastName': self.last_name, 'city': self.city, 'email': self.email}
+        info = {'firstName': self.first_name,
+                'lastName': self.last_name,
+                'city': self.city,
+                'email': self.email}
         return info
 
     def send_message(self, receiver, text):
@@ -87,19 +90,15 @@ class User(db.Model):
         db.session.commit()
         return 'Chat started'
 
-    def get_messages(self, receiver):
-        chat = get_chat(self, receiver)
-        messages = Message.query.join(Chat.messages).filter(Chat.id == chat.id).all()
-        response = []
-        for message in messages:
-            response.append({'message': message.text, 'sentBy': message.sent_by})
-        return response
 
     def get_friends(self):
         friends = self.friends.all()
         response = []
         for friend in friends:
-            response.append({'firstName': friend.first_name, 'lastName': friend.last_name, 'email': friend.email, 'city': friend.city})
+            response.append({'firstName': friend.first_name,
+                             'lastName': friend.last_name,
+                             'email': friend.email,
+                             'city': friend.city})
         return response
 
     def remove_friend(self, friend):
@@ -113,7 +112,10 @@ class User(db.Model):
         response = []
         for user in users:
             if user != self and not self.are_friends(user):
-                response.append({'firstName': user.first_name, 'lastName': user.last_name, 'email': user.email, 'city': user.city})
+                response.append({'firstName': user.first_name,
+                                 'lastName': user.last_name,
+                                 'email': user.email,
+                                 'city': user.city})
         return response
 
 
@@ -162,7 +164,10 @@ class User(db.Model):
         requests = self.received_requests.all()
         response = []
         for requester in requests:
-            response.append({'firstName': requester.first_name, 'lastName': requester.last_name, 'email': requester.email, 'city': requester.city})
+            response.append({'firstName': requester.first_name,
+                             'lastName': requester.last_name,
+                             'email': requester.email,
+                             'city': requester.city})
         return response
 
 
@@ -219,7 +224,11 @@ class User(db.Model):
             else:
                 liking = True
             comments = Comment.query.filter(Comment.post_id == post.id).count()
-            response.append({'id': post.id, 'name': post.user.first_name + ' ' + post.user.last_name, 'text': post.text, 'likes': likes, "liking": liking, "comments": comments, 'city': post.city})
+            response.append({'id': post.id,
+                             'name': post.user.first_name + ' ' + post.user.last_name,
+                             'text': post.text, 'likes': likes, "liking": liking,
+                             "comments": comments,
+                             'city': post.city})
         return response
 
     def get_latest_posts_from_user(self):
@@ -268,9 +277,9 @@ class User(db.Model):
         response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
         for i in range(len(comments)):
             comment = comments[i]
-            response.append({'id': comment.id, 'index': comment.index,
-                                         'name': comment.user.first_name + ' ' + comment.user.last_name,
-                                         'text': comment.text})
+            response.append({'index': comment.index,
+                                'name': comment.user.first_name + ' ' + comment.user.last_name,
+                                'text': comment.text})
         return response
 
     def get_latest_comments_from_user(self, post):
@@ -305,8 +314,8 @@ class User(db.Model):
         response = []  # http://stackoverflow.com/questions/13530967/parsing-data-to-create-a-json-data-object-with-python
         for i in range(len(messages)):
             message = messages[i]
-            response.append({'id': message.id, 'index': message.index,
-                             'name': message.user.first_name + ' ' + message.user.last_name,
+            response.append({'index': message.index,
+                             'sentBy': message.sent_by,
                              'text': message.text})
         return response
 
@@ -382,9 +391,3 @@ class Comment(db.Model):
     def __init__(self, text, index):
         self.text = text
         self.index = index
-
-
-
-
-
-# Tables
