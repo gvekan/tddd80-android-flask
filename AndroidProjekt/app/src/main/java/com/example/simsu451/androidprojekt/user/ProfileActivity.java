@@ -66,7 +66,6 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         tvLocation = (TextView) findViewById(R.id.tvLocation);
         lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("feeel");
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);
