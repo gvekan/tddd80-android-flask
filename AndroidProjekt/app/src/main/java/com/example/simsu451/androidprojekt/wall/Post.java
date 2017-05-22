@@ -11,6 +11,7 @@ public class Post {
     private int likes;
     private boolean liking;
     private int comments;
+    private boolean commentsShowing = false;
 
     public int getId() {
         return id;
@@ -58,5 +59,13 @@ public class Post {
 
     public void setComments(int comments) {
         this.comments = comments;
+    }
+
+    public boolean isCommentsShowing() {
+        return commentsShowing;
+    }
+
+    public void setCommentsShowing(boolean commentsShowing) {
+        this.commentsShowing = commentsShowing;
     }
 }

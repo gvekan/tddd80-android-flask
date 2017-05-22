@@ -56,7 +56,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
 
     private Comments comments;
     private boolean commentsLoading;
-    private int postId;
+    private Post postWithComments;
     private LinearLayout llComments;
     private Button btHide;
     private Button btLoad;
@@ -119,6 +119,31 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 oldColorOnce = false;
             }
 
+            if (post.isCommentsShowing()) {
+                View visible = convertView.findViewById(R.id.llComments);
+                visible.setVisibility(View.VISIBLE);
+                visible = convertView.findViewById(R.id.etComment);
+                visible.setVisibility(View.VISIBLE);
+                visible = convertView.findViewById(R.id.btComment);
+                visible.setVisibility(View.VISIBLE);
+                visible = convertView.findViewById(R.id.btLoad);
+                visible.setVisibility(View.VISIBLE);
+                visible = convertView.findViewById(R.id.btHide);
+                visible.setVisibility(View.VISIBLE);
+                replaceAllComments(); // fixar en bug som tar bort alla kommentarer om swiperefresh körs
+            } else {
+                View gone = convertView.findViewById(R.id.llComments);
+                gone.setVisibility(View.GONE);
+                gone = convertView.findViewById(R.id.etComment);
+                gone.setVisibility(View.GONE);
+                gone = convertView.findViewById(R.id.btComment);
+                gone.setVisibility(View.GONE);
+                gone = convertView.findViewById(R.id.btLoad);
+                gone.setVisibility(View.GONE);
+                gone = convertView.findViewById(R.id.btHide);
+                gone.setVisibility(View.GONE);
+            }
+
             tvName.setText(post.getName());
             tvText.setText(post.getText());
             tvLikes.setText(Integer.toString(post.getLikes()));
@@ -161,8 +186,9 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     btComment = (Button) finalConvertView.findViewById(R.id.btComment);
                     btLoad = (Button) finalConvertView.findViewById(R.id.btLoad);
                     btHide = (Button) finalConvertView.findViewById(R.id.btHide);
-                    postId = post.getId();
+                    postWithComments = post;
 
+                    postWithComments.setCommentsShowing(true);
                     llComments.setVisibility(View.VISIBLE);
                     etComment.setVisibility(View.VISIBLE);
                     btComment.setVisibility(View.VISIBLE);
@@ -439,7 +465,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
 
     private void updateCommentsForUser() {
         commentsLoading = true;
-        String url = Constants.URL + "get-latest-comments-from-user/" + postId;
+        String url = Constants.URL + "get-latest-comments-from-user/" + postWithComments.getId();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -473,7 +499,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
 
     private void updateLatestComments() {
         commentsLoading = true;
-        String url = Constants.URL + "get-latest-comments/" + postId + "/" + comments.getLatest();
+        String url = Constants.URL + "get-latest-comments/" + postWithComments.getId() + "/" + comments.getLatest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -507,7 +533,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
 
     public void updateLatestCommentsFromOldest() {
         commentsLoading = true;
-        String url = Constants.URL + "get-latest-comments-from/" + postId + "/" + comments.getOldest();
+        String url = Constants.URL + "get-latest-comments-from/" + postWithComments.getId() + "/" + comments.getOldest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -557,7 +583,8 @@ public class WallAdapter extends ArrayAdapter<Post> {
     private void hideComments() {
         comments = new Comments();
         comments.setComments(new ArrayList<Comment>());
-        if (llComments != null) {
+        if (postWithComments != null) {
+            postWithComments.setCommentsShowing(false);
             llComments.removeAllViews();
             llComments.setVisibility(View.GONE);
             etComment.setVisibility(View.GONE);

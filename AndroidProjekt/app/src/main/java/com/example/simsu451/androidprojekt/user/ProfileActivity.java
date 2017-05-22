@@ -42,16 +42,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ProfileActivity extends AppCompatActivity implements LocationListener{
+public class ProfileActivity extends AppCompatActivity{
     private TextView tvFirstName;
     private TextView tvLastName;
     private TextView tvCity;
     private TextView tvEmail;
     private TextView tvLocation;
-    private LocationManager lm;
-    private static final int IMAGE_CAPTURE = 1;
-    private static final String[] LOCATION_PERMS = {Manifest.permission.ACCESS_FINE_LOCATION};
-    private static final int LOCATION_REQUEST = 780;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +59,8 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
         tvEmail = (TextView) findViewById(R.id.tvEmail);
         getProfileInfo();
 
+<<<<<<< HEAD
+=======
         //LOCATION
         tvLocation = (TextView) findViewById(R.id.tvLocation);
         lm = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -70,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);
+>>>>>>> 92f3c58971746a0ee4f444421a9a9dd232bd7161
 
         Button friendsButton = (Button) findViewById(R.id.friendsButton);
         if (friendsButton == null) throw new AssertionError("friendsButton is null");
@@ -93,89 +92,6 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
                 startActivity(intent);
             }
         });
-
-        Button photoButton = (Button) findViewById(R.id.photoButton);
-        if (photoButton == null) throw new AssertionError("photoButton is null");
-        photoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePhoto();
-            }
-        });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case LOCATION_REQUEST:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
-                }
-                break;
-        }
-    }
-
-    public void takePhoto() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ImageView imageView = (ImageView) findViewById(R.id.ivPhoto);
-        tvLocation = (TextView) findViewById(R.id.tvLocation);
-        if (requestCode == IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            if (imageView == null) throw new AssertionError("imageView is null");
-            imageView.setImageBitmap(imageBitmap);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    tvLocation.setText(getAddress(location.getLatitude(), location.getLongitude()));
-                } else {
-                    tvLocation.setText(R.string.no_location);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        int lat = (int) (location.getLatitude());
-        int lng = (int) (location.getLongitude());
-        tvLocation.setText(lat + ":" + lng);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-    }
-
-    public String getAddress(double latitude, double longitude){
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses;
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "No address found";
-        }
-        if (addresses == null || addresses.size() == 0) {
-            return "No address found";
-        }
-        return addresses.get(0).getAddressLine(0);
     }
 
     private void getProfileInfo() {
