@@ -311,7 +311,7 @@ def get_friends():
     """
     user = data.get_user(get_jwt_identity())
     friends_list = user.get_friends()
-    return jsonify({'friends': friends_list}), 200
+    return jsonify({'users': friends_list}), 200
 
 @application.route('/get-profile-info', methods=['GET'])
 @jwt_required
@@ -342,7 +342,7 @@ def send_friend_request(receiver_email):
 def get_friend_requests():
     user = data.get_user(get_jwt_identity())
     friend_requests = user.get_friend_requests()
-    return jsonify({'friend_requests': friend_requests}), 200
+    return jsonify({'users': friend_requests}), 200
 
 
 @application.route('/accept-friend-request/<requester_email>', methods=['POST'])
