@@ -321,7 +321,7 @@ def get_all_users():
     """
     Get all active chat a user has
     """
-    users = data.User.query.all()
+    users = data.get_all_users()
     return jsonify({'users': users}), 200
 
 
