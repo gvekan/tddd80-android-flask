@@ -61,6 +61,9 @@ public class ProfileActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 logout();
+                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -104,9 +107,6 @@ public class ProfileActivity extends AppCompatActivity{
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
             }
         }, new Response.ErrorListener() {
             @Override
