@@ -26,14 +26,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FriendsActivity extends AppCompatActivity {
-    private Friends friends = new Friends();
+    private Users users = new Users();
     TextView tvFriendRequests;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        friends.setFriends(new ArrayList<Friend>());
+        users.setUsers(new ArrayList<User>());
         getFriends();
         getFriendRequestsAmount();
         tvFriendRequests = (TextView) findViewById(R.id.tvFriendRequests);
@@ -65,14 +65,14 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     private void getFriends() {
-        String url = Constants.URL + "get-friends";
+        String url = Constants.URL + "get-users";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        friends.addFriends(gson.fromJson(response, Friends.class).getFriends());
+                        users.addUsers(gson.fromJson(response, Users.class).getUsers());
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -97,8 +97,8 @@ public class FriendsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        Friends friendRequests = gson.fromJson(response, Friends.class);
-                        tvFriendRequests.setText(String.format("Friend requests: %s", friendRequests.getFriends().size()));
+                        Users friendRequests = gson.fromJson(response, Users.class);
+                        tvFriendRequests.setText(String.format("User requests: %s", friendRequests.getUsers().size()));
                     }
                 }, new Response.ErrorListener() {
             @Override

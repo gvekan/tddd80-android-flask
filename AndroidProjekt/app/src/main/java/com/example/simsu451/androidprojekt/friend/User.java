@@ -1,11 +1,10 @@
-package com.example.simsu451.androidprojekt.user;
+package com.example.simsu451.androidprojekt.friend;
 
 /**
- * Created by simsu451 on 15/05/17.
+ * Created by simsu451 on 12/05/17.
  */
 
-public class Profile {
-
+public class User {
     private String firstName;
     private String lastName;
     private String city;
@@ -42,4 +41,15 @@ public class Profile {
     public void setEmail(String email) {
         this.email = email;
     }
+    private boolean isFriend;
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
+
+
 }

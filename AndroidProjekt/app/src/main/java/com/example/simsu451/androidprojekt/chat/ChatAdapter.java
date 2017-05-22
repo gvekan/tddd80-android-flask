@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -16,7 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
-import com.example.simsu451.androidprojekt.friend.Friend;
+import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
@@ -31,12 +30,12 @@ import java.util.Map;
 
 public class ChatAdapter extends ArrayAdapter<Message> {
     private Messages messages = new Messages();
-    private Friend friend;
+    private User user;
 
-    public ChatAdapter(Context context, Friend friend) {
+    public ChatAdapter(Context context, User user) {
         super(context, R.layout.chat_message);
         messages.setMessages(new ArrayList<Message>());
-        this.friend = friend;
+        this.user = user;
         updateMessages();
 
     }
@@ -48,7 +47,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         Message message = getItem(position);
         if (message != null) {
             TextView tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
-            if (message.getSentBy().equals(friend.getEmail())) {
+            if (message.getSentBy().equals(user.getEmail())) {
                 tvMessage.setTextColor(5);
             }
             tvMessage.setText(message.getText());
@@ -57,7 +56,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
     }
 
     public void updateMessages() {
-        String url = Constants.URL + "get-latest-messages/" + friend.getEmail();
+        String url = Constants.URL + "get-latest-messages/" + user.getEmail();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

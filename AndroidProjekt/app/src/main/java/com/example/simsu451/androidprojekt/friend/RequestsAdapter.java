@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by simsu451 on 20/05/17.
  */
 
-public class RequestsAdapter extends ArrayAdapter<Friend> {
+public class RequestsAdapter extends ArrayAdapter<User> {
 
     public RequestsAdapter(Context context) {
         super(context, R.layout.activity_friends);
@@ -36,13 +36,13 @@ public class RequestsAdapter extends ArrayAdapter<Friend> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend, parent, false);
         }
-        final Friend friend = getItem(position);
-        if (friend != null) {
+        final User user = getItem(position);
+        if (user != null) {
             Button addButton = (Button) convertView.findViewById(R.id.button);
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    addFriend(friend);
+                    addFriend(user);
                 }
             });
 
@@ -51,8 +51,8 @@ public class RequestsAdapter extends ArrayAdapter<Friend> {
     }
 
 
-    private void addFriend(Friend friend) {
-        String url = Constants.URL + "accept-friend-request/" + friend.getEmail();
+    private void addFriend(User user) {
+        String url = Constants.URL + "accept-user-request/" + user.getEmail();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

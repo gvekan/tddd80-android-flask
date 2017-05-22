@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 public class RequestsActivity extends AppCompatActivity {
-    private Friends friendRequests = new Friends();
+    private Users friendRequests = new Users();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class RequestsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        friendRequests.setFriends(gson.fromJson(response, Friends.class).getFriends());
+                        friendRequests.setUsers(gson.fromJson(response, Users.class).getUsers());
                     }
                 }, new Response.ErrorListener() {
             @Override

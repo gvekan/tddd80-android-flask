@@ -33,6 +33,7 @@ import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.example.simsu451.androidprojekt.friend.FriendsActivity;
+import com.example.simsu451.androidprojekt.friend.User;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -184,11 +185,11 @@ public class ProfileActivity extends AppCompatActivity implements LocationListen
             @Override
             public void onResponse(String response) {
                 Gson gson = new Gson();
-                Profile profile = gson.fromJson(response, Profile.class);
-                tvFirstName.setText(String.format("First name: %s", profile.getFirstName()));
-                tvLastName.setText(String.format("Last name: %s", profile.getLastName()));
-                tvCity.setText(String.format("City: %s", profile.getCity()));
-                tvEmail.setText(String.format("Email: %s", profile.getEmail()));
+                User user = gson.fromJson(response, User.class);
+                tvFirstName.setText(String.format("First name: %s", user.getFirstName()));
+                tvLastName.setText(String.format("Last name: %s", user.getLastName()));
+                tvCity.setText(String.format("City: %s", user.getCity()));
+                tvEmail.setText(String.format("Email: %s", user.getEmail()));
 
             }
         }, new Response.ErrorListener() {

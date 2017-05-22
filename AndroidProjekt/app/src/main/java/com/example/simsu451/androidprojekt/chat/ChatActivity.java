@@ -16,7 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
-import com.example.simsu451.androidprojekt.friend.Friend;
+import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
-    private Friend friend;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +37,15 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Bundle extras = getIntent().getExtras();
-        String jsonFriend = extras.getString("friend"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
-        friend = new Gson().fromJson(jsonFriend, Friend.class);
+        String jsonFriend = extras.getString("user"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+        user = new Gson().fromJson(jsonFriend, User.class);
         TextView tvName = (TextView) findViewById(R.id.tvName);
         if (tvName == null) throw new AssertionError("tvName is null");
-        tvName.setText(friend.getName());
+        tvName.setText(user.getFirstName() + ' ' + user.getLastName());
 
         ListView listView = (ListView) findViewById(R.id.lwChat);
         if (listView == null) throw new AssertionError("listView is null");
-        chatAdapter = new ChatAdapter(this, friend);
+        chatAdapter = new ChatAdapter(this, user);
         listView.setAdapter(chatAdapter);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -70,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
         final JSONObject params = new JSONObject();
         try {
             params.put("text", text);
-            params.put("receiver", friend.getEmail());
+            params.put("receiver", user.getEmail());
         } catch (JSONException e){
             e.printStackTrace();
         }

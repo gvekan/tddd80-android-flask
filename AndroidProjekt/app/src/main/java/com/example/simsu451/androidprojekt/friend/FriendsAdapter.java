@@ -30,7 +30,7 @@ import java.util.Map;
  * Created by simsu451 on 20/05/17.
  */
 
-public class FriendsAdapter extends ArrayAdapter<Friend> {
+public class FriendsAdapter extends ArrayAdapter<User> {
 
     public FriendsAdapter(Context context) {
         super(context, R.layout.activity_friends);
@@ -41,16 +41,16 @@ public class FriendsAdapter extends ArrayAdapter<Friend> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend, parent, false);
         }
-        final Friend friend = getItem(position);
-        if (friend != null) {
+        final User user = getItem(position);
+        if (user != null) {
             TextView tvFriend = (TextView) convertView.findViewById(R.id.tvFriend);
-            tvFriend.setText(friend.getName());
+            tvFriend.setText(user.getName());
 
             tvFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ChatActivity.class);
-                    intent.putExtra("friend", new Gson().toJson(friend)); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+                    intent.putExtra("user", new Gson().toJson(user)); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
                     getContext().startActivity(intent);
                 }
             });
@@ -59,7 +59,7 @@ public class FriendsAdapter extends ArrayAdapter<Friend> {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    removeFriend(friend);
+                    removeFriend(user);
                 }
             });
         }
@@ -67,8 +67,8 @@ public class FriendsAdapter extends ArrayAdapter<Friend> {
     }
 
 
-    private void removeFriend(Friend friend) {
-        String url = Constants.URL + "remove-friend/" + friend.getEmail();
+    private void removeFriend(User user) {
+        String url = Constants.URL + "remove-user/" + user.getEmail();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
