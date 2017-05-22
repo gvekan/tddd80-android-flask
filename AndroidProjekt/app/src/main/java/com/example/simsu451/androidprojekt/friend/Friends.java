@@ -2,6 +2,7 @@ package com.example.simsu451.androidprojekt.friend;
 
 import com.example.simsu451.androidprojekt.friend.Friend;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,17 +11,17 @@ import java.util.List;
 
 public class Friends {
 
-    private List<Friend> friends;
+    private ArrayList<Friend> friends;
 
-    public List<Friend> getFriends() {
+    public ArrayList<Friend> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<Friend> friends) {
+    public void setFriends(ArrayList<Friend> friends) {
         this.friends = friends;
     }
 
-    public void addFriends(List<Friend> friends) {
+    public void addFriends(ArrayList<Friend> friends) {
         this.friends.addAll(friends);
     }
 }

@@ -53,14 +53,14 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
-        Button usersButton = (Button) findViewById(R.id.usersButton);
-        usersButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FriendsActivity.this, UsersActivity.class);
-                startActivity(intent);
-            }
-        });
+//        Button usersButton = (Button) findViewById(R.id.usersButton);
+//        usersButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(FriendsActivity.this, UsersActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
     }
 

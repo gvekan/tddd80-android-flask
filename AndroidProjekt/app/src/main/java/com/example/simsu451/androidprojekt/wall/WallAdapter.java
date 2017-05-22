@@ -1,6 +1,7 @@
 package com.example.simsu451.androidprojekt.wall;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
@@ -96,6 +98,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         // The method calls setRefreshing(false) when it's finished.
                         if (!postsLoading) updateLatestPosts();
                         else WallAdapter.this.srlPosts.setRefreshing(false);
+                        hideComments();
                     }
                 }
         );
@@ -111,6 +114,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
 
             TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
             TextView tvText = (TextView) convertView.findViewById(R.id.tvText);
+            TextView tvCity = (TextView) convertView.findViewById(R.id.tvCity);
             final TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
             final TextView tvComments = (TextView) convertView.findViewById(R.id.tvComments);
 
@@ -130,7 +134,6 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 visible.setVisibility(View.VISIBLE);
                 visible = convertView.findViewById(R.id.btHide);
                 visible.setVisibility(View.VISIBLE);
-                replaceAllComments(); // fixar en bug som tar bort alla kommentarer om swiperefresh körs
             } else {
                 View gone = convertView.findViewById(R.id.llComments);
                 gone.setVisibility(View.GONE);
@@ -146,6 +149,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
 
             tvName.setText(post.getName());
             tvText.setText(post.getText());
+            tvCity.setText(post.getCity());
             tvLikes.setText(Integer.toString(post.getLikes()));
             tvComments.setText(Integer.toString(post.getComments()));
 
@@ -232,6 +236,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                                 }, new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
+                                        if (error.networkResponse.statusCode == 401) logout();
                                         Toast.makeText(WallAdapter.this.getContext(), "An error occurred, try again.", Toast.LENGTH_SHORT).show();
                                     }
                                 }) {
@@ -302,6 +307,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         postsLoading = false;
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }){
             @Override
@@ -350,6 +356,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         error.printStackTrace();
                         srlPosts.setRefreshing(false);
                         postsLoading = false;
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }
         ) {
@@ -393,6 +400,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         if (postsLoading) {
                             postsLoading = false;
                         }
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }
         ){
@@ -426,6 +434,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }
         ){
@@ -450,6 +459,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }
         ){
@@ -486,6 +496,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         commentsLoading = false;
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }){
             @Override
@@ -518,6 +529,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         commentsLoading = false;
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }
         ){
@@ -551,6 +563,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         commentsLoading = false;
+                        if (error.networkResponse.statusCode == 401) logout();
                     }
                 }
         ){
@@ -593,5 +606,11 @@ public class WallAdapter extends ArrayAdapter<Post> {
             btComment.setVisibility(View.GONE);
             notifyDataSetChanged();
         }
+    }
+
+    private void logout() {
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        Toast.makeText(getContext(), "Please login again", Toast.LENGTH_SHORT).show();
+        getContext().startActivity(intent);
     }
 }

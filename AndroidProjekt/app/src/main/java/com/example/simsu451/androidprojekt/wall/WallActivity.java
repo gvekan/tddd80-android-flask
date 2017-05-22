@@ -1,6 +1,15 @@
 package com.example.simsu451.androidprojekt.wall;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,7 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -26,16 +34,28 @@ import com.example.simsu451.androidprojekt.Token;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class WallActivity extends AppCompatActivity {
+public class WallActivity extends AppCompatActivity implements LocationListener {
     private WallAdapter wallAdapter;
+    LocationManager lm;
+    private static final String[] LOCATION_PERMS = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int LOCATION_REQUEST = 780;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wall);
+
+        lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);
 
         Button profileButton = (Button) findViewById(R.id.profileButton);
         if (profileButton == null) throw new AssertionError("profileButton is null");
@@ -66,6 +86,43 @@ public class WallActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_REQUEST:
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+    }
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+    @Override
+    public void onProviderDisabled(String provider) {
+    }
+    public String getCity(double latitude, double longitude){
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+        if (addresses == null || addresses.size() == 0) {
+            return "";
+        }
+        return addresses.get(0).getLocality();
+    }
 
     private void makePost() {
         String url = Constants.URL + "create-post";
@@ -78,10 +135,18 @@ public class WallActivity extends AppCompatActivity {
             Toast.makeText(this, "You have to write something", Toast.LENGTH_SHORT).show();
             return;
         }
+        String city = "";
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                city = getCity(location.getLatitude(), location.getLongitude());
+            }
+        }
 
         final JSONObject params = new JSONObject();
         try {
             params.put("text", text);
+            params.put("city", city);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -91,8 +156,6 @@ public class WallActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 wallAdapter.updatePostsForUser();
                 etPost.setText("");
-//                relativeLayout.setFocusable(true);
-//                relativeLayout.setFocusableInTouchMode(true);
             }
         }, new Response.ErrorListener() {
             @Override

@@ -58,17 +58,6 @@ public class ProfileActivity extends AppCompatActivity{
         tvEmail = (TextView) findViewById(R.id.tvEmail);
         getProfileInfo();
 
-<<<<<<< HEAD
-=======
-        //LOCATION
-        tvLocation = (TextView) findViewById(R.id.tvLocation);
-        lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        }
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);
->>>>>>> 92f3c58971746a0ee4f444421a9a9dd232bd7161
-
         Button friendsButton = (Button) findViewById(R.id.friendsButton);
         if (friendsButton == null) throw new AssertionError("friendsButton is null");
         friendsButton.setOnClickListener(new View.OnClickListener() {
