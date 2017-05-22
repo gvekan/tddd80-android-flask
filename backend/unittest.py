@@ -39,7 +39,7 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.post(root_uri + 'login', data=json.dumps({'email': 'gusan092@student.liu.se', 'password': 'password'}), content_type='application/json')
         assert not b'Bad email or password' in rv.data
         token = json.loads(rv.data.decode("utf-8"))['access_token']
-        rv = self.app.post(root_uri + 'create-post', data=json.dumps({'text': 'test', 'city': ''}), content_type='application/json', headers={'Authorization': 'Bearer ' + token})
+        rv = self.app.post(root_uri + 'create-post', data=json.dumps({'text': 'test'}), content_type='application/json', headers={'Authorization': 'Bearer ' + token})
         assert b'Post successfully made' in rv.data
         rv = self.app.post(root_uri + 'create-comment/1', data=json.dumps({'text': 'test'}), content_type='application/json', headers={'Authorization': 'Bearer ' + token})
         assert b'Comment successfully made' in rv.data
