@@ -292,7 +292,7 @@ def get_latest_messages(receiver_email, index):
 
 @application.route('/get-latest-messages-from/<post_id>/<message_index>', methods=['get'])
 @jwt_required
-def get_latest_comments_from(post_id, message_index):
+def get_latest_messages_from(post_id, message_index):
     """
     Get the ten latest posts on the wall
     """
