@@ -13,27 +13,32 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvFriendRequests"
+        android:layout_below="@+id/tvFriends"
+        android:layout_above="@+id/usersButton"
         android:id="@+id/lwFriends" />
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lwFriends"/>
 
 
     <TextView
         android:text="Friends"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ems="11"
         android:layout_alignParentTop="true"
         android:id="@+id/tvFriends" />
 
     <TextView
-        android:text="Friends"
+        android:text="Friend requests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_toEndOf="@+id/tvFriends"
         android:id="@+id/tvFriendRequests" />
+
+    <Button
+        android:text="All users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/usersButton" />
+
 
 </RelativeLayout>

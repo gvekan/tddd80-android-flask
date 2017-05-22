@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.UsersActivity;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -43,11 +45,19 @@ public class FriendsActivity extends AppCompatActivity {
         listView.setAdapter(friendsAdapter);
 
 
-
         tvFriendRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FriendsActivity.this, RequestsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button usersButton = (Button) findViewById(R.id.usersButton);
+        usersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FriendsActivity.this, UsersActivity.class);
                 startActivity(intent);
             }
         });
@@ -80,7 +90,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     private void getFriendRequestsAmount() {
-        String url = Constants.URL + "get-friends-requests";
+        String url = Constants.URL + "get-friend-requests";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
