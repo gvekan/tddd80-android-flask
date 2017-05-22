@@ -316,7 +316,8 @@ def get_messages(receiver_email):
     """
     user = data.get_user(get_jwt_identity())
     receiver = data.get_user(receiver_email)
-    messages = user.get_messages(receiver)
+    chat = data.get_chat(user, receiver)
+    messages = user.get_latest_messages(chat)
     return jsonify({"messages": messages}), 200
 
 
