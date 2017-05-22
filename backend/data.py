@@ -347,6 +347,7 @@ def get_chat(user, other):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
+    city = db.Column(db.String, nullable=False)
 
     likes = db.relationship('User', secondary=post_likes, backref=db.backref('liked_posts', lazy='dynamic'), lazy='dynamic')
     comments = db.relationship("Comment", backref="post", lazy='dynamic')
