@@ -281,15 +281,31 @@ def send_message():
     user.send_message(receiver, message)
     return jsonify({"msg": "Message successfully sent"}), 200
 
-@application.route('/get-latest-messages/<receiver_email>/<index>', methods=['GET'])
+@application.route('/get-latest-messages/<receiver_email>', methods=['GET'])
 @jwt_required
 def get_latest_messages(receiver_email, index):
     user = data.get_user(get_jwt_identity())
     receiver = data.get_user(receiver_email)
     chat = data.get_chat(user, receiver)
-    oldest = int(index)
-    messages = user.get_latest_messages(chat, oldest)
+    messages = user.get_latest_messages(chat)
     return jsonify({"messages": messages}), 200
+
+@application.route('/get-latest-messages-from/<post_id>/<message_index>', methods=['get'])
+@jwt_required
+def get_latest_comments_from(post_id, message_index):
+    """
+    Get the ten latest posts on the wall
+    """
+    id = int(post_id)
+    post = data.Post.query.get(id)
+    latest = int(message_index)
+    if latest < 11:
+        oldest = 1
+    else:
+        oldest = latest - 10
+    user = data.get_user(get_jwt_identity())
+    message_list = user.get_latest_messages_from(post, latest, oldest)
+    return jsonify({"messages": message_list}), 200
 
 
 @application.route('/get-messages/<receiver_email>', methods=['GET'])
@@ -321,7 +337,8 @@ def get_all_users():
     """
     Get all active chat a user has
     """
-    users = data.get_all_users()
+    user = data.get_user(get_jwt_identity())
+    users = user.get_all_users()
     return jsonify({'users': users}), 200
 
 
@@ -338,7 +355,7 @@ def get_profile_info():
 def remove_friend(friend_email):
     user = data.get_user(get_jwt_identity())
     friend = data.get_user(friend_email)
-    user.remove_request(friend)
+    user.remove_friend(friend)
     return jsonify({'msg': "Friend removed"}), 200
 
 

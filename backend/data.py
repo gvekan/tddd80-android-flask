@@ -29,8 +29,6 @@ post_likes = db.Table('likes',
                        db.Column('post_id', db.Integer, db.ForeignKey('post.id')))
 
 
-
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
@@ -110,6 +108,14 @@ class User(db.Model):
         db.session.commit()
         return 'Friend removed'
 
+    def get_all_users(self):
+        users = User.query.all()
+        response = []
+        for user in users:
+            if user != self and not self.are_friends(user):
+                response.append({'firstName': user.first_name, 'lastName': user.last_name, 'email': user.email, 'city': user.city})
+        return response
+
 
     def send_friend_request(self, other):
         """
@@ -180,7 +186,6 @@ class User(db.Model):
         db.session.add(post)
         db.session.commit()
         return 'Post created'
-
 
 
     def get_latest_posts(self, oldest):
@@ -280,16 +285,13 @@ class User(db.Model):
             oldest = latest - 10
         return self.get_latest_comments_from(post, latest, oldest)
 
-    def get_latest_messages(self, chat, oldest):
-        oldest = oldest + 1
-        if oldest == 0:
-            latest = chat.messages.count() + 1
-            if latest < 11:
-                oldest = 1
-            else:
-                oldest = latest - 10
+    def get_latest_messages(self, chat):
+        latest = chat.messages.count() + 1
+        if latest < 11:
+            oldest = 1
         else:
-            latest = oldest + 10
+            oldest = latest - 10
+
         return self.get_latest_messages_from(chat, latest, oldest)
 
     def get_latest_messages_from(self, chat, latest, oldest):
@@ -343,12 +345,6 @@ def get_user(email):
 def get_chat(user, other):
     return Chat.query.filter(Chat.members.any(User.id == user.id), Chat.members.any(User.id == other.id)).first()
 
-def get_all_users():
-    users = User.query.all()
-    response = []
-    for user in users:
-        response.append({'firstName': user.first_name, 'lastName': user.last_name, 'email': user.email, 'city': user.city})
-    return response
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
