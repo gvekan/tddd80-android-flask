@@ -43,7 +43,6 @@ public class ProfileActivity extends AppCompatActivity{
         tvEmail = (TextView) findViewById(R.id.tvEmail);
         getProfileInfo();
 
-
         Button friendsButton = (Button) findViewById(R.id.friendsButton);
         if (friendsButton == null) throw new AssertionError("friendsButton is null");
         friendsButton.setOnClickListener(new View.OnClickListener() {

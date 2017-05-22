@@ -12,6 +12,7 @@ public class Post {
     private boolean liking;
     private int comments;
     private boolean commentsShowing = false;
+    private String city;
 
     public int getId() {
         return id;
@@ -67,5 +68,13 @@ public class Post {
 
     public void setCommentsShowing(boolean commentsShowing) {
         this.commentsShowing = commentsShowing;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }
