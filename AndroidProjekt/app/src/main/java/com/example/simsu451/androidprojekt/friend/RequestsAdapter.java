@@ -1,6 +1,7 @@
 package com.example.simsu451.androidprojekt.friend;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.google.gson.Gson;
@@ -71,6 +73,7 @@ public class RequestsAdapter extends ArrayAdapter<User> {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
             }
         }) {
             @Override
@@ -96,6 +99,7 @@ public class RequestsAdapter extends ArrayAdapter<User> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ){

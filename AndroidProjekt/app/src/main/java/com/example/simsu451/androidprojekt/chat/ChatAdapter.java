@@ -2,6 +2,7 @@ package com.example.simsu451.androidprojekt.chat;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +35,21 @@ public class ChatAdapter extends ArrayAdapter<Message> {
     private Messages messages = new Messages();
     private User user;
     private ListView lwChat;
+    private SwipeRefreshLayout srlChat;
 
-    public ChatAdapter(Context context, User user, ListView lwChat) {
+    public ChatAdapter(Context context, User user, ListView lwChat, final SwipeRefreshLayout srlChat) {
         super(context, R.layout.chat_message);
         this.lwChat = lwChat;
+        this.srlChat = srlChat;
         messages.setMessages(new ArrayList<Message>());
         this.user = user;
         updateLatestMessages();
+        srlChat.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateLatestMessagesFromOldest();
+            }
+        });
 
     }
     @Override
@@ -60,7 +69,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
     }
 
     public void updateLatestMessages() {
-        String url = Constants.URL + "get-latest-messages/" + user.getEmail();
+        String url = Constants.URL + "get-latest-messages/" + user.getEmail() + "/" + messages.getLatest();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -68,7 +77,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        messages = gson.fromJson(response, Messages.class);
+                        messages.addMessages(gson.fromJson(response, Messages.class).getMessages());
                         clear();
                         addAll(messages.getMessages());
                         notifyDataSetChanged();
@@ -76,6 +85,10 @@ public class ChatAdapter extends ArrayAdapter<Message> {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse.statusCode == 401) {
+                    ChatActivity chatActivity = (ChatActivity) getContext();
+                    chatActivity.tokenExpired();
+                }
 
             }
 
@@ -91,8 +104,8 @@ public class ChatAdapter extends ArrayAdapter<Message> {
     }
 
     public void updateLatestMessagesFromOldest() {
+        srlChat.setRefreshing(false);
         String url = Constants.URL + "get-latest-messages-from/" + user.getEmail() + "/" + messages.getOldest();
-
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -108,11 +121,16 @@ public class ChatAdapter extends ArrayAdapter<Message> {
                         int top = (v == null) ? 0 : v.getTop();
                         lwChat.setSelectionFromTop(position, top);
                         notifyDataSetChanged();
+                        srlChat.setRefreshing(false);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                srlChat.setRefreshing(false);
+                if (error.networkResponse.statusCode == 401) {
+                    ChatActivity chatActivity = (ChatActivity) getContext();
+                    chatActivity.tokenExpired();
+                }
             }
 
         }) {

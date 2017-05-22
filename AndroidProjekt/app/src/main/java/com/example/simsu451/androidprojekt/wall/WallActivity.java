@@ -28,7 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.UsersActivity;
-import com.example.simsu451.androidprojekt.friend.FriendsActivity;
+import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.user.ProfileActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
@@ -171,6 +171,7 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(WallActivity.this, new Bundle());
                 Toast.makeText(WallActivity.this, "An error occurred, try again.", Toast.LENGTH_SHORT).show();
             }
         }){

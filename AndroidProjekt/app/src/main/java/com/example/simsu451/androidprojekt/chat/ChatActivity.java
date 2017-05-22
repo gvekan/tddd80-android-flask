@@ -1,5 +1,6 @@
 package com.example.simsu451.androidprojekt.chat;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
@@ -33,6 +35,7 @@ import java.util.Map;
 public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
     private User user;
+    private String jsonFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Bundle extras = getIntent().getExtras();
-        String jsonFriend = extras.getString("user"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+        jsonFriend = extras.getString("user"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
         user = new Gson().fromJson(jsonFriend, User.class);
         TextView tvName = (TextView) findViewById(R.id.tvName);
         if (tvName == null) throw new AssertionError("tvName is null");
@@ -48,21 +51,9 @@ public class ChatActivity extends AppCompatActivity {
 
         ListView lwChat = (ListView) findViewById(R.id.lwChat);
         if (lwChat == null) throw new AssertionError("listView is null");
-        chatAdapter = new ChatAdapter(this, user, lwChat);
+        SwipeRefreshLayout srlChat = (SwipeRefreshLayout) findViewById(R.id.srlChat);
+        chatAdapter = new ChatAdapter(this, user, lwChat, srlChat);
         lwChat.setAdapter(chatAdapter);
-//        lwChat.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//            }
-//            public void onScroll(AbsListView view, int firstVisibleItem,
-//                                 int visibleItemCount, int totalItemCount) {
-//                Log.i("WallAdapter", "onScroll called from ListView");
-//                if(!chatAdapter.isEmpty() && firstVisibleItem == 0 && totalItemCount!=0)
-//                {
-//                    chatAdapter.updateLatestMessagesFromOldest();
-//
-//                }
-//            }
-//        });
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         if (sendButton == null) throw new AssertionError("sendButton is null");
@@ -99,6 +90,7 @@ public class ChatActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse.statusCode == 401) tokenExpired();
             }
         }) {
             @Override
@@ -116,5 +108,11 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(stringRequest);
+    }
+
+    public void tokenExpired() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user", jsonFriend);
+        LoginActivity.tokenExpired(this, bundle);
     }
 }

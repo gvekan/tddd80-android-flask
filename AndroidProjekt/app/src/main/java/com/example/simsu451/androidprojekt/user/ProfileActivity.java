@@ -73,6 +73,7 @@ public class ProfileActivity extends AppCompatActivity{
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(ProfileActivity.this, new Bundle());
                 Toast.makeText(ProfileActivity.this, "An error occurred, try again.", Toast.LENGTH_SHORT).show();
                 error.printStackTrace();
             }
