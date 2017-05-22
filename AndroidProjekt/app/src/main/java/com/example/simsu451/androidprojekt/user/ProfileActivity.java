@@ -60,9 +60,7 @@ public class ProfileActivity extends AppCompatActivity{
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                Token.getInstance().setToken(null);
-                startActivity(intent);
+                logout();
             }
         });
     }
@@ -97,6 +95,25 @@ public class ProfileActivity extends AppCompatActivity{
                 return headers;
             }
         };
+        requestQueue.add(stringRequest);
+    }
+
+    private void logout() {
+        String url = Constants.URL + "logout";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
         requestQueue.add(stringRequest);
     }
 }
