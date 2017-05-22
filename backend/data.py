@@ -108,10 +108,11 @@ class User(db.Model):
         return 'Friend removed'
 
     def get_all_users(self):
-        users = User.query.all()
+        users = User.query.filter(User.id != self.id).all()
         response = []
+        friends = self.friends.all()
         for user in users:
-            if user != self and not self.are_friends(user):
+            if user not in friends:
                 response.append({'firstName': user.first_name,
                                  'lastName': user.last_name,
                                  'email': user.email,

@@ -4,9 +4,9 @@ import random
 
 import requests
 
-#data.initialize_db()
-#root_uri = 'http://localhost:' + str(config.port) + '/'
-root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
+data.initialize_db()
+root_uri = 'http://localhost:' + str(config.port) + '/'
+#root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
 
 
 # CREATING USERS
@@ -124,21 +124,28 @@ print(json.loads(g1.text)['messages'])
 # # SEND FRIEND REQUEST
 f1 = requests.post(root_uri + 'send-friend-request/gusan092@student.liu.se', headers={'Authorization': 'Bearer ' + token_simon})
 print(json.loads(f1.text)['msg'])
+
 #   GET FRIEND REQUESTS
 gfr1 = requests.get(root_uri + 'get-friend-requests', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(gfr1.text)['users'])
+print("Friend requests: " + str(json.loads(gfr1.text)['users']))
+#   GET FRIENDS
+fr1 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
+print("Friends: " + str(json.loads(fr1.text)['users']))
 # # ACCEPT FRIEND REQUEST
 f2 = requests.post(root_uri + 'accept-friend-request/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(f2.text)['msg'])
 #   GET FRIENDS
 fr1 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(fr1.text)['users'])
-#
+print("Friends: " + str(json.loads(fr1.text)['users']))
+#   GET ALL USERS
+gau = requests.get(root_uri + 'get-all-users', headers={'Authorization': 'Bearer ' + token_gustav})
+print("Users : " + str(json.loads(gau.text)['users']))
+
 # GET LATEST MESSAGES
 
-lm1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
+lm1 = requests.get(root_uri + 'get-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(lm1.text)['messages'])
-lm2 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
+lm2 = requests.get(root_uri + 'get-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(lm2.text)['messages'])
 # # LOGIN ANOTHER USER
 # logout1 = requests.post(root_uri + 'logout', headers={'Authorization': 'Bearer ' + token})
