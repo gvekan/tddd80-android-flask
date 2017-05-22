@@ -116,7 +116,7 @@ print(json.loads(m2.text)['msg'])
 # print(json.loads(c1.text)['chats'])
 #
 # # GET MESSAGES
-g1 = requests.get(root_uri + 'get-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
+g1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(g1.text)['messages'])
 # g2 = requests.get(root_uri + 'get_messages', json={'receiver': 'ronny451@student.liu.se'}, headers={'Authorization': 'Bearer ' + token})
 # print(json.loads(g2.text)['messages'])
@@ -124,16 +124,23 @@ print(json.loads(g1.text)['messages'])
 # # SEND FRIEND REQUEST
 f1 = requests.post(root_uri + 'send-friend-request/gusan092@student.liu.se', headers={'Authorization': 'Bearer ' + token_simon})
 print(json.loads(f1.text)['msg'])
+
 #   GET FRIEND REQUESTS
 gfr1 = requests.get(root_uri + 'get-friend-requests', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(gfr1.text)['users'])
+print("Friend requests: " + str(json.loads(gfr1.text)['users']))
+#   GET FRIENDS
+fr1 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
+print("Friends: " + str(json.loads(fr1.text)['users']))
 # # ACCEPT FRIEND REQUEST
 f2 = requests.post(root_uri + 'accept-friend-request/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(f2.text)['msg'])
 #   GET FRIENDS
 fr1 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
-print(json.loads(fr1.text)['users'])
-#
+print("Friends: " + str(json.loads(fr1.text)['users']))
+#   GET ALL USERS
+gau = requests.get(root_uri + 'get-all-users', headers={'Authorization': 'Bearer ' + token_gustav})
+print("Users : " + str(json.loads(gau.text)['users']))
+
 # GET LATEST MESSAGES
 
 lm1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
