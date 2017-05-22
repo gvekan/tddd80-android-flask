@@ -172,8 +172,10 @@ class User(db.Model):
         """
         return self.friends.count()
 
-    def create_post(self, text):
-        post = Post(text)
+    def create_post(self, text, city):
+        if not city:
+            city = self.city
+        post = Post(text, city)
         self.posts.append(post)
         db.session.add(post)
         db.session.commit()
@@ -212,7 +214,7 @@ class User(db.Model):
             else:
                 liking = True
             comments = Comment.query.filter(Comment.post_id == post.id).count()
-            response.append({'id': post.id, 'name': post.user.first_name + ' ' + post.user.last_name, 'text': post.text, 'likes': likes, "liking": liking, "comments": comments})
+            response.append({'id': post.id, 'name': post.user.first_name + ' ' + post.user.last_name, 'text': post.text, 'likes': likes, "liking": liking, "comments": comments, 'city': post.city})
         return response
 
     def get_latest_posts_from_user(self):
@@ -351,8 +353,9 @@ class Post(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, text):
+    def __init__(self, text, city):
         self.text = text
+        self.city = city
 
     def like_post(self, user):
         self.likes.append(user)
