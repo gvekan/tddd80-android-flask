@@ -290,21 +290,21 @@ def get_latest_messages(receiver_email):
     messages = user.get_latest_messages(chat)
     return jsonify({"messages": messages}), 200
 
-@application.route('/get-latest-messages-from/<post_id>/<message_index>', methods=['get'])
+@application.route('/get-latest-messages-from/<receiver_email>/<message_index>', methods=['get'])
 @jwt_required
-def get_latest_messages_from(post_id, message_index):
+def get_latest_messages_from(receiver_email, message_index):
     """
     Get the ten latest posts on the wall
     """
-    id = int(post_id)
-    post = data.Post.query.get(id)
     latest = int(message_index)
     if latest < 11:
         oldest = 1
     else:
         oldest = latest - 10
     user = data.get_user(get_jwt_identity())
-    message_list = user.get_latest_messages_from(post, latest, oldest)
+    receiver = data.get_user(receiver_email)
+    chat = data.get_chat(user, receiver)
+    message_list = user.get_latest_messages_from(chat, latest, oldest)
     return jsonify({"messages": message_list}), 200
 
 

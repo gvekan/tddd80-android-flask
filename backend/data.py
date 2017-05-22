@@ -135,6 +135,7 @@ class User(db.Model):
             return "No friend request from that User"
         other.sent_requests.remove(self)
         self.friends.append(other)
+        other.friends.append(self)
         db.session.commit()
         return "Friend request accepted"
 
