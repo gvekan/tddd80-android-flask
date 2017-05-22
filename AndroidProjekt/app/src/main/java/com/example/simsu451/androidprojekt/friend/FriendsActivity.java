@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.example.simsu451.androidprojekt.UsersActivity;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 public class FriendsActivity extends AppCompatActivity {
     TextView tvFriendRequests;
+    FriendsAdapter friendsAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +38,7 @@ public class FriendsActivity extends AppCompatActivity {
 
         ListView lvFriends = (ListView) findViewById(R.id.lvFriends);
         if (lvFriends == null) throw new AssertionError("lvFriends is null");
-        FriendsAdapter friendsAdapter = new FriendsAdapter(this);
+        friendsAdapter = new FriendsAdapter(this);
         lvFriends.setAdapter(friendsAdapter);
 
 
@@ -45,7 +47,6 @@ public class FriendsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(FriendsActivity.this, RequestsActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -61,6 +62,12 @@ public class FriendsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        friendsAdapter.getFriends();
+        getFriendRequestsAmount();
+    }
 
     private void getFriendRequestsAmount() {
         String url = Constants.URL + "get-friend-requests";
@@ -76,6 +83,7 @@ public class FriendsActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(FriendsActivity.this, new Bundle());
             }
         }) {
             @Override

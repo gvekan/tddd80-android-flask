@@ -2,6 +2,7 @@ package com.example.simsu451.androidprojekt.friend;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.example.simsu451.androidprojekt.chat.ChatActivity;
@@ -68,7 +70,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
     }
 
 
-    private void getFriends() {
+    public void getFriends() {
         String url = Constants.URL + "get-friends";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -84,6 +86,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
             }
         }) {
             @Override
@@ -110,6 +113,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                     }
                 }
         ){

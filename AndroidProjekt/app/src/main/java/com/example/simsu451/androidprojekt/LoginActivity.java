@@ -1,5 +1,6 @@
 package com.example.simsu451.androidprojekt;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -16,21 +17,49 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.simsu451.androidprojekt.chat.ChatActivity;
+import com.example.simsu451.androidprojekt.friend.FriendsActivity;
+import com.example.simsu451.androidprojekt.friend.RequestsActivity;
+import com.example.simsu451.androidprojekt.user.ProfileActivity;
 import com.example.simsu451.androidprojekt.wall.WallActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
+    private Class intentClass;
+    private Bundle savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        this.savedInstanceState = savedInstanceState;
+
 
         String toast = savedInstanceState.getString("toast");
         if (toast != null && !toast.isEmpty()) Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+
+        intentClass = WallActivity.class;
+        String classString = savedInstanceState.getString("class");
+        if (classString != null) {
+            String[] className = classString.split(".");
+            switch (className[className.length-1]) {
+                case "ChatActivity":
+                    intentClass = ChatActivity.class;
+                    break;
+                case "FriendsActivity":
+                    intentClass = FriendsActivity.class;
+                    break;
+                case "RequestsActivity":
+                    intentClass = RequestsActivity.class;
+                    break;
+                case "ProfileActivity":
+                    intentClass = ProfileActivity.class;
+                    break;
+            }
+        }
 
         Button registerButton = (Button) findViewById(R.id.registerButton);
         if (registerButton == null) throw new AssertionError("registerButton is null");
@@ -52,6 +81,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        // stop login from going back to an activity when back is pressed
     }
 
     private void login() {
@@ -90,8 +124,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 Token.getInstance().setToken(token);
 
-                Intent intent = new Intent(LoginActivity.this, WallActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(LoginActivity.this, intentClass);
+                startActivity(intent.putExtras(savedInstanceState));
 
         }}, new Response.ErrorListener() {
             @Override
@@ -115,8 +149,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public static void tokenExpired(Context context, Bundle bundle) {
         bundle.putString("toast", "Please log in again");
+        bundle.putString("class", context.getClass().toString());
         Intent intent = new Intent(context, LoginActivity.class);
-        context.startActivity(intent);
+        context.startActivity(intent.putExtras(bundle));
+        ((Activity) context).finish();
     }
 
 }
