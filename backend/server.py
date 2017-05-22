@@ -313,12 +313,24 @@ def get_friends():
     friends_list = user.get_friends()
     return jsonify({'users': friends_list}), 200
 
+
+@application.route('/get-all-users', methods=['GET'])
+@jwt_required
+def get_all_users():
+    """
+    Get all active chat a user has
+    """
+    users = data.User.query.all()
+    return jsonify({'users': users}), 200
+
+
 @application.route('/get-profile-info', methods=['GET'])
 @jwt_required
 def get_profile_info():
     user = data.get_user(get_jwt_identity())
     info = user.get_profile_info()
     return jsonify(info), 200
+
 
 @application.route('/remove-friend/<friend_email>', methods=['POST'])
 @jwt_required
@@ -327,6 +339,7 @@ def remove_friend(friend_email):
     friend = data.get_user(friend_email)
     user.remove_request(friend)
     return jsonify({'msg': "Friend removed"}), 200
+
 
 @application.route('/send-friend-request/<receiver_email>', methods=['POST'])
 @jwt_required
