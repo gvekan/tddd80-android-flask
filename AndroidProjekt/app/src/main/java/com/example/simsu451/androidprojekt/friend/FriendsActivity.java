@@ -45,6 +45,7 @@ public class FriendsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(FriendsActivity.this, RequestsActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 

@@ -50,19 +50,19 @@ public class ChatActivity extends AppCompatActivity {
         if (lwChat == null) throw new AssertionError("listView is null");
         chatAdapter = new ChatAdapter(this, user, lwChat);
         lwChat.setAdapter(chatAdapter);
-        lwChat.setOnScrollListener(new AbsListView.OnScrollListener() {
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                Log.i("WallAdapter", "onScroll called from ListView");
-                if(!chatAdapter.isEmpty() && firstVisibleItem == 0 && totalItemCount!=0)
-                {
-                    chatAdapter.updateLatestMessagesFromOldest();
-
-                }
-            }
-        });
+//        lwChat.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//            }
+//            public void onScroll(AbsListView view, int firstVisibleItem,
+//                                 int visibleItemCount, int totalItemCount) {
+//                Log.i("WallAdapter", "onScroll called from ListView");
+//                if(!chatAdapter.isEmpty() && firstVisibleItem == 0 && totalItemCount!=0)
+//                {
+//                    chatAdapter.updateLatestMessagesFromOldest();
+//
+//                }
+//            }
+//        });
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         if (sendButton == null) throw new AssertionError("sendButton is null");

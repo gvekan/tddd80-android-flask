@@ -113,7 +113,14 @@ public class ProfileActivity extends AppCompatActivity{
             public void onErrorResponse(VolleyError error) {
 
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }
+        };
         requestQueue.add(stringRequest);
     }
 }
