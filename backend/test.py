@@ -116,7 +116,7 @@ print(json.loads(m2.text)['msg'])
 # print(json.loads(c1.text)['chats'])
 #
 # # GET MESSAGES
-g1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
+g1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se/-1', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(g1.text)['messages'])
 # g2 = requests.get(root_uri + 'get_messages', json={'receiver': 'ronny451@student.liu.se'}, headers={'Authorization': 'Bearer ' + token})
 # print(json.loads(g2.text)['messages'])
@@ -143,9 +143,9 @@ print("Users : " + str(json.loads(gau.text)['users']))
 
 # GET LATEST MESSAGES
 
-lm1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
+lm1 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se/-1', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(lm1.text)['messages'])
-lm2 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
+lm2 = requests.get(root_uri + 'get-latest-messages/simsu451@student.liu.se/-1', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(lm2.text)['messages'])
 # # LOGIN ANOTHER USER
 # logout1 = requests.post(root_uri + 'logout', headers={'Authorization': 'Bearer ' + token})

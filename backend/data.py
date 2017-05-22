@@ -296,13 +296,9 @@ class User(db.Model):
             oldest = latest - 10
         return self.get_latest_comments_from(post, latest, oldest)
 
-    def get_latest_messages(self, chat):
+    def get_latest_messages(self, chat, oldest):
+        oldest += 1
         latest = chat.messages.count() + 1
-        if latest < 11:
-            oldest = 1
-        else:
-            oldest = latest - 10
-
         return self.get_latest_messages_from(chat, latest, oldest)
 
     def get_latest_messages_from(self, chat, latest, oldest):

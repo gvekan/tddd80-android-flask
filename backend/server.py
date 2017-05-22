@@ -283,11 +283,12 @@ def send_message():
 
 @application.route('/get-latest-messages/<receiver_email>/<index>', methods=['GET'])
 @jwt_required
-def get_latest_messages(receiver_email):
+def get_latest_messages(receiver_email, index):
+    latest = int(index)
     user = data.get_user(get_jwt_identity())
     receiver = data.get_user(receiver_email)
     chat = data.get_chat(user, receiver)
-    messages = user.get_latest_messages(chat)
+    messages = user.get_latest_messages(chat, latest)
     return jsonify({"messages": messages}), 200
 
 @application.route('/get-latest-messages-from/<receiver_email>/<message_index>', methods=['get'])
