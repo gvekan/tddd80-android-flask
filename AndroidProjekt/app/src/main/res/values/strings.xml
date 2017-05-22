@@ -2,4 +2,7 @@
     <string name="app_name">AndroidProjekt</string>
 
     <string name="no_location">Location not found</string>
+    <string name="add_friend">Add friend</string>
+    <string name="remove_friend">Remove friend</string>
+    <string name="accept">Accept</string>
 </resources>

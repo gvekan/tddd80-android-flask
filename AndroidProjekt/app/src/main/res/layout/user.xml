@@ -4,10 +4,10 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Friend"
+        android:text="User"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tvFriend" />
+        android:id="@+id/tvUser" />
 
     <Button
         android:text="Delete"

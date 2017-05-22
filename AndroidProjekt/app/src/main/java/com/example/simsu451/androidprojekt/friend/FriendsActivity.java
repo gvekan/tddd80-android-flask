@@ -21,28 +21,23 @@ import com.example.simsu451.androidprojekt.Token;
 import com.example.simsu451.androidprojekt.UsersActivity;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FriendsActivity extends AppCompatActivity {
-    private Users users = new Users();
     TextView tvFriendRequests;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        users.setUsers(new ArrayList<User>());
-        getFriends();
-        getFriendRequestsAmount();
         tvFriendRequests = (TextView) findViewById(R.id.tvFriendRequests);
+        getFriendRequestsAmount();
 
-        // Init ListView and adapter
-        ListView listView = (ListView) findViewById(R.id.lwFriends);
-        if (listView == null) throw new AssertionError("listView is null");
+        ListView lvFriends = (ListView) findViewById(R.id.lvFriends);
+        if (lvFriends == null) throw new AssertionError("lvFriends is null");
         FriendsAdapter friendsAdapter = new FriendsAdapter(this);
-        listView.setAdapter(friendsAdapter);
+        lvFriends.setAdapter(friendsAdapter);
 
 
         tvFriendRequests.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +49,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
         Button usersButton = (Button) findViewById(R.id.usersButton);
+        if (usersButton == null) throw new AssertionError("usersButton is null");
         usersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,30 +60,6 @@ public class FriendsActivity extends AppCompatActivity {
 
     }
 
-    private void getFriends() {
-        String url = Constants.URL + "get-users";
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Gson gson = new Gson();
-                        users.addUsers(gson.fromJson(response, Users.class).getUsers());
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
-                return headers;
-            }
-        };
-        requestQueue.add(stringRequest);
-    }
 
     private void getFriendRequestsAmount() {
         String url = Constants.URL + "get-friend-requests";
@@ -98,7 +70,7 @@ public class FriendsActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         Users friendRequests = gson.fromJson(response, Users.class);
-                        tvFriendRequests.setText(String.format("User requests: %s", friendRequests.getUsers().size()));
+                        tvFriendRequests.setText(String.format("Friend requests: %s", friendRequests.getUsers().size()));
                     }
                 }, new Response.ErrorListener() {
             @Override

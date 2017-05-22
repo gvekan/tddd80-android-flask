@@ -64,10 +64,10 @@ public class ChatAdapter extends ArrayAdapter<Message> {
                     @Override
                     public void onResponse(String response) {
                         Gson gson = new Gson();
-                        ChatAdapter.this.messages.setMessages(gson.fromJson(response, Messages.class).getMessages());
-                        ChatAdapter.this.clear();
-                        ChatAdapter.this.addAll(messages.getMessages());
-                        ChatAdapter.this.notifyDataSetChanged();
+                        clear();
+                        messages = gson.fromJson(response, Messages.class);
+                        addAll(messages.getMessages());
+                        notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override

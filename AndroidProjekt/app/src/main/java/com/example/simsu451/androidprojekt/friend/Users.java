@@ -18,7 +18,4 @@ public class Users {
         this.users = users;
     }
 
-    public void addUsers(List<User> users) {
-        this.users.addAll(users);
-    }
 }

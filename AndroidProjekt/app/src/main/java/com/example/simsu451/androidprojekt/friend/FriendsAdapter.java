@@ -22,6 +22,7 @@ import com.example.simsu451.androidprojekt.Token;
 import com.example.simsu451.androidprojekt.chat.ChatActivity;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,20 +32,23 @@ import java.util.Map;
  */
 
 public class FriendsAdapter extends ArrayAdapter<User> {
-
+    private Users users;
     public FriendsAdapter(Context context) {
         super(context, R.layout.activity_friends);
+        users = new Users();
+        users.setUsers(new ArrayList<User>());
+        getFriends();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
         }
         final User user = getItem(position);
         if (user != null) {
-            TextView tvFriend = (TextView) convertView.findViewById(R.id.tvFriend);
-            tvFriend.setText(user.getName());
+            TextView tvFriend = (TextView) convertView.findViewById(R.id.tvUser);
+            tvFriend.setText(user.getFirstName() + ' ' + user.getLastName());
 
             tvFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,6 +60,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
             });
 
             Button button = (Button) convertView.findViewById(R.id.button);
+            button.setText(R.string.remove_friend);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -67,14 +72,44 @@ public class FriendsAdapter extends ArrayAdapter<User> {
     }
 
 
-    private void removeFriend(User user) {
-        String url = Constants.URL + "remove-user/" + user.getEmail();
+    private void getFriends() {
+        String url = Constants.URL + "get-friends";
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        clear();
+                        users = gson.fromJson(response, Users.class);
+                        addAll(users.getUsers());
+                        notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }
+        };
+        requestQueue.add(stringRequest);
+    }
+    private void removeFriend(final User user) {
+        String url = Constants.URL + "remove-friend/" + user.getEmail();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        users.getUsers().remove(user);
+                        remove(user);
                         notifyDataSetChanged();
+
                     }},
                 new Response.ErrorListener() {
                     @Override

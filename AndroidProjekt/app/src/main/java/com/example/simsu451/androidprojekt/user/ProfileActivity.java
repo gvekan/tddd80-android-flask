@@ -1,23 +1,11 @@
 package com.example.simsu451.androidprojekt.user;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.media.Image;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,10 +24,7 @@ import com.example.simsu451.androidprojekt.friend.FriendsActivity;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity{
@@ -47,7 +32,6 @@ public class ProfileActivity extends AppCompatActivity{
     private TextView tvLastName;
     private TextView tvCity;
     private TextView tvEmail;
-    private TextView tvLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,16 +43,6 @@ public class ProfileActivity extends AppCompatActivity{
         tvEmail = (TextView) findViewById(R.id.tvEmail);
         getProfileInfo();
 
-<<<<<<< HEAD
-=======
-        //LOCATION
-        tvLocation = (TextView) findViewById(R.id.tvLocation);
-        lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
-        }
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);
->>>>>>> 92f3c58971746a0ee4f444421a9a9dd232bd7161
 
         Button friendsButton = (Button) findViewById(R.id.friendsButton);
         if (friendsButton == null) throw new AssertionError("friendsButton is null");
