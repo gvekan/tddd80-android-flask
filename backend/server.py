@@ -283,7 +283,7 @@ def send_message():
 
 @application.route('/get-latest-messages/<receiver_email>', methods=['GET'])
 @jwt_required
-def get_latest_messages(receiver_email, index):
+def get_latest_messages(receiver_email):
     user = data.get_user(get_jwt_identity())
     receiver = data.get_user(receiver_email)
     chat = data.get_chat(user, receiver)
@@ -306,19 +306,6 @@ def get_latest_messages_from(post_id, message_index):
     user = data.get_user(get_jwt_identity())
     message_list = user.get_latest_messages_from(post, latest, oldest)
     return jsonify({"messages": message_list}), 200
-
-
-@application.route('/get-messages/<receiver_email>', methods=['GET'])
-@jwt_required
-def get_messages(receiver_email):
-    """
-    Get all messages between two users
-    """
-    user = data.get_user(get_jwt_identity())
-    receiver = data.get_user(receiver_email)
-    chat = data.get_chat(user, receiver)
-    messages = user.get_latest_messages(chat)
-    return jsonify({"messages": messages}), 200
 
 
 @application.route('/get-friends', methods=['GET'])
