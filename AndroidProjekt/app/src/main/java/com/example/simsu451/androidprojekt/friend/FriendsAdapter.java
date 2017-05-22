@@ -22,21 +22,17 @@ import com.example.simsu451.androidprojekt.Token;
 import com.example.simsu451.androidprojekt.chat.ChatActivity;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 
 /**
  * Created by simsu451 on 20/05/17.
  */
 
 public class FriendsAdapter extends ArrayAdapter<User> {
-    private Users users;
+    private Users users = new Users();
     public FriendsAdapter(Context context) {
         super(context, R.layout.activity_friends);
-        users = new Users();
-        users.setUsers(new ArrayList<User>());
         getFriends();
     }
 

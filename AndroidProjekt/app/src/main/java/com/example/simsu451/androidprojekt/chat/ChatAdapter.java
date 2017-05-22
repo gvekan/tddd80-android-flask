@@ -55,6 +55,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         return convertView;
     }
 
+
     public void updateMessages() {
         String url = Constants.URL + "get-latest-messages/" + user.getEmail();
 
