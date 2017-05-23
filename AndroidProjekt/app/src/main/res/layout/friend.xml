@@ -4,17 +4,26 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="User"
+        android:text="@string/friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="20sp"
         android:id="@+id/tvUser" />
 
     <Button
-        android:text="Delete"
+        android:text="@string/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/button"/>
+        android:id="@+id/removeButton"/>
+
+    <Button
+        android:text="@string/chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/removeButton"
+        android:id="@+id/chatButton" />
 
 </RelativeLayout>

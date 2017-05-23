@@ -1,1 +1,0 @@
-Olika färg på meddelande

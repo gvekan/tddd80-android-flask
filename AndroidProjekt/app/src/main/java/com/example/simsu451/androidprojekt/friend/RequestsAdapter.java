@@ -41,18 +41,24 @@ class RequestsAdapter extends ArrayAdapter<User> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend, parent, false);
         }
         final User user = getItem(position);
         if (user != null) {
             TextView tvUser = (TextView) convertView.findViewById(R.id.tvUser);
             tvUser.setText(user.getFirstName() + ' ' + user.getLastName());
-            Button addButton = (Button) convertView.findViewById(R.id.button);
-            addButton.setText(R.string.accept);
-            addButton.setOnClickListener(new View.OnClickListener() {
+            Button acceptButton = (Button) convertView.findViewById(R.id.acceptButton);
+            acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     addFriend(user);
+                }
+            });
+            Button removeButton = (Button) convertView.findViewById(R.id.removeButton);
+            removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeFriendRequest(user);
                 }
             });
         }
@@ -89,6 +95,34 @@ class RequestsAdapter extends ArrayAdapter<User> {
     }
     private void addFriend(final User user) {
         String url = Constants.URL + "accept-friend-request/" + user.getEmail();
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        friendRequests.getUsers().remove(user);
+                        remove(user);
+                        notifyDataSetChanged();
+                    }},
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                return headers;
+            }
+        };
+        requestQueue.add(stringRequest);
+    }
+
+    private void removeFriendRequest(final User user) {
+        String url = Constants.URL + "remove-friend-request/" + user.getEmail();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

@@ -38,7 +38,7 @@ public class UsersAdapter extends ArrayAdapter<User>{
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend, parent, false);
         }
         final User user = getItem(position);
         if (user != null) {

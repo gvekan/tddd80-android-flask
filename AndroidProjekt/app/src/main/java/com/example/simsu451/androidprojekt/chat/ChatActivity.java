@@ -43,7 +43,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Bundle extras = getIntent().getExtras();
-        jsonFriend = extras.getString("user"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+        jsonFriend = extras.getString("friend"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
         friend = new Gson().fromJson(jsonFriend, User.class);
 
         setTitle(friend.getFirstName() + ' ' + friend.getLastName());
@@ -112,7 +112,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void tokenExpired() {
         Bundle bundle = new Bundle();
-        bundle.putString("user", jsonFriend);
+        bundle.putString("friend", jsonFriend);
         LoginActivity.tokenExpired(this, bundle);
     }
 }

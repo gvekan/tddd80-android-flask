@@ -21,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * The RegisterActivity is the activity where you can register a new user.
+ * The RegisterActivity is the activity where you can register a new friend.
  */
 
 public class RegisterActivity extends AppCompatActivity {

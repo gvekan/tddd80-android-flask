@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The FriendAdapter handles the FriendActivity. It handles the list of Friends the user has.
+ * The FriendAdapter handles the FriendActivity. It handles the list of Friends the friend has.
  */
 
 class FriendsAdapter extends ArrayAdapter<User> {
@@ -43,28 +43,25 @@ class FriendsAdapter extends ArrayAdapter<User> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend, parent, false);
         }
         final User user = getItem(position);
         if (user != null) {
-            TextView tvFriend = (TextView) convertView.findViewById(R.id.tvUser);
-            tvFriend.setText(user.getFirstName() + ' ' + user.getLastName());
-
-            tvFriend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ChatActivity.class);
-                    intent.putExtra("user", new Gson().toJson(user)); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
-                    getContext().startActivity(intent);
-                }
-            });
-
-            Button button = (Button) convertView.findViewById(R.id.button);
-            button.setText(R.string.remove_friend);
-            button.setOnClickListener(new View.OnClickListener() {
+            Button removeButton = (Button) convertView.findViewById(R.id.removeButton);
+            removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     removeFriend(user);
+                }
+            });
+
+            Button chatButton = (Button) convertView.findViewById(R.id.chatButton);
+            chatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ChatActivity.class);
+                    intent.putExtra("friend", new Gson().toJson(user)); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+                    getContext().startActivity(intent);
                 }
             });
         }

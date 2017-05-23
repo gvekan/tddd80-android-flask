@@ -42,7 +42,7 @@ import java.util.Map;
 
 /**
  * The WallAdapter handles the list of posts, their comments and likes. It uses a SwipeRefreshLayout
- * to allow the user to refresh the page when scrolling
+ * to allow the friend to refresh the page when scrolling
  */
 
 class WallAdapter extends ArrayAdapter<Post> {
@@ -284,7 +284,7 @@ class WallAdapter extends ArrayAdapter<Post> {
 
     void updatePostsForUser() {
         postsLoading = true;
-        String url = Constants.URL + "get-latest-posts-from-user";
+        String url = Constants.URL + "get-latest-posts-from-friend";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -475,7 +475,7 @@ class WallAdapter extends ArrayAdapter<Post> {
 
     private void updateCommentsForUser() {
         commentsLoading = true;
-        String url = Constants.URL + "get-latest-comments-from-user/" + postWithComments.getId();
+        String url = Constants.URL + "get-latest-comments-from-friend/" + postWithComments.getId();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

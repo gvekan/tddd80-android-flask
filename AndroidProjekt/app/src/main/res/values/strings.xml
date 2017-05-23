@@ -31,4 +31,8 @@
     <string name="_0">0</string>
     <string name="text">Text</string>
     <string name="likes">Likes:</string>
+    <string name="delete">Delete</string>
+    <string name="user">User</string>
+    <string name="chat">Chat</string>
+    <string name="friend">Friend</string>
 </resources>
