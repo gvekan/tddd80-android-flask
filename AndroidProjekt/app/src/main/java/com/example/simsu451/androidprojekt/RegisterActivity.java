@@ -20,6 +20,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * The RegisterActivity is the activity where you can register a new user.
+ */
 
 public class RegisterActivity extends AppCompatActivity {
     @Override

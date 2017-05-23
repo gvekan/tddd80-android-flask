@@ -1,7 +1,7 @@
 package com.example.simsu451.androidprojekt;
 
 /**
- * Created by simsu451 on 08/05/17.
+ * Constants that are accessible from all classes
  */
 
 public class Constants {

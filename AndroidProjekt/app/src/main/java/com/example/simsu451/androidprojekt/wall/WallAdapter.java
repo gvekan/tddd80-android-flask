@@ -1,11 +1,10 @@
 package com.example.simsu451.androidprojekt.wall;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,12 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Nätverksanrop från adaptern
- * Override getView
- * notifyDataSetChanged när vi vill uppdatera listan
+ * The WallAdapter handles the list of posts, their comments and likes. It uses a SwipeRefreshLayout
+ * to allow the user to refresh the page when scrolling
  */
 
-public class WallAdapter extends ArrayAdapter<Post> {
+class WallAdapter extends ArrayAdapter<Post> {
     private Posts posts;
     private boolean postsLoading;
     private boolean scrollListenerActive;
@@ -67,7 +64,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
     private Button btComment;
     private EditText etComment;
 
-    public WallAdapter(Context context, ListView listView, SwipeRefreshLayout swipeRefreshLayout) {
+    WallAdapter(Context context, ListView listView, SwipeRefreshLayout swipeRefreshLayout) {
         super(context, R.layout.post);
         posts = new Posts();
         posts.setPosts(new ArrayList<Post>());
@@ -106,8 +103,9 @@ public class WallAdapter extends ArrayAdapter<Post> {
         );
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.post, parent, false);
         }
@@ -152,8 +150,8 @@ public class WallAdapter extends ArrayAdapter<Post> {
             tvName.setText(post.getName());
             tvText.setText(post.getText());
             tvCity.setText(post.getCity());
-            tvLikes.setText(Integer.toString(post.getLikes()));
-            tvComments.setText(Integer.toString(post.getComments()));
+            tvLikes.setText(String.format("%s", post.getLikes()));
+            tvComments.setText(String.format("%s", post.getComments()));
 
             if (post.isLiking()) tvLikes.setTextColor(Color.GREEN);
             else tvLikes.setTextColor(oldColors);
@@ -165,13 +163,13 @@ public class WallAdapter extends ArrayAdapter<Post> {
                         dislikePost(post.getId());
                         post.setLiking(false);
                         post.setLikes(post.getLikes()-1);
-                        tvLikes.setText(Integer.toString(post.getLikes()));
+                        tvLikes.setText(String.format("%s", post.getLikes()));
                         tvLikes.setTextColor(oldColors);
                     } else {
                         likePost(post.getId());
                         post.setLiking(true);
                         post.setLikes(post.getLikes()+1);
-                        tvLikes.setText(Integer.toString(post.getLikes()));
+                        tvLikes.setText(String.format("%s", post.getLikes()));
                         tvLikes.setTextColor(Color.GREEN);
                     } WallAdapter.this.notifyDataSetChanged();
                 }
@@ -213,54 +211,54 @@ public class WallAdapter extends ArrayAdapter<Post> {
                     btComment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                String url = Constants.URL + "create-comment/" + post.getId();
-                                String text = etComment.getText().toString();
-                                if (text.isEmpty()) {
-                                    Toast.makeText(WallAdapter.this.getContext(), "You have to write something", Toast.LENGTH_SHORT).show();
-                                    return;
+                            String url = Constants.URL + "create-comment/" + post.getId();
+                            String text = etComment.getText().toString();
+                            if (text.isEmpty()) {
+                                Toast.makeText(WallAdapter.this.getContext(), "You have to write something", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            final JSONObject params = new JSONObject();
+                            try {
+                                params.put("text", text);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            RequestQueue requestQueue = Volley.newRequestQueue(WallAdapter.this.getContext());
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    updateCommentsForUser();
+                                    post.setComments(post.getComments() + 1);
+                                    tvComments.setText(String.format("%s", post.getComments()));
+                                    etComment.setText("");
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
+                                    Toast.makeText(WallAdapter.this.getContext(), "An error occurred, try again.", Toast.LENGTH_SHORT).show();
+                                }
+                            }) {
+                                @Override
+                                public byte[] getBody() throws AuthFailureError {
+                                    return params.toString().getBytes();
                                 }
 
-                                final JSONObject params = new JSONObject();
-                                try {
-                                    params.put("text", text);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/json";
                                 }
-                                RequestQueue requestQueue = Volley.newRequestQueue(WallAdapter.this.getContext());
-                                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        updateCommentsForUser();
-                                        post.setComments(post.getComments() + 1);
-                                        tvComments.setText(Integer.toString(post.getComments()));
-                                        etComment.setText("");
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
-                                        Toast.makeText(WallAdapter.this.getContext(), "An error occurred, try again.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }) {
-                                    @Override
-                                    public byte[] getBody() throws AuthFailureError {
-                                        return params.toString().getBytes();
-                                    }
 
-                                    @Override
-                                    public String getBodyContentType() {
-                                        return "application/json";
-                                    }
+                                @Override
+                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                    Map<String, String> headers = new HashMap<>();
+                                    headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
+                                    return headers;
+                                }
+                            };
 
-                                    @Override
-                                    public Map<String, String> getHeaders() throws AuthFailureError {
-                                        Map<String, String> headers = new HashMap<>();
-                                        headers.put("Authorization", "Bearer " + Token.getInstance().getToken());
-                                        return headers;
-                                    }
-                                };
-
-                                requestQueue.add(stringRequest);
+                            requestQueue.add(stringRequest);
 
                         }
                     });
@@ -284,7 +282,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
         return convertView;
     }
 
-    public void updatePostsForUser() {
+    void updatePostsForUser() {
         postsLoading = true;
         String url = Constants.URL + "get-latest-posts-from-user";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -545,7 +543,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
         requestQueue.add(stringRequest);
     }
 
-    public void updateLatestCommentsFromOldest() {
+    private void updateLatestCommentsFromOldest() {
         commentsLoading = true;
         String url = Constants.URL + "get-latest-comments-from/" + postWithComments.getId() + "/" + comments.getOldest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -583,7 +581,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
         llComments.removeAllViews();
         ArrayList<Comment> commentList = comments.getComments();
         for (Comment comment:
-             commentList) {
+                commentList) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
             View view = inflater.inflate(R.layout.comment, llComments, false);
             TextView tvName = (TextView) view.findViewById(R.id.tvCommentName);

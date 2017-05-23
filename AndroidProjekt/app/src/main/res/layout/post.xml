@@ -3,7 +3,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Name"
+        android:text="@string/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvName"
@@ -11,7 +11,7 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="City"
+        android:text="@string/city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvCity"
@@ -20,7 +20,7 @@
         android:layout_marginEnd="10dp"  />
 
     <TextView
-        android:text="Likes: "
+        android:text="@string/likes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textLikes"
@@ -28,14 +28,14 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="Text"
+        android:text="@string/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvText"
         android:layout_below="@+id/tvName" />
 
     <TextView
-        android:text="0"
+        android:text="@string/_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvLikes"
@@ -43,7 +43,7 @@
         android:layout_toEndOf="@+id/textLikes" />
 
     <TextView
-        android:text="0"
+        android:text="@string/_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvComments"
@@ -51,7 +51,7 @@
         android:layout_toEndOf="@+id/textComments" />
 
     <TextView
-        android:text="Comments: "
+        android:text="@string/comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textComments"
@@ -61,7 +61,7 @@
 
 
     <Button
-        android:text="Hide"
+        android:text="@string/hide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btHide"
@@ -70,7 +70,7 @@
         android:visibility="gone"/>
 
     <Button
-        android:text="Load"
+        android:text="@string/load"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btLoad"
@@ -89,7 +89,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Write your comment here..."
+        android:hint="@string/write_your_comment_here"
         android:ems="10"
         android:id="@+id/etComment"
         android:layout_below="@+id/llComments"
@@ -97,7 +97,7 @@
         android:visibility="gone"/>
 
     <Button
-        android:text="Comment"
+        android:text="@string/comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btComment"

@@ -3,13 +3,10 @@ package com.example.simsu451.androidprojekt.chat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -23,7 +20,6 @@ import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
-import com.example.simsu451.androidprojekt.wall.WallAdapter;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -31,6 +27,10 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * The ChatActivity is the activity where you chat with your friends.
+ */
 
 public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;

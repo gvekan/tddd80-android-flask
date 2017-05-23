@@ -2,6 +2,7 @@ package com.example.simsu451.androidprojekt.friend;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,18 +27,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by simsu451 on 20/05/17.
+ * The RequestAdapter handles the list of your friend requests.
  */
 
-public class RequestsAdapter extends ArrayAdapter<User> {
+class RequestsAdapter extends ArrayAdapter<User> {
     private Users friendRequests = new Users();
-    public RequestsAdapter(Context context) {
+    RequestsAdapter(Context context) {
         super(context, R.layout.activity_friends);
         getFriendRequests();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
         }

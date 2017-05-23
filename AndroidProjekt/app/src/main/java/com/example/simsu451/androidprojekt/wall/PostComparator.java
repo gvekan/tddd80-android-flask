@@ -3,15 +3,15 @@ package com.example.simsu451.androidprojekt.wall;
 import java.util.Comparator;
 
 /**
- * Created by gusan092 on 10/05/17.
+ * The PostComparator compares posts according to their index
  */
 
-public class PostComparator implements Comparator<Post> {
+class PostComparator implements Comparator<Post> {
 
     @Override
-    public int compare(Post lhs, Post rhs) {
-        if (lhs.getId() > rhs.getId()) return -1;
-        else if (lhs.getId() < rhs.getId()) return 1;
+    public int compare(Post post1, Post post2) {
+        if (post1.getId() > post2.getId()) return -1;
+        else if (post1.getId() < post2.getId()) return 1;
         return 0;
     }
 

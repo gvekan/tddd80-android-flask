@@ -1,10 +1,10 @@
 package com.example.simsu451.androidprojekt.wall;
 
 /**
- * Created by simsu451 on 28/04/17.
+ * Java bean for a post
  */
 
-public class Post {
+class Post {
     private int id;
     private String name;
     private String text;
@@ -38,39 +38,39 @@ public class Post {
         this.text = text;
     }
 
-    public int getLikes() {
+    int getLikes() {
         return likes;
     }
 
-    public void setLikes(int likes) {
+    void setLikes(int likes) {
         this.likes = likes;
     }
 
-    public boolean isLiking() {
+    boolean isLiking() {
         return liking;
     }
 
-    public void setLiking(boolean liking) {
+    void setLiking(boolean liking) {
         this.liking = liking;
     }
 
-    public int getComments() {
+    int getComments() {
         return comments;
     }
 
-    public void setComments(int comments) {
+    void setComments(int comments) {
         this.comments = comments;
     }
 
-    public boolean isCommentsShowing() {
+    boolean isCommentsShowing() {
         return commentsShowing;
     }
 
-    public void setCommentsShowing(boolean commentsShowing) {
+    void setCommentsShowing(boolean commentsShowing) {
         this.commentsShowing = commentsShowing;
     }
 
-    public String getCity() {
+    String getCity() {
         return city;
     }
 

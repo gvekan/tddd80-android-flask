@@ -1,17 +1,16 @@
 package com.example.simsu451.androidprojekt.chat;
 
-import java.util.Collection;
 import java.util.Comparator;
 
 /**
- * Created by simsu451 on 13/05/17.
+ * MessageComparator sorts messages according to their index
  */
 
-public class MessageComparator implements Comparator<Message> {
+class MessageComparator implements Comparator<Message> {
     @Override
-    public int compare(Message lhs, Message rhs) {
-        if (lhs.getIndex() > rhs.getIndex()) return 1;
-        else if (lhs.getIndex() < rhs.getIndex()) return -1;
+    public int compare(Message message1, Message message2) {
+        if (message1.getIndex() > message2.getIndex()) return 1;
+        else if (message1.getIndex() < message2.getIndex()) return -1;
         return 0;
     }
 }

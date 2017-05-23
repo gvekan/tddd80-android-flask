@@ -23,4 +23,12 @@
     <string name="city">City</string>
     <string name="create_user">Create user</string>
     <string name="first_name">First name</string>
+    <string name="write_your_comment_here">Write your comment here...</string>
+    <string name="comment">Comment</string>
+    <string name="load">Load</string>
+    <string name="hide">Hide</string>
+    <string name="comments">Comments:</string>
+    <string name="_0">0</string>
+    <string name="text">Text</string>
+    <string name="likes">Likes:</string>
 </resources>

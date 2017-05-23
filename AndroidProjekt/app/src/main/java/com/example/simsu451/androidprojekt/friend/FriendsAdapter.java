@@ -3,6 +3,7 @@ package com.example.simsu451.androidprojekt.friend;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,18 +29,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by simsu451 on 20/05/17.
+ * The FriendAdapter handles the FriendActivity. It handles the list of Friends the user has.
  */
 
-public class FriendsAdapter extends ArrayAdapter<User> {
+class FriendsAdapter extends ArrayAdapter<User> {
     private Users users = new Users();
-    public FriendsAdapter(Context context) {
+    FriendsAdapter(Context context) {
         super(context, R.layout.activity_friends);
         getFriends();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
         }
@@ -70,7 +72,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
     }
 
 
-    public void getFriends() {
+    void getFriends() {
         String url = Constants.URL + "get-friends";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

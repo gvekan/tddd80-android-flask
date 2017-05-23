@@ -5,32 +5,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Created by simsu451 on 28/04/17.
+ * Java bean for a list of <Comment>
  */
 
-public class Comments {
+class Comments {
     private ArrayList<Comment> comments;
 
-    public ArrayList<Comment> getComments() {
+    ArrayList<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(ArrayList<Comment> comments) {
+    void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
 
-    public void addComments(ArrayList<Comment> comments) {
+    void addComments(ArrayList<Comment> comments) {
         this.comments.addAll(comments);
         Collections.sort(this.comments, new CommentComparator());
     }
 
-    public int getLatest() {
+    int getLatest() {
         int size = comments.size();
         if (size == 0) return -1;
         return comments.get(size - 1).getIndex();
     }
 
-    public int getOldest() {
+    int getOldest() {
         if (comments.size() == 0) return -1;
         return comments.get(0).getIndex();
     }

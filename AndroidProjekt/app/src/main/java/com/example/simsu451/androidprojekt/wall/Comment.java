@@ -1,10 +1,10 @@
 package com.example.simsu451.androidprojekt.wall;
 
 /**
- * Created by simsu451 on 28/04/17.
+ * Java bean for a comment
  */
 
-public class Comment {
+class Comment {
     private int id;
     private int index;
     private String name;
@@ -18,7 +18,7 @@ public class Comment {
         this.id = id;
     }
 
-    public int getIndex() {
+    int getIndex() {
         return index;
     }
 
