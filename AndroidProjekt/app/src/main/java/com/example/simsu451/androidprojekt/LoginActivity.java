@@ -1,8 +1,11 @@
 package com.example.simsu451.androidprojekt;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +36,8 @@ import java.util.MissingResourceException;
 public class LoginActivity extends Activity {
     private Class intentClass;
     private Bundle savedInstanceState;
+    private static final String[] LOCATION_PERMS = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int LOCATION_REQUEST = 780;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,10 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         intentClass = WallActivity.class;
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) { //Får appen att krascha om man inte har godkänt innan
+            requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+        }
 
         try {
             String toast = savedInstanceState.getString("toast");

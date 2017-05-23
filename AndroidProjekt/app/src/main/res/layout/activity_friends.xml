@@ -17,11 +17,33 @@
         android:layout_above="@+id/requestsButton"
         android:id="@+id/lvFriends" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/llButtons"
+        android:orientation="horizontal">
+
+        <Button
+            android:text="Wall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/wallButton"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="@string/profile"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/friendsButton"/>
+    </LinearLayout>
+
     <Button
         android:text="@string/friend_requests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@id/llButtons"
         android:id="@+id/requestsButton" />
 
 

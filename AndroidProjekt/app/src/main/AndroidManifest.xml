@@ -24,13 +24,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RegisterActivity"
+            android:parentActivityName=".LoginActivity"/>
         <activity android:name=".wall.WallActivity" />
         <activity android:name=".user.ProfileActivity" />
-        <activity android:name=".chat.ChatActivity" />
+        <activity android:name=".chat.ChatActivity"
+            android:parentActivityName=".friend.FriendsActivity"/>
         <activity android:name=".friend.FriendsActivity" />
-        <activity android:name=".friend.RequestsActivity" />
-        <activity android:name=".UsersActivity"/>
+        <activity android:name=".friend.RequestsActivity"
+            android:parentActivityName=".friend.FriendsActivity"/>
+        <activity android:name=".UsersActivity"
+            android:parentActivityName=".friend.FriendsActivity"/>
     </application>
 
 </manifest>

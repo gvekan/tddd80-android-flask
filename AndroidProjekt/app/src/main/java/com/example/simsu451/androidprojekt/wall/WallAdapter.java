@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -155,7 +156,7 @@ public class WallAdapter extends ArrayAdapter<Post> {
             tvLikes.setText(Integer.toString(post.getLikes()));
             tvComments.setText(Integer.toString(post.getComments()));
 
-            if (post.isLiking()) tvLikes.setTextColor(Color.GREEN);
+            if (post.isLiking()) tvLikes.setTextColor(Color.parseColor("#d1476a"));
             else tvLikes.setTextColor(oldColors);
 
             View.OnClickListener likesClickListener = new View.OnClickListener() {
