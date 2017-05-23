@@ -25,7 +25,7 @@ def register():
     city = request.json.get('city', None)
     if data.User.query.filter_by(email=email).count():
         return jsonify({"msg": "Email taken"}), 401
-    data.register_user(email,password, first_name, last_name, city)
+    data.register_user(email, password, first_name, last_name, city)
     return jsonify({"msg": "User created"}), 200
 
 
@@ -155,6 +155,7 @@ def create_post():
 def get_latest_posts(post_id):
     """
     Get the ten latest posts on the wall
+    :param post_id:
     """
     latest = int(post_id)
     user = data.get_user("gusan092@student.liu.se")
@@ -167,6 +168,7 @@ def get_latest_posts(post_id):
 def get_latest_posts_from(post_id):
     """
     Get the ten latest posts on the wall
+    :param post_id:
     """
     latest = int(post_id)
     if latest < 11:
@@ -214,6 +216,7 @@ def dislike_post(post_id):
 def create_comment(post_id):
     """
     Creates a post to the wall
+    :param post_id:
     """
     text = request.json.get('text', None)
     id = int(post_id)
@@ -226,9 +229,6 @@ def create_comment(post_id):
 @application.route('/get-latest-comments/<post_id>/<comment_index>', methods=['get'])
 @jwt_required
 def get_latest_comments(post_id, comment_index):
-    """
-    Get the ten latest posts on the wall
-    """
     id = int(post_id)
     post = data.Post.query.get(id)
     oldest = int(comment_index)
@@ -240,9 +240,6 @@ def get_latest_comments(post_id, comment_index):
 @application.route('/get-latest-comments-from/<post_id>/<comment_index>', methods=['get'])
 @jwt_required
 def get_latest_comments_from(post_id, comment_index):
-    """
-    Get the ten latest posts on the wall
-    """
     id = int(post_id)
     post = data.Post.query.get(id)
     latest = int(comment_index)
@@ -258,9 +255,6 @@ def get_latest_comments_from(post_id, comment_index):
 @application.route('/get-latest-comments-from-user/<post_id>', methods=['get'])
 @jwt_required
 def get_latest_comments_from_user(post_id):
-    """
-    Get the ten latest posts on the wall
-    """
     id = int(post_id)
     post = data.Post.query.get(id)
     user = data.get_user(get_jwt_identity())
@@ -281,6 +275,7 @@ def send_message():
     user.send_message(receiver, message)
     return jsonify({"msg": "Message successfully sent"}), 200
 
+
 @application.route('/get-latest-messages/<receiver_email>/<index>', methods=['GET'])
 @jwt_required
 def get_latest_messages(receiver_email, index):
@@ -291,12 +286,10 @@ def get_latest_messages(receiver_email, index):
     messages = user.get_latest_messages(chat, latest)
     return jsonify({"messages": messages}), 200
 
+
 @application.route('/get-latest-messages-from/<receiver_email>/<message_index>', methods=['get'])
 @jwt_required
 def get_latest_messages_from(receiver_email, message_index):
-    """
-    Get the ten latest posts on the wall
-    """
     latest = int(message_index)
     if latest < 11:
         oldest = 1
@@ -312,9 +305,6 @@ def get_latest_messages_from(receiver_email, message_index):
 @application.route('/get-friends', methods=['GET'])
 @jwt_required
 def get_friends():
-    """
-    Get all active chat a user has
-    """
     user = data.get_user(get_jwt_identity())
     friends_list = user.get_friends()
     return jsonify({'users': friends_list}), 200
@@ -323,9 +313,6 @@ def get_friends():
 @application.route('/get-all-users', methods=['GET'])
 @jwt_required
 def get_all_users():
-    """
-    Get all active chat a user has
-    """
     user = data.get_user(get_jwt_identity())
     users = user.get_all_users()
     return jsonify({'users': users}), 200
@@ -354,7 +341,8 @@ def send_friend_request(receiver_email):
     user = data.get_user(get_jwt_identity())
     receiver = data.get_user(receiver_email)
     user.send_friend_request(receiver)
-    return jsonify({'msg': 'Friend request successfully sent to ' + receiver.first_name + ' ' + receiver.last_name}), 200
+    return jsonify({'msg': 'Friend request successfully sent to ' +
+                           receiver.first_name + ' ' + receiver.last_name}), 200
 
 
 @application.route('/get-friend-requests', methods=['GET'])
@@ -363,6 +351,14 @@ def get_friend_requests():
     user = data.get_user(get_jwt_identity())
     friend_requests = user.get_friend_requests()
     return jsonify({'users': friend_requests}), 200
+
+
+@application.route('/get-friend-request-amount', methods=['GET'])
+@jwt_required
+def get_friend_request_amount():
+    user = data.get_user(get_jwt_identity())
+    amount = user.get_friend_request_amount()
+    return jsonify({'amount': amount}), 200
 
 
 @application.route('/accept-friend-request/<requester_email>', methods=['POST'])
