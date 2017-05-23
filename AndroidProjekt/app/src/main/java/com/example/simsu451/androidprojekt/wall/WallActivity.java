@@ -27,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
-import com.example.simsu451.androidprojekt.UsersActivity;
 import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.friend.FriendsActivity;
 import com.example.simsu451.androidprojekt.user.ProfileActivity;
@@ -43,9 +42,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * The WallActivity is the activity where you can see the posts of other users
+ */
+
 public class WallActivity extends AppCompatActivity implements LocationListener {
     private WallAdapter wallAdapter;
-    LocationManager lm;
+    private LocationManager lm;
     private static final String[] LOCATION_PERMS = {Manifest.permission.ACCESS_FINE_LOCATION};
     private static final int LOCATION_REQUEST = 780;
 
@@ -53,7 +56,7 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wall);
-
+        setTitle("Wall");
         lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) { //Får appen att krascha om man inte har godkänt innan
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
@@ -71,7 +74,7 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
         });
 
         Button friendsButton = (Button) findViewById(R.id.friendsButton);
-        if (friendsButton == null) throw new AssertionError("usersButton is null");
+        if (friendsButton == null) throw new AssertionError("friendsButton is null");
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

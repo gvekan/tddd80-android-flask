@@ -1,7 +1,7 @@
 package com.example.simsu451.androidprojekt;
 
 /**
- * Created by gusan092 on 10/05/17.
+ * The token class is used to check if your session is valid.
  */
 
 public class Token {

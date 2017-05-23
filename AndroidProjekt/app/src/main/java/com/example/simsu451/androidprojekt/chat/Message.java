@@ -1,16 +1,15 @@
 package com.example.simsu451.androidprojekt.chat;
 
 /**
- * Created by simsu451 on 10/05/17.
+ * Java bean for a message
  */
 
-public class Message {
+class Message {
     private int index;
     private String text;
     private String sentBy;
 
-
-    public int getIndex() {
+    int getIndex() {
         return index;
     }
 
@@ -26,7 +25,7 @@ public class Message {
         this.text = text;
     }
 
-    public String getSentBy() {
+    String getSentBy() {
         return sentBy;
     }
 

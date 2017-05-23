@@ -1,7 +1,7 @@
 package com.example.simsu451.androidprojekt;
 
 import android.content.Context;
-import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +16,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.simsu451.androidprojekt.chat.ChatActivity;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.friend.Users;
 import com.google.gson.Gson;
@@ -25,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by simsu451 on 22/05/17.
+ * The UsersAdapter handles a list of <User> that are not your friends.
  */
 
 public class UsersAdapter extends ArrayAdapter<User>{
@@ -35,8 +34,9 @@ public class UsersAdapter extends ArrayAdapter<User>{
         getUsers();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
         }

@@ -3,6 +3,7 @@ package com.example.simsu451.androidprojekt.friend;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,41 +29,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by simsu451 on 20/05/17.
+ * The FriendAdapter handles the FriendActivity. It handles the list of Friends the friend has.
  */
 
-public class FriendsAdapter extends ArrayAdapter<User> {
+class FriendsAdapter extends ArrayAdapter<User> {
     private Users users = new Users();
-    public FriendsAdapter(Context context) {
+    FriendsAdapter(Context context) {
         super(context, R.layout.activity_friends);
         getFriends();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.user, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend, parent, false);
         }
         final User user = getItem(position);
         if (user != null) {
             TextView tvFriend = (TextView) convertView.findViewById(R.id.tvUser);
             tvFriend.setText(user.getFirstName() + ' ' + user.getLastName());
-
-            tvFriend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ChatActivity.class);
-                    intent.putExtra("user", new Gson().toJson(user)); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
-                    getContext().startActivity(intent);
-                }
-            });
-
-            Button button = (Button) convertView.findViewById(R.id.button);
-            button.setText(R.string.remove_friend);
-            button.setOnClickListener(new View.OnClickListener() {
+            Button removeButton = (Button) convertView.findViewById(R.id.removeButton);
+            removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     removeFriend(user);
+                }
+            });
+
+            Button chatButton = (Button) convertView.findViewById(R.id.chatButton);
+            chatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ChatActivity.class);
+                    intent.putExtra("friend", new Gson().toJson(user)); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
+                    getContext().startActivity(intent);
                 }
             });
         }
@@ -70,7 +71,7 @@ public class FriendsAdapter extends ArrayAdapter<User> {
     }
 
 
-    public void getFriends() {
+    void getFriends() {
         String url = Constants.URL + "get-friends";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

@@ -20,12 +20,15 @@ import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
-import com.example.simsu451.androidprojekt.friend.FriendsActivity;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * The ProfileActivity is the activity where you can see your profile.
+ */
 
 public class ProfileActivity extends AppCompatActivity{
     private TextView tvFirstName;
@@ -36,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setTitle("Profile");
 
         tvFirstName = (TextView) findViewById(R.id.tvFirstName);
         tvLastName = (TextView) findViewById(R.id.tvLastName);

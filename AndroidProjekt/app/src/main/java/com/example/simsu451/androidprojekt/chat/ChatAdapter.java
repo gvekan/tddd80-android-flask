@@ -1,6 +1,7 @@
 package com.example.simsu451.androidprojekt.chat;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -29,16 +29,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by simsu451 on 10/05/17.
+ * The ChatAdapter handles the ChatActivity. It handles the list of <Message> in a chat.
  */
 
-public class ChatAdapter extends ArrayAdapter<Message> {
+class ChatAdapter extends ArrayAdapter<Message> {
     private Messages messages = new Messages();
     private User friend;
     private ListView lwChat;
     private SwipeRefreshLayout srlChat;
 
-    public ChatAdapter(Context context, User friend, ListView lwChat, final SwipeRefreshLayout srlChat) {
+    ChatAdapter(Context context, User friend, ListView lwChat, final SwipeRefreshLayout srlChat) {
         super(context, R.layout.message);
         this.lwChat = lwChat;
         this.srlChat = srlChat;
@@ -53,8 +53,9 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         });
 
     }
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.message, parent, false);
         }
@@ -78,7 +79,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         return convertView;
     }
 
-    public void updateLatestMessages() {
+    void updateLatestMessages() {
         String url = Constants.URL + "get-latest-messages/" + friend.getEmail() + "/" + messages.getLatest();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -113,7 +114,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
         requestQueue.add(stringRequest);
     }
 
-    public void updateLatestMessagesFromOldest() {
+    private void updateLatestMessagesFromOldest() {
         srlChat.setRefreshing(false);
         String url = Constants.URL + "get-latest-messages-from/" + friend.getEmail() + "/" + messages.getOldest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());

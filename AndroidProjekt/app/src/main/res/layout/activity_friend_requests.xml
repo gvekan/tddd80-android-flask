@@ -13,15 +13,6 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/friendsButton"
         android:id="@+id/lvRequests"/>
-
-    <Button
-        android:text="@string/friends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/friendsButton" />
 
 </RelativeLayout>

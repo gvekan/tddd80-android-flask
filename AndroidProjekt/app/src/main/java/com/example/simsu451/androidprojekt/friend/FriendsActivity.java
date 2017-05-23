@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,10 +18,17 @@ import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
-import com.google.gson.Gson;
+import com.example.simsu451.androidprojekt.UsersActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * The FriendActivity is the activity where you can see all your friends.
+ */
 
 public class FriendsActivity extends AppCompatActivity {
     private Button requestsButton;
@@ -31,7 +37,6 @@ public class FriendsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
-
         setTitle("Friends");
 
         requestsButton = (Button) findViewById(R.id.requestsButton);
@@ -51,6 +56,16 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
+        Button usersButton = (Button) findViewById(R.id.usersButton);
+        if (usersButton == null) throw new AssertionError("usersButton is null");
+        usersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FriendsActivity.this, UsersActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -61,15 +76,20 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     private void getFriendRequestsAmount() {
-        String url = Constants.URL + "get-friend-requests";
+        String url = Constants.URL + "get-friend-request-amount";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Gson gson = new Gson();
-                        Users friendRequests = gson.fromJson(response, Users.class);
-                        requestsButton.setText(String.format("Friend requests: %s", friendRequests.getUsers().size()));
+                        JSONObject jsonResponse;
+                        try {
+                            jsonResponse = new JSONObject(response);
+                            int amount = jsonResponse.getInt("amount");
+                            requestsButton.setText(String.format("Friend requests: %s", amount));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -1,7 +1,7 @@
 package com.example.simsu451.androidprojekt.friend;
 
 /**
- * Created by simsu451 on 12/05/17.
+ * Java bean for a User
  */
 
 public class User {

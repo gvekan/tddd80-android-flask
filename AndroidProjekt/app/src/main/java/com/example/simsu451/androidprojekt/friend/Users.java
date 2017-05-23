@@ -3,7 +3,7 @@ package com.example.simsu451.androidprojekt.friend;
 import java.util.List;
 
 /**
- * Created by simsu451 on 12/05/17.
+ * Java bean for a list of <User>
  */
 
 public class Users {

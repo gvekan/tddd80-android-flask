@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/requestsButton"
+        android:layout_above="@+id/llButtons2"
         android:id="@+id/lvFriends" />
 
     <LinearLayout
@@ -39,12 +39,27 @@
             android:id="@+id/friendsButton"/>
     </LinearLayout>
 
-    <Button
-        android:text="@string/friend_requests"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/llButtons"
-        android:id="@+id/requestsButton" />
+        android:id="@+id/llButtons2"
+        android:orientation="horizontal"
+        android:layout_above="@+id/llButtons">
 
+        <Button
+            android:text="Find friends"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:id="@+id/usersButton" />
+
+        <Button
+            android:text="@string/friend_requests"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:id="@+id/requestsButton" />
+    </LinearLayout>
 
 </RelativeLayout>
