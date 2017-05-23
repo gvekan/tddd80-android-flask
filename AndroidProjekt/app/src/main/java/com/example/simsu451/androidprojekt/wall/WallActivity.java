@@ -54,7 +54,7 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
         setContentView(R.layout.activity_wall);
 
         lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) { //Får appen att krascha om man inte har godkänt innan
             requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, this);

@@ -13,20 +13,9 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvFriends"
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/requestsButton"
         android:id="@+id/lvFriends" />
-
-
-    <TextView
-        android:text="@string/friends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#000"
-        android:textSize="30sp"
-        android:layout_alignParentTop="true"
-        android:id="@+id/tvFriends" />
 
     <Button
         android:text="@string/friend_requests"

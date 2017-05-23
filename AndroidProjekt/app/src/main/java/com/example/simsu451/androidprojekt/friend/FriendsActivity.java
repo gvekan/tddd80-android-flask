@@ -32,6 +32,8 @@ public class FriendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
+        setTitle("Friends");
+
         requestsButton = (Button) findViewById(R.id.requestsButton);
         getFriendRequestsAmount();
 

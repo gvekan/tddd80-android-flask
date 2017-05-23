@@ -45,9 +45,8 @@ public class ChatActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         jsonFriend = extras.getString("user"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
         friend = new Gson().fromJson(jsonFriend, User.class);
-        TextView tvName = (TextView) findViewById(R.id.tvName);
-        if (tvName == null) throw new AssertionError("tvName is null");
-        tvName.setText(friend.getFirstName() + ' ' + friend.getLastName());
+
+        setTitle(friend.getFirstName() + ' ' + friend.getLastName());
 
         ListView lwChat = (ListView) findViewById(R.id.lwChat);
         if (lwChat == null) throw new AssertionError("listView is null");

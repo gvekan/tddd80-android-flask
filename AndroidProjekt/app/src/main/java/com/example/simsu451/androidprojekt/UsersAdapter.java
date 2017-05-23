@@ -45,15 +45,6 @@ public class UsersAdapter extends ArrayAdapter<User>{
             TextView tvUser = (TextView) convertView.findViewById(R.id.tvUser);
             tvUser.setText(user.getFirstName() + ' ' + user.getLastName());
 
-            tvUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), ChatActivity.class);
-                    intent.putExtra("user", new Gson().toJson(user)); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
-                    getContext().startActivity(intent);
-                }
-            });
-
             Button button = (Button) convertView.findViewById(R.id.button);
             button.setText(R.string.add_friend);
             button.setOnClickListener(new View.OnClickListener() {
