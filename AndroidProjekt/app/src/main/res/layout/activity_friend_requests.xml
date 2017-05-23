@@ -10,6 +10,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.simsu451.androidprojekt.friend.RequestsActivity">
 
+    <TextView
+        android:text="@string/friend_requests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#000"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/tvRequests" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,13 +35,4 @@
         android:layout_alignParentBottom="true"
         android:id="@+id/friendsButton" />
 
-    <TextView
-        android:text="@string/friend_requests"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#000"
-        android:textSize="30sp"
-        android:layout_alignParentTop="true"
-        android:id="@+id/tvRequests" />
 </RelativeLayout>

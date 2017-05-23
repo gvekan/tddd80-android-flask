@@ -1,14 +1,15 @@
 package com.example.simsu451.androidprojekt.chat;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -33,16 +34,16 @@ import java.util.Map;
 
 public class ChatAdapter extends ArrayAdapter<Message> {
     private Messages messages = new Messages();
-    private User user;
+    private User friend;
     private ListView lwChat;
     private SwipeRefreshLayout srlChat;
 
-    public ChatAdapter(Context context, User user, ListView lwChat, final SwipeRefreshLayout srlChat) {
-        super(context, R.layout.chat_message);
+    public ChatAdapter(Context context, User friend, ListView lwChat, final SwipeRefreshLayout srlChat) {
+        super(context, R.layout.message);
         this.lwChat = lwChat;
         this.srlChat = srlChat;
         messages.setMessages(new ArrayList<Message>());
-        this.user = user;
+        this.friend = friend;
         updateLatestMessages();
         srlChat.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -55,21 +56,30 @@ public class ChatAdapter extends ArrayAdapter<Message> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.chat_message, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.message, parent, false);
         }
         Message message = getItem(position);
         if (message != null) {
-            EditText etMessage = (EditText) convertView.findViewById(R.id.etMessage);
-            if (message.getSentBy().equals(user.getEmail())) {
-                etMessage.setTextColor(Color.GREEN);
+            FrameLayout flMessage = (FrameLayout) convertView.findViewById(R.id.flMessage);
+            View dialogView;
+            TextView tvDialog;
+            if (message.getSentBy().equals(friend.getEmail())) {
+                dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_friend, flMessage, false);
+                tvDialog = (TextView) dialogView.findViewById(R.id.tvFriendDialog);
+            } else {
+                dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_user, flMessage, false);
+                tvDialog = (TextView) dialogView.findViewById(R.id.tvUserDialog);
+                tvDialog.setText(message.getText());
             }
-            etMessage.setText(message.getText());
+            tvDialog.setText(message.getText());
+            flMessage.addView(dialogView);
+            notifyDataSetChanged();
         }
         return convertView;
     }
 
     public void updateLatestMessages() {
-        String url = Constants.URL + "get-latest-messages/" + user.getEmail() + "/" + messages.getLatest();
+        String url = Constants.URL + "get-latest-messages/" + friend.getEmail() + "/" + messages.getLatest();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -105,7 +115,7 @@ public class ChatAdapter extends ArrayAdapter<Message> {
 
     public void updateLatestMessagesFromOldest() {
         srlChat.setRefreshing(false);
-        String url = Constants.URL + "get-latest-messages-from/" + user.getEmail() + "/" + messages.getOldest();
+        String url = Constants.URL + "get-latest-messages-from/" + friend.getEmail() + "/" + messages.getOldest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

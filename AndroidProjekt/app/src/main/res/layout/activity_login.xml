@@ -9,7 +9,19 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.simsu451.androidprojekt.LoginActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:text="Super social app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="45sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="70dp"/>
 
     <EditText
         android:hint="@string/e_mail"
@@ -31,11 +43,17 @@
         android:text="@string/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/loginButton" />
+        android:id="@+id/loginButton"
+        android:background="#FFFFFF"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
+        />
 
     <Button
         android:text="@string/register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/registerButton" />
+        android:id="@+id/registerButton"
+        android:background="#FFFFFF"/>
 </LinearLayout>

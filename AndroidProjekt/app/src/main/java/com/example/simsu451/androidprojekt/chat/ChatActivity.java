@@ -34,7 +34,7 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
-    private User user;
+    private User friend;
     private String jsonFriend;
 
     @Override
@@ -44,15 +44,15 @@ public class ChatActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         jsonFriend = extras.getString("user"); // http://stackoverflow.com/questions/4249897/how-to-send-objects-through-bundle
-        user = new Gson().fromJson(jsonFriend, User.class);
+        friend = new Gson().fromJson(jsonFriend, User.class);
         TextView tvName = (TextView) findViewById(R.id.tvName);
         if (tvName == null) throw new AssertionError("tvName is null");
-        tvName.setText(user.getFirstName() + ' ' + user.getLastName());
+        tvName.setText(friend.getFirstName() + ' ' + friend.getLastName());
 
         ListView lwChat = (ListView) findViewById(R.id.lwChat);
         if (lwChat == null) throw new AssertionError("listView is null");
         SwipeRefreshLayout srlChat = (SwipeRefreshLayout) findViewById(R.id.srlChat);
-        chatAdapter = new ChatAdapter(this, user, lwChat, srlChat);
+        chatAdapter = new ChatAdapter(this, friend, lwChat, srlChat);
         lwChat.setAdapter(chatAdapter);
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -74,10 +74,11 @@ public class ChatActivity extends AppCompatActivity {
         if (text.isEmpty()) { //Do nothing if no text
             return;
         }
+        etMessage.setText("");
         final JSONObject params = new JSONObject();
         try {
             params.put("text", text);
-            params.put("receiver", user.getEmail());
+            params.put("receiver", friend.getEmail());
         } catch (JSONException e){
             e.printStackTrace();
         }

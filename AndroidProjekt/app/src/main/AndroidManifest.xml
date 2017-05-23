@@ -30,7 +30,7 @@
         <activity android:name=".chat.ChatActivity" />
         <activity android:name=".friend.FriendsActivity" />
         <activity android:name=".friend.RequestsActivity" />
-        <activity android:name=".UsersActivity"></activity>
+        <activity android:name=".UsersActivity"/>
     </application>
 
 </manifest>

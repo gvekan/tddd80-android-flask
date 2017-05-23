@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rlDialog">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hade varit gott med mat när jag kommer hem!"
+        android:textSize="18sp"
+        android:maxEms="10"
+        android:background="@drawable/user_bubble"
+        android:layout_marginEnd="15dp"
+        android:textColor="#000000"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/tvUserDialog">
+    </TextView>
+</RelativeLayout>

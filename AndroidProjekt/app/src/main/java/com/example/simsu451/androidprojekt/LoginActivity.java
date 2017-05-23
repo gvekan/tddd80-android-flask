@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,7 +28,9 @@ import com.example.simsu451.androidprojekt.wall.WallActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity {
+import java.util.MissingResourceException;
+
+public class LoginActivity extends Activity {
     private Class intentClass;
     private Bundle savedInstanceState;
 
@@ -35,31 +39,36 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        this.savedInstanceState = savedInstanceState;
-
-
-        String toast = savedInstanceState.getString("toast");
-        if (toast != null && !toast.isEmpty()) Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
-
         intentClass = WallActivity.class;
-        String classString = savedInstanceState.getString("class");
-        if (classString != null) {
-            String[] className = classString.split(".");
-            switch (className[className.length-1]) {
-                case "ChatActivity":
-                    intentClass = ChatActivity.class;
-                    break;
-                case "FriendsActivity":
-                    intentClass = FriendsActivity.class;
-                    break;
-                case "RequestsActivity":
-                    intentClass = RequestsActivity.class;
-                    break;
-                case "ProfileActivity":
-                    intentClass = ProfileActivity.class;
-                    break;
+
+        try {
+            String toast = savedInstanceState.getString("toast");
+            if (toast != null && !toast.isEmpty())
+                Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+            String classString = savedInstanceState.getString("class");
+            if (classString != null) {
+                String[] className = classString.split(".");
+                switch (className[className.length-1]) {
+                    case "ChatActivity":
+                        intentClass = ChatActivity.class;
+                        break;
+                    case "FriendsActivity":
+                        intentClass = FriendsActivity.class;
+                        break;
+                    case "RequestsActivity":
+                        intentClass = RequestsActivity.class;
+                        break;
+                    case "ProfileActivity":
+                        intentClass = ProfileActivity.class;
+                        break;
+                }
             }
+            this.savedInstanceState = savedInstanceState;
+        } catch (MissingResourceException | NullPointerException ignore) {
+            this.savedInstanceState = new Bundle();
         }
+
+
 
         Button registerButton = (Button) findViewById(R.id.registerButton);
         if (registerButton == null) throw new AssertionError("registerButton is null");
