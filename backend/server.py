@@ -368,3 +368,12 @@ def accept_friend_request(requester_email):
     requester = data.get_user(requester_email)
     user.accept_friend_request(requester)
     return jsonify({'msg': 'You are now friends with ' + requester.first_name + ' ' + requester.last_name}), 200
+
+
+@application.route('/remove-friend-request/<requester_email>', methods=['POST'])
+@jwt_required
+def remove_friend_request(requester_email):
+    user = data.get_user(get_jwt_identity())
+    requester = data.get_user(requester_email)
+    user.remove_friend_request(requester)
+    return jsonify({'msg': 'You removed friend request from ' + requester.first_name + ' ' + requester.last_name}), 200

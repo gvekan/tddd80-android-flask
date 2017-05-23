@@ -141,6 +141,12 @@ class User(db.Model):
         db.session.commit()
         return "Friend request accepted"
 
+    def remove_friend_request(self, other):
+        self.received_requests.remove(other)
+        other.sent_requests.remove(self)
+        db.session.commit()
+        return "Friend request removed"
+
     def are_friends(self, other):
         return self.sent_requests.filter(friend_requests.c.requested_id == other.id).count() > 0
 
@@ -150,12 +156,6 @@ class User(db.Model):
         :param other: other user
         """
         return self.sent_requests.filter(friend_requests.c.requested_id == other.id).count() > 0
-
-    def remove_friend_request(self, other):
-        if self.are_friends(other):
-            self.sent_requests.remove(other)
-        db.session.commit()
-        return ''
 
     def get_friend_requests(self):
         requests = self.received_requests.all()
