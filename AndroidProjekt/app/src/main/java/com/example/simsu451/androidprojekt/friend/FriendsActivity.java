@@ -19,6 +19,8 @@ import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
 import com.example.simsu451.androidprojekt.UsersActivity;
+import com.example.simsu451.androidprojekt.user.ProfileActivity;
+import com.example.simsu451.androidprojekt.wall.WallActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +54,26 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FriendsActivity.this, RequestsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button profileButton = (Button) findViewById(R.id.profileButton);
+        if (profileButton == null) throw new AssertionError("profileButton is null");
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FriendsActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button wallButton = (Button) findViewById(R.id.wallButton);
+        if (wallButton == null) throw new AssertionError("wallButton is null");
+        wallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FriendsActivity.this, WallActivity.class);
                 startActivity(intent);
             }
         });

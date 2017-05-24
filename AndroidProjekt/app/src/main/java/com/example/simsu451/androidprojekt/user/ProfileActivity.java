@@ -20,7 +20,9 @@ import com.example.simsu451.androidprojekt.Constants;
 import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.friend.FriendsActivity;
 import com.example.simsu451.androidprojekt.friend.User;
+import com.example.simsu451.androidprojekt.wall.WallActivity;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -56,6 +58,26 @@ public class ProfileActivity extends AppCompatActivity{
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        Button wallButton = (Button) findViewById(R.id.wallButton);
+        if (wallButton == null) throw new AssertionError("profileButton is null");
+        wallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, WallActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button friendsButton = (Button) findViewById(R.id.friendsButton);
+        if (friendsButton == null) throw new AssertionError("friendsButton is null");
+        friendsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, FriendsActivity.class);
+                startActivity(intent);
             }
         });
     }

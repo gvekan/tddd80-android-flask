@@ -145,7 +145,7 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
         if (etPost == null) throw new AssertionError("etPost is null");
 //        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_wall);
 //        if (relativeLayout == null) throw new AssertionError("relativeLayout is null");
-        String text = etPost.getText().toString();
+        final String text = etPost.getText().toString();
         if (text.isEmpty()) {
             Toast.makeText(this, "You have to write something", Toast.LENGTH_SHORT).show();
             return;
@@ -175,6 +175,7 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                etPost.setText(text);
                 if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(WallActivity.this, new Bundle());
                 Toast.makeText(WallActivity.this, "An error occurred, try again.", Toast.LENGTH_SHORT).show();
             }

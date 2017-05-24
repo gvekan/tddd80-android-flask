@@ -213,11 +213,13 @@ class WallAdapter extends ArrayAdapter<Post> {
                         @Override
                         public void onClick(View v) {
                             String url = Constants.URL + "create-comment/" + post.getId();
-                            String text = etComment.getText().toString();
+                            final String text = etComment.getText().toString();
                             if (text.isEmpty()) {
                                 Toast.makeText(WallAdapter.this.getContext(), "You have to write something", Toast.LENGTH_SHORT).show();
                                 return;
                             }
+
+                            etComment.setText("");
 
                             final JSONObject params = new JSONObject();
                             try {
@@ -237,6 +239,8 @@ class WallAdapter extends ArrayAdapter<Post> {
                             }, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+
+                                    etComment.setText(text);
                                     if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
                                     Toast.makeText(WallAdapter.this.getContext(), "An error occurred, try again.", Toast.LENGTH_SHORT).show();
                                 }

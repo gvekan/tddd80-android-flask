@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/etPost"
-        android:id="@+id/postButton" />
+        android:id="@+id/postButton"/>
 
     <LinearLayout
         android:layout_width="match_parent"

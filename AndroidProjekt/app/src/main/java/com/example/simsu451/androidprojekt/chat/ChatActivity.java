@@ -67,9 +67,9 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendMessage() {
         String url = Constants.URL + "send-message";
-        EditText etMessage = (EditText) findViewById(R.id.etMessage);
+        final EditText etMessage = (EditText) findViewById(R.id.etMessage);
         if (etMessage == null) throw new AssertionError("etMessage is null");
-        String text = etMessage.getText().toString();
+        final String text = etMessage.getText().toString();
         if (text.isEmpty()) { //Do nothing if no text
             return;
         }
@@ -90,6 +90,7 @@ public class ChatActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                etMessage.setText(text);
                 if (error.networkResponse.statusCode == 401) tokenExpired();
             }
         }) {
