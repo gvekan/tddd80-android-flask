@@ -4,9 +4,9 @@ import random
 
 import requests
 
-data.initialize_db()
-root_uri = 'http://localhost:' + str(config.port) + '/'
-#root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
+#data.initialize_db()
+#root_uri = 'http://localhost:' + str(config.port) + '/'
+root_uri = 'http://app-project-tddd80.apps.ida.liu.se/'
 
 
 # CREATING USERS
@@ -122,8 +122,8 @@ print(json.loads(g1.text)['messages'])
 # print(json.loads(g2.text)['messages'])
 #
 # # SEND FRIEND REQUEST
-f1 = requests.post(root_uri + 'send-friend-request/gusan092@student.liu.se', headers={'Authorization': 'Bearer ' + token_simon})
-print(json.loads(f1.text)['msg'])
+#f1 = requests.post(root_uri + 'send-friend-request/gusan092@student.liu.se', headers={'Authorization': 'Bearer ' + token_simon})
+#print(json.loads(f1.text)['msg'])
 
 #   GET FRIEND REQUESTS
 gfr1 = requests.get(root_uri + 'get-friend-requests', headers={'Authorization': 'Bearer ' + token_gustav})

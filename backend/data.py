@@ -101,7 +101,7 @@ class User(db.Model):
 
     def remove_friend(self, friend):
         self.friends.remove(friend)
-        friend.friendship.remove(self)
+        friend.friends.remove(self)
         db.session.commit()
         return 'Friend removed'
 
