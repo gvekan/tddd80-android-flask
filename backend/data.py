@@ -150,7 +150,7 @@ class User(db.Model):
         return "Friend request removed"
 
     def are_friends(self, other):
-        return self.sent_requests.filter(friend_requests.c.requested_id == other.id).count() > 0
+        return self.friends.filter(friendships.c.user_id == self.id, friendships.c.friend_id == other.id).count() > 0
 
     def friend_request_sent(self, other):
         """
