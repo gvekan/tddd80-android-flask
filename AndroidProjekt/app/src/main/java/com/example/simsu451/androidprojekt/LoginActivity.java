@@ -2,14 +2,17 @@ package com.example.simsu451.androidprojekt;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -171,12 +174,77 @@ public class LoginActivity extends Activity {
         requestQueue.add(stringRequest);
     }
 
-    public static void tokenExpired(Context context, Bundle bundle) {
-        bundle.putString("toast", "Please log in again");
-        bundle.putString("class", context.getClass().toString());
-        Intent intent = new Intent(context, LoginActivity.class);
-        context.startActivity(intent.putExtras(bundle));
-        ((Activity) context).finish();
+    public static void tokenExpired(final Context context) {
+        final View view = LayoutInflater.from(context).inflate(R.layout.dialog_login, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setView(view);
+        Button loginButton = (Button) view.findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = Constants.URL + "login";
+                final EditText etEmail = (EditText) view.findViewById(R.id.etEmail);
+                final EditText etPassword = (EditText) view.findViewById(R.id.etPassword);
+
+                if (etEmail == null) throw new AssertionError("etEmail is null");
+                if (etPassword == null) throw new AssertionError("etPassword is null");
+
+                String email = etEmail.getText().toString();
+                String password = etPassword.getText().toString();
+                if (email.length() == 0 || password.length() == 0 || password.length() < Constants.MIN_PASSWORD_LENGTH) {
+                    Toast.makeText(context, "Email or password length is invalid", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                final ProgressDialog progress = new ProgressDialog(context);
+
+                final JSONObject params = new JSONObject();
+                try {
+                    params.put("email", email);
+                    params.put("password", password);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                RequestQueue requestQueue = Volley.newRequestQueue(context);
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        JSONObject jsonResponse;
+                        String token = null;
+                        try {
+                            jsonResponse = new JSONObject(response);
+                            token = jsonResponse.getString("access_token");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Token.getInstance().setToken(token);
+
+                        alertDialog.dismiss();
+                        progress.dismiss();
+                    }}, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Wrong email or password", Toast.LENGTH_LONG).show();
+                    }
+                }){
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        return params.toString().getBytes();
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json";
+                    }
+                };
+
+                progress.show(context, "Logging in..", "", true, true);
+
+                requestQueue.add(stringRequest);
+
+            }
+        });
+        alertDialog.show();
     }
 
 }

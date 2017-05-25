@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.simsu451.androidprojekt.Constants;
+import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
@@ -96,10 +97,7 @@ class ChatAdapter extends ArrayAdapter<Message> {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse.statusCode == 401) {
-                    ChatActivity chatActivity = (ChatActivity) getContext();
-                    chatActivity.tokenExpired();
-                }
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext());
 
             }
 
@@ -138,10 +136,7 @@ class ChatAdapter extends ArrayAdapter<Message> {
             @Override
             public void onErrorResponse(VolleyError error) {
                 srlChat.setRefreshing(false);
-                if (error.networkResponse.statusCode == 401) {
-                    ChatActivity chatActivity = (ChatActivity) getContext();
-                    chatActivity.tokenExpired();
-                }
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext());
             }
 
         }) {

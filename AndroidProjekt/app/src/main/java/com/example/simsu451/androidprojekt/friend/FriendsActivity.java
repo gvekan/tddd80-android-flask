@@ -116,7 +116,7 @@ public class FriendsActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(FriendsActivity.this, new Bundle());
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(FriendsActivity.this);
             }
         }) {
             @Override

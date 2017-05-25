@@ -81,7 +81,7 @@ class RequestsAdapter extends ArrayAdapter<User> {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext());
             }
         }) {
             @Override
@@ -108,7 +108,7 @@ class RequestsAdapter extends ArrayAdapter<User> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext());
                     }
                 }
         ){
@@ -138,7 +138,7 @@ class RequestsAdapter extends ArrayAdapter<User> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext(), new Bundle());
+                        if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext());
                     }
                 }
         ){

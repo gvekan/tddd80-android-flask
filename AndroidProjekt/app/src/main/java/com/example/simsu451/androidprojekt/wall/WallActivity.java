@@ -182,7 +182,7 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onErrorResponse(VolleyError error) {
                 etPost.setText(text);
-                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(WallActivity.this, new Bundle());
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(WallActivity.this);
                 Toast.makeText(WallActivity.this, "An error occurred, try again.", Toast.LENGTH_SHORT).show();
             }
         }){

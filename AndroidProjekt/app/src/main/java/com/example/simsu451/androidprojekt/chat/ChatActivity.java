@@ -20,6 +20,7 @@ import com.example.simsu451.androidprojekt.LoginActivity;
 import com.example.simsu451.androidprojekt.friend.User;
 import com.example.simsu451.androidprojekt.R;
 import com.example.simsu451.androidprojekt.Token;
+import com.example.simsu451.androidprojekt.wall.WallActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -91,7 +92,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 etMessage.setText(text);
-                if (error.networkResponse.statusCode == 401) tokenExpired();
+                if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(ChatActivity.this);
             }
         }) {
             @Override
@@ -109,11 +110,5 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(stringRequest);
-    }
-
-    public void tokenExpired() {
-        Bundle bundle = new Bundle();
-        bundle.putString("friend", jsonFriend);
-        LoginActivity.tokenExpired(this, bundle);
     }
 }
