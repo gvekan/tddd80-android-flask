@@ -125,6 +125,8 @@ print(json.loads(g1.text)['messages'])
 f1 = requests.post(root_uri + 'send-friend-request/gusan092@student.liu.se', headers={'Authorization': 'Bearer ' + token_simon})
 print(json.loads(f1.text)['msg'])
 
+hs = requests.get(root_uri + 'has-sent-friend-request/gusan092@student.liu.se', headers={'Authorization': 'Bearer ' + token_simon})
+print(json.loads(hs.text)['hasSent'])
 #   GET FRIEND REQUESTS
 gfr1 = requests.get(root_uri + 'get-friend-requests', headers={'Authorization': 'Bearer ' + token_gustav})
 print("Gustav Friend requests: " + str(json.loads(gfr1.text)['users']))
@@ -140,19 +142,24 @@ print("Simon Friends: " + str(json.loads(fr7.text)['users']))
 # # ACCEPT FRIEND REQUEST
 f2 = requests.post(root_uri + 'accept-friend-request/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(json.loads(f2.text)['msg'])
-
+hs1 = requests.get(root_uri + 'has-sent-friend-request/gusan092@student.liu.se', headers={'Authorization': 'Bearer ' + token_simon})
+print(json.loads(hs1.text)['hasSent'])
+# GET FRIENDS AFTER ACCEPT
 fr5 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_simon})
 print("Simon Friends: " + str(json.loads(fr5.text)['users']))
-
 fr6 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
 print("Gustav Friends: " + str(json.loads(fr6.text)['users']))
+
+# GET FRIEND REQUESTS AFTER ACCEPT
 gfr3 = requests.get(root_uri + 'get-friend-requests', headers={'Authorization': 'Bearer ' + token_gustav})
 print("Gustav Friend requests: " + str(json.loads(gfr3.text)['users']))
-
 gg = requests.get(root_uri + 'get-friend-request-amount', headers={'Authorization': 'Bearer ' + token_gustav})
 print("Friend requests amount: " + str(json.loads(gg.text)['amount']))
+
+# REMOVE FRIEND
 f2 = requests.post(root_uri + 'remove-friend/simsu451@student.liu.se', headers={'Authorization': 'Bearer ' + token_gustav})
 print(str(json.loads(f2.text)['msg']))
+
 #   GET FRIENDS
 fr1 = requests.get(root_uri + 'get-friends', headers={'Authorization': 'Bearer ' + token_gustav})
 print("Gustav Friends: " + str(json.loads(fr1.text)['users']))

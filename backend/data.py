@@ -127,14 +127,14 @@ class User(db.Model):
         Send a request to a user
         :param other: Other user
         """
-        if not self.friend_request_sent(other):
+        if not self.has_sent_friend_request(other):
             self.sent_requests.append(other)
             other.received_requests.append(self)
         db.session.commit()
         return 'Friend request sent'
 
     def accept_friend_request(self, other):
-        if not other.friend_request_sent(self):
+        if not other.has_sent_friend_request(self):
             return "No friend request from that User"
         other.sent_requests.remove(self)
         self.received_requests.remove(other)
@@ -152,7 +152,7 @@ class User(db.Model):
     def are_friends(self, other):
         return self.friends.filter(friendships.c.user_id == self.id, friendships.c.friend_id == other.id).count() > 0
 
-    def friend_request_sent(self, other):
+    def has_sent_friend_request(self, other):
         """
         Check if a user has sent a request to another user
         :param other: other user

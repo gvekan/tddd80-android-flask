@@ -325,6 +325,13 @@ def get_profile_info():
     info = user.get_profile_info()
     return jsonify(info), 200
 
+@application.route('/has-sent-friend-request/<user_email>', methods=['GET'])
+@jwt_required
+def has_sent_friend_request(user_email):
+    user = data.get_user(get_jwt_identity())
+    other_user = data.get_user(user_email)
+    hasSent = user.has_sent_friend_request(other_user)
+    return jsonify({'hasSent': hasSent})
 
 @application.route('/remove-friend/<friend_email>', methods=['POST'])
 @jwt_required
