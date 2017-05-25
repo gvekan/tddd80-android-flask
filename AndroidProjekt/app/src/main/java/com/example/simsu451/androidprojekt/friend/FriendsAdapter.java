@@ -108,7 +108,7 @@ class FriendsAdapter extends ArrayAdapter<User> {
                     public void onResponse(String response) {
                         clear();
                         users.getUsers().remove(user);
-                        users.setUsers(users.getUsers());
+//                        users.setUsers(users.getUsers()); onödig?
                         addAll(users.getUsers());
                         notifyDataSetChanged();
 

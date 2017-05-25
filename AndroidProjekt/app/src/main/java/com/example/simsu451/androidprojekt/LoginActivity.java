@@ -2,6 +2,7 @@ package com.example.simsu451.androidprojekt;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -120,6 +121,8 @@ public class LoginActivity extends Activity {
             return;
         }
 
+        final ProgressDialog progress = new ProgressDialog(this);
+
         final JSONObject params = new JSONObject();
         try {
             params.put("email", email);
@@ -141,12 +144,14 @@ public class LoginActivity extends Activity {
                 }
                 Token.getInstance().setToken(token);
 
+                progress.dismiss();
                 Intent intent = new Intent(LoginActivity.this, intentClass);
                 startActivity(intent.putExtras(savedInstanceState));
 
         }}, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progress.dismiss();
                 Toast.makeText(LoginActivity.this, "Wrong email or password", Toast.LENGTH_LONG).show();
             }
         }){
@@ -160,6 +165,8 @@ public class LoginActivity extends Activity {
                 return "application/json";
             }
         };
+
+        progress.show(this, "Logging in..", "", true, true);
 
         requestQueue.add(stringRequest);
     }

@@ -102,6 +102,12 @@ public class WallActivity extends AppCompatActivity implements LocationListener 
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        wallAdapter.updateLatestPosts();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case LOCATION_REQUEST:

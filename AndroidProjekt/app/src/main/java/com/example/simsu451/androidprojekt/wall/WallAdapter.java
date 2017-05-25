@@ -171,7 +171,7 @@ class WallAdapter extends ArrayAdapter<Post> {
                         post.setLiking(true);
                         post.setLikes(post.getLikes()+1);
                         tvLikes.setText(String.format("%s", post.getLikes()));
-                        tvLikes.setTextColor(Color.GREEN);
+                        tvLikes.setTextColor(Color.parseColor("#d1476a"));
                     } WallAdapter.this.notifyDataSetChanged();
                 }
             };
@@ -324,7 +324,7 @@ class WallAdapter extends ArrayAdapter<Post> {
         requestQueue.add(stringRequest);
     }
 
-    private void updateLatestPosts() {
+    public void updateLatestPosts() {
         postsLoading = true;
         String url = Constants.URL + "get-latest-posts/" + posts.getLatest();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
