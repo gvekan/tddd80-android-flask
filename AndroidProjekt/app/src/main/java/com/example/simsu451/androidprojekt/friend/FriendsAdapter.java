@@ -106,8 +106,10 @@ class FriendsAdapter extends ArrayAdapter<User> {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        clear();
                         users.getUsers().remove(user);
-                        remove(user);
+                        users.setUsers(users.getUsers());
+                        addAll(users.getUsers());
                         notifyDataSetChanged();
 
                     }},

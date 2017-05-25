@@ -45,11 +45,12 @@ public class UsersAdapter extends ArrayAdapter<User>{
             TextView tvUser = (TextView) convertView.findViewById(R.id.tvUser);
             tvUser.setText(user.getFirstName() + ' ' + user.getLastName());
 
-            Button button = (Button) convertView.findViewById(R.id.button);
+            final Button button = (Button) convertView.findViewById(R.id.button);
             button.setText(R.string.add_friend);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    button.setOnClickListener(null);
                     addFriend(user);
                 }
             });
@@ -85,13 +86,18 @@ public class UsersAdapter extends ArrayAdapter<User>{
         requestQueue.add(stringRequest);
     }
 
-    private void addFriend(User user) {
+    private void addFriend(final User user) {
         String url = Constants.URL + "send-friend-request/" + user.getEmail();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        //Ändra text till friend request sent
+//                        remove(user);
+//                        users.getUsers().remove(user);
+//                        users.setUsers(users.getUsers());
+//                        notifyDataSetChanged();
                     }},
                 new Response.ErrorListener() {
                     @Override

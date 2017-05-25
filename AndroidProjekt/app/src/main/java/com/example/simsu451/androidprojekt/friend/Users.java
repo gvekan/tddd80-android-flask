@@ -1,5 +1,6 @@
 package com.example.simsu451.androidprojekt.friend;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,13 +9,13 @@ import java.util.List;
 
 public class Users {
 
-    private List<User> users;
+    private ArrayList<User> users;
 
-    public List<User> getUsers() {
+    public ArrayList<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(ArrayList<User> users) {
         this.users = users;
     }
 

@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/deleteButton"
+        android:layout_toStartOf="@+id/removeButton"
         android:id="@+id/acceptButton"/>
 
     <Button
@@ -25,5 +25,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/deleteButton"/>
+        android:id="@+id/removeButton"/>
 </RelativeLayout>

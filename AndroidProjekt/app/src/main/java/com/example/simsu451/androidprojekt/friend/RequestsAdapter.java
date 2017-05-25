@@ -33,7 +33,7 @@ import java.util.Map;
 class RequestsAdapter extends ArrayAdapter<User> {
     private Users friendRequests = new Users();
     RequestsAdapter(Context context) {
-        super(context, R.layout.activity_friends);
+        super(context, R.layout.activity_friend_requests);
         getFriendRequests();
     }
 
@@ -100,8 +100,9 @@ class RequestsAdapter extends ArrayAdapter<User> {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        friendRequests.getUsers().remove(user);
                         remove(user);
+                        friendRequests.getUsers().remove(user);
+                        friendRequests.setUsers(friendRequests.getUsers());
                         notifyDataSetChanged();
                     }},
                 new Response.ErrorListener() {
@@ -128,8 +129,10 @@ class RequestsAdapter extends ArrayAdapter<User> {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        clear();
                         friendRequests.getUsers().remove(user);
-                        remove(user);
+                        friendRequests.setUsers(friendRequests.getUsers());
+                        addAll(friendRequests.getUsers());
                         notifyDataSetChanged();
                     }},
                 new Response.ErrorListener() {
