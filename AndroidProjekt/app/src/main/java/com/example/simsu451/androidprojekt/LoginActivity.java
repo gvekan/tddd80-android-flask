@@ -124,7 +124,7 @@ public class LoginActivity extends Activity {
             return;
         }
 
-        final ProgressDialog progress = new ProgressDialog(this);
+        final ProgressDialog progress = ProgressDialog.show(this, "Logging in..", "", true, true);
 
         final JSONObject params = new JSONObject();
         try {
@@ -169,8 +169,6 @@ public class LoginActivity extends Activity {
             }
         };
 
-        progress.show(this, "Logging in..", "", true, true);
-
         requestQueue.add(stringRequest);
     }
 
@@ -196,7 +194,7 @@ public class LoginActivity extends Activity {
                     return;
                 }
 
-                final ProgressDialog progress = new ProgressDialog(context);
+                final ProgressDialog progress = ProgressDialog.show(context, "Logging in..", "", true, true);
 
                 final JSONObject params = new JSONObject();
                 try {
@@ -218,12 +216,13 @@ public class LoginActivity extends Activity {
                             e.printStackTrace();
                         }
                         Token.getInstance().setToken(token);
-
-                        alertDialog.dismiss();
                         progress.dismiss();
+                        alertDialog.dismiss();
+
                     }}, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        progress.dismiss();
                         Toast.makeText(context, "Wrong email or password", Toast.LENGTH_LONG).show();
                     }
                 }){
@@ -237,8 +236,6 @@ public class LoginActivity extends Activity {
                         return "application/json";
                     }
                 };
-
-                progress.show(context, "Logging in..", "", true, true);
 
                 requestQueue.add(stringRequest);
 
