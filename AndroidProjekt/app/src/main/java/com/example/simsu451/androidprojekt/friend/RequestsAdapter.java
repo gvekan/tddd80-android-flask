@@ -100,9 +100,9 @@ class RequestsAdapter extends ArrayAdapter<User> {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        remove(user);
+                        clear();
                         friendRequests.getUsers().remove(user);
-                        friendRequests.setUsers(friendRequests.getUsers());
+                        addAll(friendRequests.getUsers());
                         notifyDataSetChanged();
                     }},
                 new Response.ErrorListener() {
@@ -131,7 +131,6 @@ class RequestsAdapter extends ArrayAdapter<User> {
                     public void onResponse(String response) {
                         clear();
                         friendRequests.getUsers().remove(user);
-                        friendRequests.setUsers(friendRequests.getUsers());
                         addAll(friendRequests.getUsers());
                         notifyDataSetChanged();
                     }},
