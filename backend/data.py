@@ -168,10 +168,10 @@ class User(db.Model):
         return response
 
     def get_friend_request_amount(self):
-        return self.received_requests.count()
+        return self.received_requests.filter(friend_requests.c.requested_id == self.id).count()
 
     def get_number_of_friends(self):
-        return self.friends.count()
+        return self.friends.filter(friendships.c.user_id == self.id).count()
 
     def create_post(self, text, city):
         if not city:
