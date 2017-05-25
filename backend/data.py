@@ -100,9 +100,10 @@ class User(db.Model):
         return response
 
     def remove_friend(self, friend):
-        self.friends.remove(friend)
-        friend.friends.remove(self)
-        db.session.commit()
+        if self.are_friends(friend):
+            self.friends.remove(friend)
+            friend.friends.remove(self)
+            db.session.commit()
         return 'Friend removed'
 
     def get_all_users(self):
@@ -136,6 +137,7 @@ class User(db.Model):
         if not other.friend_request_sent(self):
             return "No friend request from that User"
         other.sent_requests.remove(self)
+        self.received_requests.remove(other)
         self.friends.append(other)
         other.friends.append(self)
         db.session.commit()
