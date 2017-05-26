@@ -119,7 +119,8 @@ class User(db.Model):
                 response.append({'firstName': user.first_name,
                                  'lastName': user.last_name,
                                  'email': user.email,
-                                 'city': user.city})
+                                 'city': user.city,
+                                'requestSent': self.has_sent_friend_request(user)})
         return response
 
     def send_friend_request(self, other):
