@@ -9,6 +9,7 @@ public class User {
     private String lastName;
     private String city;
     private String email;
+    private boolean requestSent;
 
     public String getFirstName() {
         return firstName;
@@ -41,14 +42,13 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-    private boolean isFriend;
 
-    public boolean isFriend() {
-        return isFriend;
+    public boolean hasRequestSent() {
+        return requestSent;
     }
 
-    public void setFriend(boolean friend) {
-        isFriend = friend;
+    public void setRequestSent(boolean requestSent) {
+        this.requestSent = requestSent;
     }
 
 

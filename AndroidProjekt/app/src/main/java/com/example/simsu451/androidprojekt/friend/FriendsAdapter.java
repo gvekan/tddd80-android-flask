@@ -2,7 +2,6 @@ package com.example.simsu451.androidprojekt.friend;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +68,6 @@ class FriendsAdapter extends ArrayAdapter<User> {
         }
         return convertView;
     }
-
 
     void getFriends() {
         String url = Constants.URL + "get-friends";
