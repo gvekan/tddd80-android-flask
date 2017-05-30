@@ -59,9 +59,12 @@ public class RegisterActivity extends AppCompatActivity {
         if (etControlPassword == null) throw new AssertionError("etControlPassword is null");
 
         String firstName = etFirstName.getText().toString();
+        firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
         String lastName = etLastName.getText().toString();
+        lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
         String city = etCity.getText().toString();
-        String email = etEmail.getText().toString();
+        city = city.substring(0, 1).toUpperCase() + city.substring(1).toLowerCase();
+        String email = etEmail.getText().toString().toLowerCase();
         String password = etPassword.getText().toString();
         String controlPassword = etControlPassword.getText().toString();
 

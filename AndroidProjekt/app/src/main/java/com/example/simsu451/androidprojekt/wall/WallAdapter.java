@@ -161,17 +161,17 @@ class WallAdapter extends ArrayAdapter<Post> {
                 @Override
                 public void onClick(View v) {
                     if (post.isLiking()) {
-                        dislikePost(post.getId());
                         post.setLiking(false);
                         post.setLikes(post.getLikes()-1);
                         tvLikes.setText(String.format("%s", post.getLikes()));
                         tvLikes.setTextColor(oldColors);
+                        dislikePost(post.getId(), tvLikes, post);
                     } else {
-                        likePost(post.getId());
                         post.setLiking(true);
                         post.setLikes(post.getLikes()+1);
                         tvLikes.setText(String.format("%s", post.getLikes()));
                         tvLikes.setTextColor(Color.parseColor("#d1476a"));
+                        likePost(post.getId(), tvLikes, post);
                     } WallAdapter.this.notifyDataSetChanged();
                 }
             };
@@ -428,8 +428,8 @@ class WallAdapter extends ArrayAdapter<Post> {
         lwPosts.setSelectionFromTop(position, top);
     }
 
-    private void likePost(int post) {
-        String url = Constants.URL + "like-post/" + post;
+    private void likePost(int post_id, final TextView tvLikes, final Post post) {
+        String url = Constants.URL + "like-post/" + post_id;
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -439,6 +439,10 @@ class WallAdapter extends ArrayAdapter<Post> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        post.setLiking(false);
+                        post.setLikes(post.getLikes()-1);
+                        tvLikes.setText(String.format("%s", post.getLikes()));
+                        tvLikes.setTextColor(oldColors);
                         if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext());
                     }
                 }
@@ -453,8 +457,8 @@ class WallAdapter extends ArrayAdapter<Post> {
         requestQueue.add(stringRequest);
     }
 
-    private void dislikePost(int post) {
-        String url = Constants.URL + "dislike-post/" + post;
+    private void dislikePost(int post_id, final TextView tvLikes, final Post post) {
+        String url = Constants.URL + "dislike-post/" + post_id;
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -464,6 +468,10 @@ class WallAdapter extends ArrayAdapter<Post> {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        post.setLiking(true);
+                        post.setLikes(post.getLikes()+1);
+                        tvLikes.setText(String.format("%s", post.getLikes()));
+                        tvLikes.setTextColor(Color.parseColor("#d1476a"));
                         if (error.networkResponse.statusCode == 401) LoginActivity.tokenExpired(getContext());
                     }
                 }
