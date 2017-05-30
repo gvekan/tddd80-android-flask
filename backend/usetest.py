@@ -36,7 +36,7 @@ requests.post(root_uri + 'create-post', json={'text': 'Hallå någon där?', 'ci
 requests.post(root_uri + 'create-post', json={'text': 'Börjar ångra det jag skrev först :S', 'city': ''}, headers={'Authorization': 'Bearer ' + token_kalle})
 requests.post(root_uri + 'create-post', json={'text': 'Chilla Kalle vi är här, du är inte ensam...', 'city': ''}, headers={'Authorization': 'Bearer ' + token_ronny})
 requests.post(root_uri + 'create-post', json={'text': 'Så varmt i Paris idag :D', 'city': 'Paris'}, headers={'Authorization': 'Bearer ' + token_frida})
-requests.post(root_uri + 'create-post', json={'text': 'Känslan när kalendern tyder på sommar men vädret tyder på vinter.. Welcome to Sweden :/', 'city': 'Paris'}, headers={'Authorization': 'Bearer ' + token_frida})
+requests.post(root_uri + 'create-post', json={'text': 'Känslan när kalendern tyder på sommar men vädret tyder på vinter.. Welcome to Sweden :/', 'city': ''}, headers={'Authorization': 'Bearer ' + token_britta})
 requests.post(root_uri + 'create-post', json={'text': 'Semester med Frida <3', 'city': 'Paris'}, headers={'Authorization': 'Bearer ' + token_jonas})
 requests.post(root_uri + 'create-post', json={'text': 'När bakfyllan börjar och man ångrar de sista öl man tog :S', 'city': 'Köpenhamn'}, headers={'Authorization': 'Bearer ' + token_ronny})
 requests.post(root_uri + 'create-post', json={'text': 'Är det bara jag eller borde inte alla byta från facebook till Super Social App, asgrym ju :P', 'city': ''}, headers={'Authorization': 'Bearer ' + token_kalle})
