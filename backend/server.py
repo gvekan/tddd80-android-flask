@@ -283,6 +283,8 @@ def get_latest_messages(receiver_email, index):
     user = data.get_user(get_jwt_identity())
     receiver = data.get_user(receiver_email)
     chat = data.get_chat(user, receiver)
+    if not chat:
+        return jsonify({"messages": []}), 200
     messages = user.get_latest_messages(chat, latest)
     return jsonify({"messages": messages}), 200
 
