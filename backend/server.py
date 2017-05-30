@@ -158,7 +158,7 @@ def get_latest_posts(post_id):
     :param post_id:
     """
     latest = int(post_id)
-    user = data.get_user("gusan092@student.liu.se")
+    user = data.get_user(get_jwt_identity())
     post_list = user.get_latest_posts(latest)
     return jsonify({"posts": post_list}), 200
 
