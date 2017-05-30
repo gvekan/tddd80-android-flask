@@ -114,13 +114,15 @@ class User(db.Model):
         users = User.query.filter(User.id != self.id).all()
         response = []
         friends = self.friends.all()
+        requests = self.received_requests.all()
         for user in users:
             if user not in friends:
-                response.append({'firstName': user.first_name,
-                                 'lastName': user.last_name,
-                                 'email': user.email,
-                                 'city': user.city,
-                                'requestSent': self.has_sent_friend_request(user)})
+                if user not in requests:
+                    response.append({'firstName': user.first_name,
+                                    'lastName': user.last_name,
+                                    'email': user.email,
+                                    'city': user.city,
+                                    'requestSent': self.has_sent_friend_request(user)})
         return response
 
     def send_friend_request(self, other):

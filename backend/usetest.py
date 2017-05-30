@@ -39,7 +39,7 @@ requests.post(root_uri + 'create-post', json={'text': 'Så varmt i Paris idag :D
 requests.post(root_uri + 'create-post', json={'text': 'Känslan när kalendern tyder på sommar men vädret tyder på vinter.. Welcome to Sweden :/', 'city': 'Paris'}, headers={'Authorization': 'Bearer ' + token_frida})
 requests.post(root_uri + 'create-post', json={'text': 'Semester med Frida <3', 'city': 'Paris'}, headers={'Authorization': 'Bearer ' + token_jonas})
 requests.post(root_uri + 'create-post', json={'text': 'När bakfyllan börjar och man ångrar de sista öl man tog :S', 'city': 'Köpenhamn'}, headers={'Authorization': 'Bearer ' + token_ronny})
-requests.post(root_uri + 'create-post', json={'text': 'Är det bara jag eller borde inte alla byta från facebook till Super Social App, asgrym ju :P', 'city': 'Paris'}, headers={'Authorization': 'Bearer ' + token_kalle})
+requests.post(root_uri + 'create-post', json={'text': 'Är det bara jag eller borde inte alla byta från facebook till Super Social App, asgrym ju :P', 'city': ''}, headers={'Authorization': 'Bearer ' + token_kalle})
 
 
 # CREATING COMMENTS
@@ -49,38 +49,42 @@ requests.post(root_uri + 'create-comment/8', json={'text': 'Hoppas ni har det br
 
 # LIKE POSTS:
 new = 12
-old = 0
-while new != old:
+old = []
+while new not in old:
     requests.post(root_uri + 'like-post/' + str(new), headers={'Authorization': 'Bearer ' + token_ronny})
-    old = new
+    old.append(new)
     new = random.randint(1,12)
 
+
 new = 12
-old = 0
-while new != old:
+old = []
+while new not in old:
     requests.post(root_uri + 'like-post/' + str(new), headers={'Authorization': 'Bearer ' + token_frida})
-    old = new
+    old.append(new)
     new = random.randint(1,12)
 
+
 new = 12
-old = 0
-while new != old:
+old = []
+while new not in old:
     requests.post(root_uri + 'like-post/' + str(new), headers={'Authorization': 'Bearer ' + token_kalle})
-    old = new
+    old.append(new)
     new = random.randint(1,12)
 
+
 new = 12
-old = 0
-while new != old:
+old = []
+while new not in old:
     requests.post(root_uri + 'like-post/' + str(new), headers={'Authorization': 'Bearer ' + token_jonas})
-    old = new
+    old.append(new)
     new = random.randint(1,12)
 
+
 new = 12
-old = 0
-while new != old:
+old = []
+while new not in old:
     requests.post(root_uri + 'like-post/' + str(new), headers={'Authorization': 'Bearer ' + token_britta})
-    old = new
+    old.append(new)
     new = random.randint(1,12)
 
 # SEND FRIENDREQUEST
